@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terjebak di Luar Angkasa</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #050510;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #game-container {
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            border: 2px solid #00f3ff;
+            border-radius: 8px;
+        }
+        canvas {
+            background: radial-gradient(circle at center, #0b0b26 0%, #020208 100%);
+            display: block;
+            border-radius: 6px;
+        }
+        .ui-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 0 0 5px #000;
+            pointer-events: none;
+        }
+        #overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            border-radius: 6px;
+        }
+        h1 { color: #00f3ff; margin-bottom: 10px; font-size: 28px; text-shadow: 0 0 10px #00f3ff; }
+        p { margin-bottom: 15px; max-width: 80%; line-height: 1.5; color: #cccccc; }
+        button {
+            padding: 12px 28px;
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00f3ff, #0066ff);
+            border: none;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+            transition: 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.8);
+        }
+        .controls-hint {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+    
+    <div class="ui-panel">
+        <div>Skor: <span id="scoreDisplay" style="color: #00f3ff;">0</span></div>
+        <div>Level: <span id="levelDisplay" style="color: #ff00ff;">1</span></div>
+        <div>Laser Dmg: <span id="damageDisplay" style="color: #ffcc00;">10</span></div>
+        <div>HP Pesawat: <span id="hpDisplay" style="color: #00ff66;">100</span></div>
+    </div>
+
+    <div id="overlay">
+        <h1 id="titleText">TERJEBAK DI LUAR ANGKASA</h1>
+        <p id="descText">Pesawatmu terdampar di sektor alien yang berbahaya! Tembak musuh menggunakan laser untuk bertahan hidup. Setiap naik level, damage lasermu naik 5% dan HP alien bertambah 3%!</p>
+        <button id="startBtn" onclick="startGame()">MULAI PERMAINAN</button>
+        <div class="controls-hint">Kontrol: Tombol Panah (Move) & Spasi (Tembak Laser)</div>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// UI Elements
+const overlay = document.getElementById('overlay');
+const titleText = document.getElementById('titleText');
+const descText = document.getElementById('descText');
+const startBtn = document.getElementById('startBtn');
+
+// Game State Variables
+let gameActive = false;
+let score = 0;
+let level = 1;
+let baseLaserDamage = 10;
+let currentLaserDamage = 10;
+let baseAlienHealth = 20;
+
+let keys = {};
+let player = {};
+let lasers = [];
+let aliens = [];
+let particles = [];
+let spawnTimer = 0;
+
+// Event Listeners
+window.addEventListener('keydown', e => keys[e.code] = true);
+window.addEventListener('keyup', e => keys[e.code] = false);
+
+function initPlayer() {
+    player = {
+        x: 50,
+        y: canvas.height / 2 - 20,
+        width: 40,
+        height: 30,
+        speed: 6,
+        hp: 100,
+        maxHp: 100,
+        lastShoot: 0
+    };
+}
+
+function startGame() {
+    score = 0;
+    level = 1;
+    currentLaserDamage = baseLaserDamage;
+    lasers = [];
+    aliens = [];
+    particles = [];
+    initPlayer();
+    
+    updateUI();
+    overlay.style.display = 'none';
+    gameActive = true;
+    requestAnimationFrame(gameLoop);
+}
+
+function gameOver() {
+    gameActive = false;
+    titleText.innerText = "GAME OVER";
+    titleText.style.color = "#ff0055";
+    descText.innerText = `Kamu bertahan hingga Level ${level} dengan skor akhir ${score}. Sektor ini terlalu berbahaya...`;
+    startBtn.innerText = "MAIN LAGI";
+    overlay.style.display = 'flex';
+}
+
+function updateUI() {
+    document.getElementById('scoreDisplay').innerText = score;
+    document.getElementById('levelDisplay').innerText = level;
+    document.getElementById('damageDisplay').innerText = currentLaserDamage.toFixed(1);
+    document.getElementById('hpDisplay').innerText = Math.max(0, Math.ceil(player.hp));
+}
+
+function checkLevelUp() {
+    let nextLevel = Math.floor(score / 100) + 1;
+    if (nextLevel > level) {
+        level = nextLevel;
+        // Laser damage bertambah 5% tiap level (eksponensial/kompon)
+        currentLaserDamage = baseLaserDamage * Math.pow(1.05, level - 1);
+        
+        // Effek visual sederhana saat naik level
+        createParticles(player.x, player.y, '#00f3ff', 20);
+        updateUI();
+    }
+}
+
+function spawnAlien() {
+    // HP Alien bertambah 3% per level
+    let alienHp = baseAlienHealth * Math.pow(1.03, level - 1);
+    
+    aliens.push({
+        x: canvas.width + 30,
+        y: Math.random() * (canvas.height - 40) + 10,
+        width: 35,
+        height: 35,
+        speed: 2 + Math.random() * 1.5 + (level * 0.2),
+        hp: alienHp,
+        maxHp: alienHp
+    });
+}
+
+function createParticles(x, y, color, count = 8) {
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: x, y: y,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6,
+            radius: Math.random() * 3 + 1,
+            color: color,
+            life: 20
+        });
+    }
+}
+
+function update() {
+    // Movement Pesawat
+    if ((keys['ArrowUp'] || keys['KeyW']) && player.y > 0) player.y -= player.speed;
+    if ((keys['ArrowDown'] || keys['KeyS']) && player.y < canvas.height - player.height) player.y += player.speed;
+    if ((keys['ArrowLeft'] || keys['KeyA']) && player.x > 0) player.x -= player.speed;
+    if ((keys['ArrowRight'] || keys['KeyD']) && player.x < canvas.width - player.width) player.x += player.speed;
+
+    // Shoot Laser
+    let now = Date.now();
+    if (keys['Space'] && now - player.lastShoot > 200) {
+        lasers.push({
+            x: player.x + player.width,
+            y: player.y + player.height / 2 - 2,
+            width: 15,
+            height: 4,
+            speed: 10
+        });
+        player.lastShoot = now;
+    }
+
+    // Spawn Alien
+    spawnTimer++;
+    if (spawnTimer > Math.max(20, 90 - (level * 3))) {
+        spawnAlien();
+        spawnTimer = 0;
+    }
+
+    // Update Lasers
+    for (let i = lasers.length - 1; i >= 0; i--) {
+        lasers[i].x += lasers[i].speed;
+        if (lasers[i].x > canvas.width) {
+            lasers.splice(i, 1);
+        }
+    }
+
+    // Update Aliens & Collisions
+    for (let i = aliens.length - 1; i >= 0; i--) {
+        let a = aliens[i];
+        a.x -= a.speed;
+
+        // Tabrakan Alien dengan Pesawat
+        if (player.x < a.x + a.width &&
+            player.x + player.width > a.x &&
+            player.y < a.y + a.height &&
+            player.y + player.height > a.y) {
+            
+            player.hp -= 20;
+            createParticles(a.x, a.y, '#ff0055', 12);
+            aliens.splice(i, 1);
+            updateUI();
+            
+            if (player.hp <= 0) gameOver();
+            continue;
+        }
+
+        // Hit Alien dengan Laser
+        for (let j = lasers.length - 1; j >= 0; j--) {
+            let l = lasers[j];
+            if (l.x < a.x + a.width &&
+                l.x + l.width > a.x &&
+                l.y < a.y + a.height &&
+                l.y + l.height > a.y) {
+                
+                a.hp -= currentLaserDamage;
+                createParticles(l.x, l.y, '#ffff00', 4);
+                lasers.splice(j, 1);
+
+                if (a.hp <= 0) {
+                    createParticles(a.x, a.y, '#ff5500', 10);
+                    aliens.splice(i, 1);
+                    score += 15;
+                    checkLevelUp();
+                    updateUI();
+                }
+                break;
+            }
+        }
+
+        // Alien Lewat Batas Kiri
+        if (a && a.x + a.width < 0) {
+            aliens.splice(i, 1);
+        }
+    }
+
+    // Update Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+        p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        if (p.life <= 0) particles.splice(i, 1);
+    }
+}
+
+function draw() {
+    // Clear Canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Background Stars (Dekoratif)
+    ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
+    for (let i = 0; i < 20; i++) {
+        let x = (Math.sin(i * 99 + Date.now() * 0.001) + 1) * canvas.width / 2;
+        let y = (Math.cos(i * 33 + Date.now() * 0.001) + 1) * canvas.height / 2;
+        ctx.fillRect(x, y, 2, 2);
+    }
+
+    // Draw Player (Pesawat Antariksa)
+    ctx.fillStyle = '#00f3ff';
+    ctx.beginPath();
+    ctx.moveTo(player.x, player.y);
+    ctx.lineTo(player.x + player.width, player.y + player.height / 2);
+    ctx.lineTo(player.x, player.y + player.height);
+    ctx.lineTo(player.x + 8, player.y + player.height / 2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Draw Lasers
+    ctx.fillStyle = '#ff0055';
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = '#ff0055';
+    lasers.forEach(l => {
+        ctx.fillRect(l.x, l.y, l.width, l.height);
+    });
+    ctx.shadowBlur = 0;
+
+    // Draw Aliens
+    aliens.forEach(a => {
+        // Alien Body
+        ctx.fillStyle = '#a800ff';
+        ctx.fillRect(a.x, a.y, a.width, a.height);
+
+        // Alien HP Bar
+        let hpPct = Math.max(0, a.hp / a.maxHp);
+        ctx.fillStyle = 'red';
+        ctx.fillRect(a.x, a.y - 8, a.width, 4);
+        ctx.fillStyle = '#00ff66';
+        ctx.fillRect(a.x, a.y - 8, a.width * hpPct, 4);
+    });
+
+    // Draw Particles
+    particles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
+function gameLoop() {
+    if (!gameActive) return;
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+</script>
+
+</body>
+</html>
