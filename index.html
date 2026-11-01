@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terjebak di Luar Angkasa - Ultimate Edition</title>
+    <title>Ura-6 - Terjebak di Luar Angkasa</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -447,8 +447,42 @@
     </div>
     <button id="fire-btn">LASER</button>
 
-    <!-- STEP 1: Warning -->
-    <div id="warningOverlay" class="overlay-screen">
+    <!-- STEP 1: WELCOME OVERLAY (Pertama Kali Muncul) -->
+    <div id="welcomeOverlay" class="overlay-screen">
+        <div class="planet-bg"></div>
+        <div class="saturn-ring"></div>
+        <div class="moon" id="phobos" style="animation-delay: 0s;"></div>
+        <div class="moon" id="europa" style="animation-delay: -3s;"></div>
+        <div class="moon" id="titan" style="animation-delay: -6s;"></div>
+        <div class="moon" id="venus-moon" style="animation-delay: -9s;"></div>
+
+        <h1 class="title-glow" id="mainTitle">WELCOME</h1>
+        <p class="story-text" id="mainDesc">
+            Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal.<br><br>
+            <strong>CATATAN:</strong> Versi optimal tanpa bug.
+        </p>
+        <button class="blackhole-btn" id="startBtn" onclick="proceedToUra()">MULAI</button>
+        <div class="controls-hint" id="mainHint">
+            Kontrol: Tombol Panah Atas/Bawah (Naik/Turun) atau Tombol di Layar<br>
+            <i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>
+        </div>
+    </div>
+
+    <!-- STEP 2: URA-6 OVERLAY (Kedua) -->
+    <div id="uraOverlay" class="overlay-screen" style="display: none;">
+        <div class="planet-bg"></div>
+        <div class="saturn-ring"></div>
+        <div class="solar-orbit"></div>
+        <h1 class="title-glow">Ura-6</h1>
+        <p class="story-text">
+            Tanggal Rilis / Pembaruan: <strong>1 Nov 2026</strong><br><br>
+            Selamat datang di portal game antariksa resmi. Silakan lanjut untuk meninjau peringatan dan pengaturan sistem.
+        </p>
+        <button class="blackhole-btn" onclick="proceedToWarning()">LANJUT</button>
+    </div>
+
+    <!-- STEP 3: WARNING OVERLAY (Ketiga) -->
+    <div id="warningOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
@@ -460,7 +494,7 @@
         <button class="blackhole-btn" onclick="proceedToConfig()">MENGERTI</button>
     </div>
 
-    <!-- STEP 2: Config -->
+    <!-- STEP 4: CONFIG OVERLAY (Keempat) -->
     <div id="configOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
@@ -504,41 +538,24 @@
         <button class="blackhole-btn" onclick="proceedToModeSelect()">LANJUT</button>
     </div>
 
-    <!-- STEP 3: Overlay Pemilihan Mode Kesulitan -->
+    <!-- STEP 5: DIFFICULTY OVERLAY (Kelima - Menggunakan Sistem 2x Pencet) -->
     <div id="modeOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
-        <h1 class="title-glow">PILIH MODE KESULITAN</h1>
-        <p class="story-text">
-            Pilih tantangan yang sesuai dengan kemampuanmu sebelum memulai misi bertahan hidup di luar angkasa!
+        <h1 class="title-glow">PILIH TINGKAT KESULITAN</h1>
+        <p class="story-text" id="diffHintText">
+            Pilih mode tantanganmu! Klik sekali untuk memilih, lalu klik tombol mulai yang muncul untuk konfirmasi.
         </p>
         <div class="mode-btn-container">
-            <button class="mode-btn" onclick="selectDifficulty(10)">EASY / MUDAH<br><span style="font-size:10px; color:#00ff66;">Max Level 10 (Boss: Lv.10)</span></button>
-            <button class="mode-btn" onclick="selectDifficulty(25)">MEDIUM / SEDANG<br><span style="font-size:10px; color:#00f3ff;">Max Level 25 (Boss: Lv.25)</span></button>
-            <button class="mode-btn" onclick="selectDifficulty(100)">HARD / SULIT<br><span style="font-size:10px; color:#ffcc00;">Max Level 100 (Boss: Lv.100)</span></button>
-            <button class="mode-btn crazy" onclick="selectDifficulty(200)">CRAZY / GILA<br><span style="font-size:10px; color:#ff0055;">Max Level 200 (Ekstrem & Sulit)</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(10, this)">EASY / MUDAH<br><span style="font-size:10px; color:#00ff66;">Max Level 10</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(25, this)">MEDIUM / SEDANG<br><span style="font-size:10px; color:#00f3ff;">Max Level 25</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(100, this)">HARD / SULIT<br><span style="font-size:10px; color:#ffcc00;">Max Level 100</span></button>
+            <button class="mode-btn crazy" onclick="selectDifficulty(200, this)">CRAZY / GILA<br><span style="font-size:10px; color:#ff0055;">Max Level 200</span></button>
         </div>
-    </div>
-
-    <!-- STEP 4: Welcome -->
-    <div id="welcomeOverlay" class="overlay-screen" style="display: none;">
-        <div class="planet-bg"></div>
-        <div class="saturn-ring"></div>
-        <div class="moon" id="phobos" style="animation-delay: 0s;"></div>
-        <div class="moon" id="europa" style="animation-delay: -3s;"></div>
-        <div class="moon" id="titan" style="animation-delay: -6s;"></div>
-        <div class="moon" id="venus-moon" style="animation-delay: -9s;"></div>
-
-        <h1 class="title-glow" id="mainTitle">WELCOME</h1>
-        <p class="story-text" id="mainDesc">
-            Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal dari mode yang kamu pilih!<br><br>
-            <strong>CATATAN:</strong> Versi optimal tanpa bug.
-        </p>
-        <button class="blackhole-btn" id="startBtn" onclick="startGame()">MULAI</button>
-        <div class="controls-hint" id="mainHint">
-            Kontrol: Tombol Panah Atas/Bawah (Naik/Turun) atau Tombol di Layar<br>
-            <i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>
+        <!-- Tombol Konfirmasi 2x Pencet -->
+        <div id="confirmContainer" style="display: none; margin-top: 10px;">
+            <button class="blackhole-btn" id="confirmBtn" onclick="confirmStartGame()" style="width: 120px; height: 50px; border-radius: 10px; font-size: 13px;">Yakin?</button>
         </div>
     </div>
 </div>
@@ -553,6 +570,7 @@ let flashEnabled = true;
 let soundVolume = 0.5;
 let maxLevelSetting = 100;
 let fullscreenEnabled = false;
+let selectedLevelMaxTemp = 100;
 
 let audioCtx = null;
 function initAudio() {
@@ -643,7 +661,7 @@ function changeLanguage() {
         document.getElementById('flashLabel').innerText = "Flash Effect:";
         document.getElementById('volLabel').innerText = "Sound Volume:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "You are trapped in an alien sector. Defeat aliens to charge your Super Laser energy! Face UFO Bosses up to your selected Max Level!<br><br><strong>NOTE:</strong> Bug-free optimized version.";
+        document.getElementById('mainDesc').innerHTML = "You are trapped in an alien sector. Defeat aliens to charge your Super Laser energy! Face UFO Bosses up to your selected difficulty level.<br><br><strong>NOTE:</strong> Bug-free optimized version.";
         document.getElementById('mainHint').innerHTML = "Controls: Up/Down Arrow Keys or On-Screen Buttons<br><i>Tip: Use Fullscreen mode for the best landscape experience!</i>";
     } else {
         document.getElementById('langLabel').innerText = "Bahasa / Language:";
@@ -652,13 +670,23 @@ function changeLanguage() {
         document.getElementById('flashLabel').innerText = "Flash / Kilatan:";
         document.getElementById('volLabel').innerText = "Volume Suara:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal dari mode yang kamu pilih!<br><br><strong>CATATAN:</strong> Versi optimal tanpa bug.";
+        document.getElementById('mainDesc').innerHTML = "Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal.<br><br><strong>CATATAN:</strong> Versi optimal tanpa bug.";
         document.getElementById('mainHint').innerHTML = "Kontrol: Tombol Panah Atas/Bawah (Naik/Turun) atau Tombol di Layar<br><i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>";
     }
 }
 
-function proceedToConfig() {
+function proceedToUra() {
     initAudio();
+    document.getElementById('welcomeOverlay').style.display = 'none';
+    document.getElementById('uraOverlay').style.display = 'flex';
+}
+
+function proceedToWarning() {
+    document.getElementById('uraOverlay').style.display = 'none';
+    document.getElementById('warningOverlay').style.display = 'flex';
+}
+
+function proceedToConfig() {
     document.getElementById('warningOverlay').style.display = 'none';
     document.getElementById('configOverlay').style.display = 'flex';
 }
@@ -697,22 +725,41 @@ function proceedToModeSelect() {
     document.getElementById('modeOverlay').style.display = 'flex';
 }
 
-function selectDifficulty(levelMax) {
-    maxLevelSetting = levelMax;
-    document.getElementById('modeOverlay').style.display = 'none';
-    document.getElementById('welcomeOverlay').style.display = 'flex';
+// Fungsi Pilihan Kesulitan dengan Sistem 2x Pencet (Konfirmasi "Yakin?")
+function selectDifficulty(levelMax, btnElement) {
+    selectedLevelMaxTemp = levelMax;
+    
+    // Beri efek visual tombol yang dipilih
+    let allBtns = document.querySelectorAll('#modeOverlay .mode-btn');
+    allBtns.forEach(b => b.style.borderColor = '#00f3ff');
+    btnElement.style.borderColor = '#00ff66';
+
+    // Tampilkan tombol konfirmasi "Yakin?"
+    document.getElementById('confirmContainer').style.display = 'block';
+    document.getElementById('diffHintText').innerHTML = `Mode terpilih (Max Level: ${levelMax}). Tekan tombol <strong>"Yakin?"</strong> di bawah untuk memulai permainan!`;
 }
 
-function restartGame() {
-    document.getElementById('warningOverlay').style.display = 'none';
-    document.getElementById('configOverlay').style.display = 'none';
+function confirmStartGame() {
+    maxLevelSetting = selectedLevelMaxTemp;
     document.getElementById('modeOverlay').style.display = 'none';
-    document.getElementById('welcomeOverlay').style.display = 'none';
     startGame();
 }
 
+function restartGame() {
+    gameActive = false;
+    document.getElementById('uraOverlay').style.display = 'none';
+    document.getElementById('warningOverlay').style.display = 'none';
+    document.getElementById('configOverlay').style.display = 'none';
+    document.getElementById('modeOverlay').style.display = 'none';
+    document.getElementById('confirmContainer').style.display = 'none';
+    document.getElementById('welcomeOverlay').style.display = 'flex';
+    document.getElementById('startBtn').style.display = 'block';
+    document.getElementById('mainTitle').innerText = "WELCOME";
+    document.getElementById('mainTitle').style.color = "#00f3ff";
+    document.getElementById('mainDesc').innerHTML = "Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal.<br><br><strong>CATATAN:</strong> Versi optimal tanpa bug.";
+}
+
 function exitGame() {
-    // Mengarahkan keluar web ke halaman blank
     window.location.href = "about:blank";
 }
 
@@ -832,7 +879,6 @@ function startGame() {
     initPlayer();
     
     updateUI();
-    document.getElementById('welcomeOverlay').style.display = 'none';
     gameActive = true;
     requestAnimationFrame(gameLoop);
 }
@@ -1100,7 +1146,7 @@ function update() {
         for (let j = lasers.length - 1; j >= 0; j--) {
             let l = lasers[j];
             if (l.x < boss.x + boss.width && l.x + l.width > boss.x &&
-                l.y < boss.y + boss.height && l.y + l.height > boss.y) {
+                l.y < boss.y + boss.height && l.y + boss.height > boss.y) {
                 boss.hp -= currentLaserDamage;
                 createParticles(l.x, l.y, '#00ff66', 5);
                 lasers.splice(j, 1);
@@ -1128,7 +1174,7 @@ function update() {
             for (let j = lasers.length - 1; j >= 0; j--) {
                 let l = lasers[j];
                 if (l.x < a.x + a.width && l.x + l.width > a.x &&
-                    l.y < a.y + a.height && l.y + l.height > a.y) {
+                    l.y < a.y + a.height && l.y + a.height > a.y) {
                     
                     let dmg = superLaserActive ? currentLaserDamage * 3 : currentLaserDamage;
                     a.hp -= dmg;
