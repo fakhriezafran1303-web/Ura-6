@@ -7,7 +7,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #050510;
+            background-color: #03030a;
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -16,66 +16,164 @@
             justify-content: center;
             min-height: 100vh;
             overflow: hidden;
+            user-select: none;
         }
         #game-container {
             position: relative;
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+            box-shadow: 0 0 35px rgba(0, 243, 255, 0.4);
             border: 2px solid #00f3ff;
-            border-radius: 8px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
         }
         canvas {
-            background: radial-gradient(circle at center, #0b0b26 0%, #020208 100%);
+            background: radial-gradient(circle at center, #0a0a25 0%, #010105 100%);
             display: block;
-            border-radius: 6px;
-            cursor: crosshair;
         }
         .ui-panel {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
+            top: 12px;
+            left: 15px;
+            right: 15px;
             display: flex;
             justify-content: space-between;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
-            text-shadow: 0 0 5px #000;
+            text-shadow: 0 0 8px #000;
             pointer-events: none;
+            z-index: 5;
         }
         #overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 2, 10, 0.92);
+            background: rgba(3, 4, 15, 0.88);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 30px;
-            border-radius: 6px;
+            padding: 25px;
+            z-index: 10;
         }
-        h1 { color: #00f3ff; margin-bottom: 12px; font-size: 26px; text-shadow: 0 0 12px #00f3ff; }
-        p { margin-bottom: 15px; max-width: 85%; line-height: 1.6; color: #d0d0d0; font-size: 14px; }
-        button {
-            padding: 12px 30px;
-            font-size: 18px;
+
+        /* Dekorasi Planet Uranus di Background Menu */
+        .uranus-bg {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #73d5e5, #4b9fe1 60%, #17375e 90%);
+            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.7), 0 0 50px rgba(115, 213, 229, 0.4);
+            z-index: -1;
+            opacity: 0.85;
+        }
+        .uranus-ring {
+            position: absolute;
+            width: 320px;
+            height: 40px;
+            border: 6px solid rgba(175, 238, 238, 0.5);
+            border-radius: 50%;
+            transform: rotate(-30deg);
+            z-index: -1;
+            box-shadow: 0 0 15px rgba(175, 238, 238, 0.3);
+        }
+
+        .welcome-badge {
+            background: linear-gradient(90deg, #00f3ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0,243,255,0.5);
+        }
+        p.story-text {
+            margin-bottom: 15px;
+            max-width: 82%;
+            line-height: 1.5;
+            color: #e0e0e0;
+            font-size: 13px;
+            background: rgba(0,0,0,0.6);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0,243,255,0.2);
+        }
+        .start-btn {
+            padding: 12px 35px;
+            font-size: 16px;
             font-weight: bold;
             background: linear-gradient(45deg, #00f3ff, #0066ff);
             border: none;
             color: white;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
             transition: 0.2s;
         }
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.8);
+        .start-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.9);
         }
         .controls-hint {
-            margin-top: 15px;
-            font-size: 12px;
+            margin-top: 12px;
+            font-size: 11px;
             color: #ffcc00;
             line-height: 1.4;
+        }
+
+        /* Tombol Kontrol On-Screen Web */
+        #dpad-container {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            display: grid;
+            grid-template-columns: repeat(3, 42px);
+            grid-template-rows: repeat(3, 42px);
+            gap: 5px;
+            z-index: 6;
+        }
+        .dbtn {
+            background: rgba(0, 243, 255, 0.15);
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            color: #00f3ff;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .dbtn:active {
+            background: rgba(0, 243, 255, 0.5);
+        }
+        #btn-up { grid-column: 2; grid-row: 1; }
+        #btn-left { grid-column: 1; grid-row: 2; }
+        #btn-right { grid-column: 3; grid-row: 2; }
+        #btn-down { grid-column: 2; grid-row: 3; }
+
+        #fire-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff0055 0%, #990033 100%);
+            border: 2px solid #ff6699;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+            cursor: pointer;
+            z-index: 6;
+            touch-action: manipulation;
+        }
+        #fire-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 0 25px rgba(255, 0, 85, 0.9);
         }
     </style>
 </head>
@@ -89,16 +187,32 @@
         <div>Level: <span id="levelDisplay" style="color: #ff00ff;">1</span></div>
         <div>Gelombang: <span id="waveDisplay" style="color: #ff8800;">1/3</span></div>
         <div>Laser Dmg: <span id="damageDisplay" style="color: #ffcc00;">10</span></div>
-        <div>HP Pesawat: <span id="hpDisplay" style="color: #00ff66;">100</span></div>
+        <div>HP Pesawat: <span id="hpDisplay" style="color: #00ff66;">200</span></div>
     </div>
 
+    <!-- Tombol Kontrol Layar (On-Screen D-Pad & Tembak) -->
+    <div id="dpad-container">
+        <button class="dbtn" id="btn-up">▲</button>
+        <button class="dbtn" id="btn-left">◄</button>
+        <button class="dbtn" id="btn-right">►</button>
+        <button class="dbtn" id="btn-down">▼</button>
+    </div>
+    <button id="fire-btn">LASER</button>
+
+    <!-- Overlay Screen saat Masuk / Game Over -->
     <div id="overlay">
-        <h1 id="titleText">WELCOME</h1>
-        <p id="descText">Kamu terjebak di sektor alien akibat pesawat kehilangan kendali dan keluar jauh dari misi, coba bertahan hidup! Setiap naik level, damage lasermu naik 5% dan kekuatan alien bertambah 3%. Hadapi Bos UFO di setiap kelipatan level hingga Level 100!<br><br><strong>CATATAN:</strong> Permainan ini masih trial alias masih dalam fase uji coba, maaf jika ada bug dan mohon laporkan ke developer jika ada bug.</p>
-        <button id="startBtn" onclick="startGame()">MULAI PERMAINAN</button>
+        <div class="uranus-bg"></div>
+        <div class="uranus-ring"></div>
+        
+        <h1 class="welcome-badge" id="titleText">WELCOME</h1>
+        <p class="story-text" id="descText">
+            Kamu terjebak di sektor alien akibat pesawat kehilangan kendali dan keluar jauh dari misi, coba bertahan hidup! Setiap naik level, damage lasermu naik 5% dan kekuatan alien bertambah 3%. Hadapi Bos UFO di setiap kelipatan level hingga Level 100!<br><br>
+            <strong>CATATAN:</strong> Permainan ini masih trial alias masih dalam fase uji coba, maaf jika ada bug dan mohon laporkan ke developer jika ada bug.
+        </p>
+        <button class="start-btn" id="startBtn" onclick="startGame()">MULAI PERMAINAN</button>
         <div class="controls-hint">
-            Kontrol: Tombol Panah/WASD ATAU Kursor Mouse | Spasi/Klik untuk Tembak<br>
-            <i>Saran: Perkecil zoom browser (80-90%) agar layar game terlihat lebih leluasa!</i>
+            Gunakan tombol panah di layar / Keyboard (WASD/Panah + Spasi)<br>
+            <i>Saran: Perkecil zoom browser (80-90%) agar tampilan leluasa!</i>
         </div>
     </div>
 </div>
@@ -121,7 +235,6 @@ let currentLaserDamage = 10;
 let baseAlienHealth = 25;
 
 let keys = {};
-let mouse = { x: 0, y: 0, active: false };
 let player = {};
 let lasers = [];
 let aliens = [];
@@ -131,30 +244,39 @@ let aliensSpawnedInWave = 0;
 let aliensToSpawnInWave = 5;
 let spawnTimer = 0;
 
-// Event Listeners
+// Event Listeners Keyboard
 window.addEventListener('keydown', e => keys[e.code] = true);
 window.addEventListener('keyup', e => keys[e.code] = false);
 
-canvas.addEventListener('mousemove', e => {
-    let rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-    mouse.active = true;
-});
+// Event Listeners Tombol Layar (Touch & Click)
+function bindBtn(id, code) {
+    const btn = document.getElementById(id);
+    const start = (e) => { e.preventDefault(); keys[code] = true; };
+    const end = (e) => { e.preventDefault(); keys[code] = false; };
+    btn.addEventListener('mousedown', start);
+    btn.addEventListener('mouseup', end);
+    btn.addEventListener('touchstart', start);
+    btn.addEventListener('touchend', end);
+}
+bindBtn('btn-up', 'ArrowUp');
+bindBtn('btn-down', 'ArrowDown');
+bindBtn('btn-left', 'ArrowLeft');
+bindBtn('btn-right', 'ArrowRight');
 
-canvas.addEventListener('click', () => {
-    shootLaser();
-});
+const fireBtn = document.getElementById('fire-btn');
+const triggerFire = (e) => { e.preventDefault(); shootLaser(); };
+fireBtn.addEventListener('mousedown', triggerFire);
+fireBtn.addEventListener('touchstart', triggerFire);
 
 function initPlayer() {
     player = {
         x: 60,
-        y: canvas.height / 2 - 15,
-        width: 45,
-        height: 25,
-        speed: 6,
-        hp: 100,
-        maxHp: 100,
+        y: canvas.height / 2 - 18,
+        width: 50,
+        height: 32,
+        speed: 6.5,
+        hp: 200,      // Darah Pesawat Diubah ke 200 HP
+        maxHp: 200,
         lastShoot: 0
     };
 }
@@ -202,13 +324,11 @@ function updateUI() {
 }
 
 function checkLevelProgression() {
-    // Cek apakah saat ini waktunya Boss Level (Kelipatan 10, max 100)
     if (level % 10 === 0 && !boss && aliens.length === 0) {
         spawnBoss();
         return;
     }
 
-    // Jika sedang melawan bos dan bos sudah mati
     if (boss && boss.hp <= 0) {
         boss = null;
         score += 200;
@@ -224,7 +344,6 @@ function checkLevelProgression() {
         return;
     }
 
-    // Jika bukan level bos, atur gelombang biasa (3 gelombang per level)
     if (!boss && aliens.length === 0 && aliensSpawnedInWave >= aliensToSpawnInWave) {
         if (currentWave < 3) {
             currentWave++;
@@ -246,24 +365,22 @@ function checkLevelProgression() {
 }
 
 function applyLevelScaling() {
-    // Laser damage naik 5% tiap level (kompon)
     currentLaserDamage = baseLaserDamage * Math.pow(1.05, level - 1);
     createParticles(player.x, player.y, '#00f3ff', 25);
     updateUI();
 }
 
 function spawnAlien() {
-    if (level % 10 === 0 && aliensSpawnedInWave === 0) return; // Tahan jika waktunya bos
+    if (level % 10 === 0 && aliensSpawnedInWave === 0) return;
     if (aliensSpawnedInWave >= aliensToSpawnInWave) return;
 
-    // Kekuatan alien bertambah 3% per level
     let alienHp = baseAlienHealth * Math.pow(1.03, level - 1);
     
     aliens.push({
         x: canvas.width + 40,
-        y: Math.random() * (canvas.height - 60) + 20,
-        width: 40,
-        height: 25,
+        y: Math.random() * (canvas.height - 70) + 20,
+        width: 42,
+        height: 28,
         speed: 2 + Math.random() * 1.5 + (level * 0.05),
         hp: alienHp,
         maxHp: alienHp
@@ -272,20 +389,18 @@ function spawnAlien() {
 }
 
 function spawnBoss() {
-    // Kekuatan bos meningkat seiring mendekati level 100
     let bossMultiplier = 1 + (level / 10);
     let bossHp = baseAlienHealth * 15 * Math.pow(1.05, level - 1) * bossMultiplier;
     
     boss = {
-        x: canvas.width - 120,
+        x: canvas.width - 130,
         y: canvas.height / 2 - 50,
-        width: 90,
-        height: 80,
-        speed: 1.2 + (level * 0.01), // Gerakan lambat menguntungkan pemain
+        width: 95,
+        height: 85,
+        speed: 1.2 + (level * 0.01),
         direction: 1,
         hp: bossHp,
         maxHp: bossHp,
-        // Damage bos = 2x lipat dari damage laser pemain saat itu
         damage: currentLaserDamage * 2
     };
 }
@@ -305,40 +420,30 @@ function createParticles(x, y, color, count = 8) {
 
 function shootLaser() {
     let now = Date.now();
-    if (now - player.lastShoot > 180) {
+    // Attack Speed Normal/Cepat (Cooldown 120ms)
+    if (now - player.lastShoot > 120) {
         lasers.push({
-            x: player.x + player.width,
+            x: player.x + player.width - 5,
             y: player.y + player.height / 2 - 2,
-            width: 16,
+            width: 18,
             height: 4,
-            speed: 12
+            speed: 13
         });
         player.lastShoot = now;
     }
 }
 
 function update() {
-    // Kontrol Keyboard (Panah / WASD)
-    let movedByKeys = false;
-    if ((keys['ArrowUp'] || keys['KeyW']) && player.y > 0) { player.y -= player.speed; movedByKeys = true; mouse.active = false; }
-    if ((keys['ArrowDown'] || keys['KeyS']) && player.y < canvas.height - player.height) { player.y += player.speed; movedByKeys = true; mouse.active = false; }
-    if ((keys['ArrowLeft'] || keys['KeyA']) && player.x > 0) { player.x -= player.speed; movedByKeys = true; mouse.active = false; }
-    if ((keys['ArrowRight'] || keys['KeyD']) && player.x < canvas.width - player.width) { player.x += player.speed; movedByKeys = true; mouse.active = false; }
+    // Pergerakan Pesawat
+    if ((keys['ArrowUp'] || keys['KeyW']) && player.y > 0) player.y -= player.speed;
+    if ((keys['ArrowDown'] || keys['KeyS']) && player.y < canvas.height - player.height) player.y += player.speed;
+    if ((keys['ArrowLeft'] || keys['KeyA']) && player.x > 0) player.x -= player.speed;
+    if ((keys['ArrowRight'] || keys['KeyD']) && player.x < canvas.width - player.width) player.x += player.speed;
 
-    // Kontrol Mouse / Kursor
-    if (mouse.active && !movedByKeys) {
-        let targetX = mouse.x - player.width / 2;
-        let targetY = mouse.y - player.height / 2;
-        player.x += (targetX - player.x) * 0.15;
-        player.y += (targetY - player.y) * 0.15;
-    }
-
-    // Tembak otomatis pakai Spasi
     if (keys['Space']) {
         shootLaser();
     }
 
-    // Spawn Alien berkala
     if (!boss && level % 10 !== 0) {
         spawnTimer++;
         if (spawnTimer > Math.max(25, 70 - (level * 0.5))) {
@@ -352,31 +457,25 @@ function update() {
     // Update Lasers
     for (let i = lasers.length - 1; i >= 0; i--) {
         lasers[i].x += lasers[i].speed;
-        if (lasers[i].x > canvas.width) {
-            lasers.splice(i, 1);
-        }
+        if (lasers[i].x > canvas.width) lasers.splice(i, 1);
     }
 
-    // Update Boss Movement & Collisions
+    // Update Boss
     if (boss) {
         boss.y += boss.speed * boss.direction;
-        if (boss.y <= 10 || boss.y >= canvas.height - boss.height - 10) {
-            boss.direction *= -1;
-        }
+        if (boss.y <= 10 || boss.y >= canvas.height - boss.height - 10) boss.direction *= -1;
 
-        // Tabrakan Pesawat dengan Boss
         if (player.x < boss.x + boss.width &&
             player.x + player.width > boss.x &&
             player.y < boss.y + boss.height &&
             player.y + player.height > boss.y) {
             
-            player.hp -= boss.damage * 0.1; // Damage berkala saat bersentuhan
+            player.hp -= boss.damage * 0.08;
             createParticles(player.x, player.y, '#ff0055', 4);
             updateUI();
             if (player.hp <= 0) gameOver(false);
         }
 
-        // Hit Boss dengan Laser
         for (let j = lasers.length - 1; j >= 0; j--) {
             let l = lasers[j];
             if (l.x < boss.x + boss.width &&
@@ -387,21 +486,17 @@ function update() {
                 boss.hp -= currentLaserDamage;
                 createParticles(l.x, l.y, '#00ff66', 5);
                 lasers.splice(j, 1);
-
-                if (boss.hp <= 0) {
-                    createParticles(boss.x + boss.width/2, boss.y + boss.height/2, '#ff8800', 30);
-                }
+                if (boss.hp <= 0) createParticles(boss.x + boss.width/2, boss.y + boss.height/2, '#ff8800', 30);
                 break;
             }
         }
     }
 
-    // Update Aliens & Collisions
+    // Update Aliens
     for (let i = aliens.length - 1; i >= 0; i--) {
         let a = aliens[i];
         a.x -= a.speed;
 
-        // Tabrakan Alien dengan Pesawat
         if (player.x < a.x + a.width &&
             player.x + player.width > a.x &&
             player.y < a.y + a.height &&
@@ -411,12 +506,10 @@ function update() {
             createParticles(a.x, a.y, '#ff0055', 12);
             aliens.splice(i, 1);
             updateUI();
-            
             if (player.hp <= 0) gameOver(false);
             continue;
         }
 
-        // Hit Alien dengan Laser
         for (let j = lasers.length - 1; j >= 0; j--) {
             let l = lasers[j];
             if (l.x < a.x + a.width &&
@@ -438,9 +531,7 @@ function update() {
             }
         }
 
-        if (a && a.x + a.width < 0) {
-            aliens.splice(i, 1);
-        }
+        if (a && a.x + a.width < 0) aliens.splice(i, 1);
     }
 
     // Update Particles
@@ -456,47 +547,62 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Background Bintang
-    ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
-    for (let i = 0; i < 25; i++) {
+    // Background Bintang Bergerak
+    ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+    for (let i = 0; i < 30; i++) {
         let x = (Math.sin(i * 88 + Date.now() * 0.0008) + 1) * canvas.width / 2;
         let y = (Math.cos(i * 44 + Date.now() * 0.0008) + 1) * canvas.height / 2;
         ctx.fillRect(x, y, 2, 2);
     }
 
-    // Draw Player (Pesawat Antariksa)
+    // Draw Pesawat Antariksa Keren & Detil
+    ctx.save();
+    // Badan Utam Pesawat
     ctx.fillStyle = '#00f3ff';
     ctx.beginPath();
-    ctx.moveTo(player.x, player.y);
+    ctx.moveTo(player.x, player.y + player.height / 2);
+    ctx.lineTo(player.x + player.width - 10, player.y + 2);
     ctx.lineTo(player.x + player.width, player.y + player.height / 2);
-    ctx.lineTo(player.x, player.y + player.height);
-    ctx.lineTo(player.x + 8, player.y + player.height / 2);
+    ctx.lineTo(player.x + player.width - 10, player.y + player.height - 2);
     ctx.closePath();
     ctx.fill();
+
+    // Sayap & Kokpit Glow
+    ctx.fillStyle = '#ff00ff';
+    ctx.fillRect(player.x + 8, player.y - 4, 12, player.height + 8);
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(player.x + player.width - 16, player.y + player.height / 2, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Api Pendorong Belakang
+    ctx.fillStyle = '#ffaa00';
+    ctx.beginPath();
+    ctx.moveTo(player.x, player.y + 8);
+    ctx.lineTo(player.x - 12 - Math.random() * 6, player.y + player.height / 2);
+    ctx.lineTo(player.x, player.y + player.height - 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
 
     // Draw Lasers
     ctx.fillStyle = '#ff0055';
     ctx.shadowBlur = 10;
     ctx.shadowColor = '#ff0055';
-    lasers.forEach(l => {
-        ctx.fillRect(l.x, l.y, l.width, l.height);
-    });
+    lasers.forEach(l => ctx.fillRect(l.x, l.y, l.width, l.height));
     ctx.shadowBlur = 0;
 
-    // Draw Regular Aliens (Bentuk UFO)
+    // Draw Aliens UFO
     aliens.forEach(a => {
         ctx.fillStyle = '#b000ff';
-        // Piringan UFO
         ctx.beginPath();
         ctx.ellipse(a.x + a.width/2, a.y + a.height/2, a.width/2, a.height/3, 0, 0, Math.PI * 2);
         ctx.fill();
-        // Kubah UFO
         ctx.fillStyle = '#00ffff';
         ctx.beginPath();
         ctx.arc(a.x + a.width/2, a.y + a.height/3, a.width/4, Math.PI, 0, false);
         ctx.fill();
 
-        // HP Bar Alien
         let hpPct = Math.max(0, a.hp / a.maxHp);
         ctx.fillStyle = 'red';
         ctx.fillRect(a.x, a.y - 8, a.width, 4);
@@ -504,7 +610,7 @@ function draw() {
         ctx.fillRect(a.x, a.y - 8, a.width * hpPct, 4);
     });
 
-    // Draw Boss UFO (Jika Ada)
+    // Draw Boss UFO
     if (boss) {
         ctx.fillStyle = '#ff2200';
         ctx.beginPath();
@@ -515,7 +621,6 @@ function draw() {
         ctx.arc(boss.x + boss.width/2, boss.y + boss.height/3, boss.width/3, Math.PI, 0, false);
         ctx.fill();
 
-        // Boss HP Bar Besar di Atas Boss
         let bossHpPct = Math.max(0, boss.hp / boss.maxHp);
         ctx.fillStyle = 'red';
         ctx.fillRect(boss.x, boss.y - 14, boss.width, 8);
