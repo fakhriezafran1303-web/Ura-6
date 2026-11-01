@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terjebak di Luar Angkasa - Beta Version</title>
+    <title>Terjebak di Luar Angkasa - Ultimate Edition</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -18,15 +18,76 @@
             overflow: hidden;
             user-select: none;
         }
+
+        /* Blackhole Besar di Pojok Kiri Atas Web */
+        #page-blackhole {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #000 30%, #00f3ff 65%, #ff00ff 100%);
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.7), inset 0 0 30px #000;
+            animation: spin-bh 6s linear infinite;
+            z-index: 50;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #page-blackhole::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: rotate(-20deg);
+        }
+        @keyframes spin-bh { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Label Developer di Pojok Kanan Atas */
+        #dev-watermark {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            color: rgba(0, 243, 255, 0.6);
+            letter-spacing: 1.5px;
+            z-index: 50;
+            pointer-events: none;
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+        }
+
         #game-container {
             position: relative;
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.4);
+            box-shadow: 0 0 45px rgba(0, 243, 255, 0.4);
             border: 2px solid #00f3ff;
             border-radius: 12px;
             overflow: hidden;
             background: #000;
-            max-width: 100%; /* Responsif untuk layar kecil */
+            max-width: 100%;
         }
+
+        /* Styling Fullscreen / Layar Penuh Berbaring */
+        #game-container.fullscreen-mode {
+            width: 100vw !important;
+            height: 100vh !important;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+        }
+        #game-container.fullscreen-mode canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
         canvas {
             background: radial-gradient(circle at center, #0a0a25 0%, #010105 100%);
             display: block;
@@ -45,7 +106,41 @@
             text-shadow: 0 0 8px #000;
             pointer-events: none;
             z-index: 5;
-            padding-left: 140px; /* Ruang untuk opsi Coba Lagi / Keluar */
+            padding-left: 140px;
+        }
+
+        .energy-bar-container {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00f3ff;
+            border-radius: 7px;
+            overflow: hidden;
+            z-index: 6;
+            pointer-events: none;
+        }
+        #energy-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00f3ff, #ff00ff);
+            transition: width 0.1s linear;
+        }
+        .energy-label {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: bold;
+            color: #00f3ff;
+            letter-spacing: 1px;
+            z-index: 6;
+            pointer-events: none;
+            text-shadow: 0 0 5px #000;
         }
 
         #top-options {
@@ -82,39 +177,38 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 30px;
+            padding: 20px;
             z-index: 10;
         }
 
-        /* Uranus & Jupiter + Bulan Dekorasi */
-        .uranus-bg {
+        .planet-bg {
             position: absolute;
-            width: 180px;
-            height: 180px;
+            width: 170px;
+            height: 170px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #73d5e5, #4b9fe1 60%, #17375e 90%);
-            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.8), 0 0 50px rgba(115, 213, 229, 0.3);
+            background: radial-gradient(circle at 30% 30%, #e67e22, #d35400 60%, #78281f 90%);
+            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.8), 0 0 50px rgba(230, 126, 34, 0.3);
             z-index: -2;
-            opacity: 0.9;
+            opacity: 0.85;
         }
-        .uranus-ring {
+        .saturn-ring {
             position: absolute;
-            width: 270px;
+            width: 280px;
             height: 40px;
-            border: 5px solid rgba(175, 238, 238, 0.45);
+            border: 6px solid rgba(241, 196, 15, 0.5);
             border-radius: 50%;
             transform: rotate(-25deg);
             z-index: -2;
         }
 
-        .jupiter-orbit-decor {
+        .solar-orbit {
             position: absolute;
             width: 320px;
             height: 320px;
-            border: 1px dashed rgba(255, 165, 0, 0.2);
+            border: 1px dashed rgba(0, 243, 255, 0.15);
             border-radius: 50%;
             z-index: -3;
-            animation: spin 30s linear infinite;
+            animation: spin 35s linear infinite;
         }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
@@ -126,10 +220,10 @@
             z-index: -1;
             animation: orbit linear infinite;
         }
-        #io { width: 12px; height: 12px; animation-duration: 9s; background: #ffaa00; }
-        #europa { width: 10px; height: 10px; animation-duration: 14s; background: #ffdead; }
-        #ganymede { width: 16px; height: 16px; animation-duration: 20s; background: #c0c0c0; }
-        #callisto { width: 14px; height: 14px; animation-duration: 25s; background: #808080; }
+        #phobos { width: 10px; height: 10px; animation-duration: 8s; background: #c0392b; }
+        #europa { width: 12px; height: 12px; animation-duration: 14s; background: #f39c12; }
+        #titan { width: 15px; height: 15px; animation-duration: 20s; background: #e67e22; }
+        #venus-moon { width: 9px; height: 9px; animation-duration: 11s; background: #bdc3c7; }
 
         @keyframes orbit {
             from { transform: rotate(0deg) translateX(170px) rotate(0deg); }
@@ -141,10 +235,10 @@
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 900;
             letter-spacing: 2px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             animation: shine 4s linear infinite;
             text-shadow: 0 0 20px rgba(0,243,255,0.4);
             white-space: pre-line;
@@ -154,24 +248,24 @@
         .settings-box {
             background: rgba(0, 0, 0, 0.65);
             border: 1px solid rgba(0, 243, 255, 0.3);
-            padding: 12px 20px;
+            padding: 10px 18px;
             border-radius: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             width: 85%;
             max-width: 450px;
         }
         .setting-group {
-            margin: 8px 0;
+            margin: 6px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
+            font-size: 12px;
         }
         select, input[type="range"] {
             background: #0b0b26;
             color: #00f3ff;
             border: 1px solid #00f3ff;
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 5px;
             font-weight: bold;
             outline: none;
@@ -179,27 +273,27 @@
         }
 
         p.story-text {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             max-width: 85%;
-            line-height: 1.5;
+            line-height: 1.4;
             color: #dcdcdc;
             font-size: 11px;
             background: rgba(0,0,0,0.7);
-            padding: 10px;
+            padding: 8px;
             border-radius: 8px;
             border: 1px solid rgba(0,243,255,0.2);
         }
 
         .blackhole-btn {
             position: relative;
-            width: 75px;
-            height: 75px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: radial-gradient(circle, #000000 40%, #00f3ff 70%, #ff00ff 100%);
             border: none;
             color: white;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             box-shadow: 0 0 25px rgba(0, 243, 255, 0.8), inset 0 0 15px #000;
             display: flex;
@@ -218,11 +312,46 @@
             100% { box-shadow: 0 0 15px rgba(0, 243, 255, 0.5), inset 0 0 10px #000; }
         }
 
+        .mode-btn-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 85%;
+            max-width: 400px;
+            margin-bottom: 15px;
+        }
+        .mode-btn {
+            background: rgba(0, 243, 255, 0.15);
+            border: 2px solid #00f3ff;
+            color: #00f3ff;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .mode-btn:hover {
+            background: rgba(0, 243, 255, 0.4);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0,243,255,0.6);
+        }
+        .mode-btn.crazy {
+            border-color: #ff0055;
+            color: #ff0055;
+            background: rgba(255, 0, 85, 0.15);
+        }
+        .mode-btn.crazy:hover {
+            background: rgba(255, 0, 85, 0.4);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255,0,85,0.6);
+        }
+
         .controls-hint {
-            margin-top: 8px;
-            font-size: 11px;
+            margin-top: 6px;
+            font-size: 10px;
             color: #ffcc00;
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
         #dpad-container {
@@ -247,7 +376,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            touch-action: manipulation; /* Mencegah zoom layar saat ditekan ganda */
+            touch-action: manipulation;
         }
         .dbtn:active { background: rgba(0, 243, 255, 0.5); }
 
@@ -283,6 +412,12 @@
 </head>
 <body>
 
+    <!-- Blackhole Besar di Pojok Kiri Atas Web -->
+    <div id="page-blackhole" title="Cosmic Anomaly"></div>
+
+    <!-- Tulisan Kecil Developer di Pojok Kanan Atas -->
+    <div id="dev-watermark">Developer; only 1</div>
+
 <div id="game-container">
     <canvas id="gameCanvas" width="850" height="500"></canvas>
     <div id="flash-overlay"></div>
@@ -300,17 +435,23 @@
         <div>HP Pesawat: <span id="hpDisplay" style="color: #00ff66;">200</span></div>
     </div>
 
+    <!-- Panel Energi Super Laser -->
+    <div class="energy-label">ENERGI SUPER LASER</div>
+    <div class="energy-bar-container">
+        <div id="energy-fill"></div>
+    </div>
+
     <div id="dpad-container">
         <button class="dbtn" id="btn-up">▲</button>
         <button class="dbtn" id="btn-down">▼</button>
     </div>
     <button id="fire-btn">LASER</button>
 
-    <!-- STEP 1: Peringatan Sensitivitas Kilatan Cahaya -->
+    <!-- STEP 1: Warning -->
     <div id="warningOverlay" class="overlay-screen">
-        <div class="uranus-bg"></div>
-        <div class="uranus-ring"></div>
-        <div class="jupiter-orbit-decor"></div>
+        <div class="planet-bg"></div>
+        <div class="saturn-ring"></div>
+        <div class="solar-orbit"></div>
         <h1 class="title-glow">PERINGATAN / WARNING</h1>
         <p class="story-text">
             Game ini mengandung efek kilatan cahaya (flashbang) dan ledakan visual intens saat mengalahkan Bos. Pemain yang sensitif terhadap kilatan cahaya disarankan mematikan efek Flash di menu pengaturan.<br><br>
@@ -319,11 +460,11 @@
         <button class="blackhole-btn" onclick="proceedToConfig()">MENGERTI</button>
     </div>
 
-    <!-- STEP 2: Pengaturan Awal (Termasuk Max Level) -->
+    <!-- STEP 2: Config -->
     <div id="configOverlay" class="overlay-screen" style="display: none;">
-        <div class="uranus-bg"></div>
-        <div class="uranus-ring"></div>
-        <div class="jupiter-orbit-decor"></div>
+        <div class="planet-bg"></div>
+        <div class="saturn-ring"></div>
+        <div class="solar-orbit"></div>
         <h1 class="title-glow">PENGATURAN / CONFIG</h1>
         <div class="settings-box">
             <div class="setting-group">
@@ -334,10 +475,10 @@
                 </select>
             </div>
             <div class="setting-group">
-                <label id="maxLevelLabel">Level Maksimal:</label>
-                <select id="maxLevelSelect">
-                    <option value="100">100 (Final Boss Lv.100)</option>
-                    <option value="50">50 (Final Boss Lv.50)</option>
+                <label id="fullscreenLabel">Layar Penuh (Fullscreen):</label>
+                <select id="fullscreenSelect">
+                    <option value="off">OFF (Standar)</option>
+                    <option value="on">ON (Layar Penuh)</option>
                 </select>
             </div>
             <div class="setting-group">
@@ -360,27 +501,44 @@
                 <span id="volVal" style="color:#00f3ff; font-weight:bold;">50%</span>
             </div>
         </div>
-        <button class="blackhole-btn" onclick="proceedToIntro()">LANJUT</button>
+        <button class="blackhole-btn" onclick="proceedToModeSelect()">LANJUT</button>
     </div>
 
-    <!-- STEP 3: Sambutan Utama & Cerita -->
+    <!-- STEP 3: Overlay Pemilihan Mode Kesulitan -->
+    <div id="modeOverlay" class="overlay-screen" style="display: none;">
+        <div class="planet-bg"></div>
+        <div class="saturn-ring"></div>
+        <div class="solar-orbit"></div>
+        <h1 class="title-glow">PILIH MODE KESULITAN</h1>
+        <p class="story-text">
+            Pilih tantangan yang sesuai dengan kemampuanmu sebelum memulai misi bertahan hidup di luar angkasa!
+        </p>
+        <div class="mode-btn-container">
+            <button class="mode-btn" onclick="selectDifficulty(10)">EASY / MUDAH<br><span style="font-size:10px; color:#00ff66;">Max Level 10 (Boss: Lv.10)</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(25)">MEDIUM / SEDANG<br><span style="font-size:10px; color:#00f3ff;">Max Level 25 (Boss: Lv.25)</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(100)">HARD / SULIT<br><span style="font-size:10px; color:#ffcc00;">Max Level 100 (Boss: Lv.100)</span></button>
+            <button class="mode-btn crazy" onclick="selectDifficulty(200)">CRAZY / GILA<br><span style="font-size:10px; color:#ff0055;">Max Level 200 (Ekstrem & Sulit)</span></button>
+        </div>
+    </div>
+
+    <!-- STEP 4: Welcome -->
     <div id="welcomeOverlay" class="overlay-screen" style="display: none;">
-        <div class="uranus-bg"></div>
-        <div class="uranus-ring"></div>
-        <div class="moon" id="io" style="animation-delay: 0s;"></div>
+        <div class="planet-bg"></div>
+        <div class="saturn-ring"></div>
+        <div class="moon" id="phobos" style="animation-delay: 0s;"></div>
         <div class="moon" id="europa" style="animation-delay: -3s;"></div>
-        <div class="moon" id="ganymede" style="animation-delay: -6s;"></div>
-        <div class="moon" id="callisto" style="animation-delay: -9s;"></div>
+        <div class="moon" id="titan" style="animation-delay: -6s;"></div>
+        <div class="moon" id="venus-moon" style="animation-delay: -9s;"></div>
 
         <h1 class="title-glow" id="mainTitle">WELCOME</h1>
         <p class="story-text" id="mainDesc">
-            Kamu terjebak di sektor alien akibat pesawat kehilangan kendali dan keluar jauh dari misi, coba bertahan hidup! Setiap naik level, damage lasermu naik 5% dan kekuatan alien bertambah 3%. Hadapi Bos UFO di setiap kelipatan level hingga Level Maksimal yang kamu pilih!<br><br>
-            <strong>CATATAN:</strong> Permainan ini masih trial alias masih dalam fase uji coba, maaf jika ada bug dan mohon laporkan ke developer jika ada bug.
+            Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal dari mode yang kamu pilih!<br><br>
+            <strong>CATATAN:</strong> Versi optimal tanpa bug.
         </p>
         <button class="blackhole-btn" id="startBtn" onclick="startGame()">MULAI</button>
         <div class="controls-hint" id="mainHint">
             Kontrol: Tombol Panah Atas/Bawah (Naik/Turun) atau Tombol di Layar<br>
-            <i>Saran: Perkecil zoom browser (80-90%) agar tampilan leluasa!</i>
+            <i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>
         </div>
     </div>
 </div>
@@ -394,13 +552,13 @@ let fireMode = 'manual';
 let flashEnabled = true;
 let soundVolume = 0.5;
 let maxLevelSetting = 100;
+let fullscreenEnabled = false;
 
 let audioCtx = null;
 function initAudio() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
-    // Resume context if suspended (policy requirement for browsers)
     if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
     }
@@ -465,7 +623,7 @@ function triggerFlash(duration = 150) {
     flashEl.style.transition = 'opacity 0.05s ease-out';
     flashEl.style.opacity = '1';
     setTimeout(() => {
-        flashEl.style.transition = 'opacity 1s ease-out'; // Fade out smooth
+        flashEl.style.transition = 'opacity 1s ease-out';
         flashEl.style.opacity = '0';
     }, duration);
 }
@@ -480,22 +638,22 @@ function changeLanguage() {
     currentLang = document.getElementById('langSelect').value;
     if(currentLang === 'en') {
         document.getElementById('langLabel').innerText = "Language:";
-        document.getElementById('maxLevelLabel').innerText = "Max Level:";
+        document.getElementById('fullscreenLabel').innerText = "Fullscreen Mode:";
         document.getElementById('fireModeLabel').innerText = "Fire Mode:";
         document.getElementById('flashLabel').innerText = "Flash Effect:";
         document.getElementById('volLabel').innerText = "Sound Volume:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "You are trapped in an alien sector after losing control of your spacecraft far from your mission, try to survive! Each level up increases your laser damage by 5% and alien power by 3%. Face UFO Bosses every 10 levels up to your chosen Max Level!<br><br><strong>NOTE:</strong> This game is in trial/beta version, report any bugs to the developer.";
-        document.getElementById('mainHint').innerHTML = "Controls: Up/Down Arrow Keys or On-Screen Buttons<br><i>Tip: Zoom out browser (80-90%) for best view!</i>";
+        document.getElementById('mainDesc').innerHTML = "You are trapped in an alien sector. Defeat aliens to charge your Super Laser energy! Face UFO Bosses up to your selected Max Level!<br><br><strong>NOTE:</strong> Bug-free optimized version.";
+        document.getElementById('mainHint').innerHTML = "Controls: Up/Down Arrow Keys or On-Screen Buttons<br><i>Tip: Use Fullscreen mode for the best landscape experience!</i>";
     } else {
         document.getElementById('langLabel').innerText = "Bahasa / Language:";
-        document.getElementById('maxLevelLabel').innerText = "Level Maksimal:";
+        document.getElementById('fullscreenLabel').innerText = "Layar Penuh (Fullscreen):";
         document.getElementById('fireModeLabel').innerText = "Mode Tembak:";
         document.getElementById('flashLabel').innerText = "Flash / Kilatan:";
         document.getElementById('volLabel').innerText = "Volume Suara:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "Kamu terjebak di sektor alien akibat pesawat kehilangan kendali dan keluar jauh dari misi, coba bertahan hidup! Setiap naik level, damage lasermu naik 5% dan kekuatan alien bertambah 3%. Hadapi Bos UFO di setiap kelipatan level hingga Level Maksimal yang kamu pilih!<br><br><strong>CATATAN:</strong> Permainan ini masih trial alias masih dalam fase uji coba, maaf jika ada bug dan mohon laporkan ke developer jika ada bug.";
-        document.getElementById('mainHint').innerHTML = "Kontrol: Tombol Panah Atas/Bawah (Naik/Turun) atau Tombol di Layar<br><i>Saran: Perkecil zoom browser (80-90%) agar tampilan leluasa!</i>";
+        document.getElementById('mainDesc').innerHTML = "Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal dari mode yang kamu pilih!<br><br><strong>CATATAN:</strong> Versi optimal tanpa bug.";
+        document.getElementById('mainHint').innerHTML = "Kontrol: Tombol Panah Atas/Bawah (Naik/Turun) atau Tombol di Layar<br><i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>";
     }
 }
 
@@ -505,34 +663,71 @@ function proceedToConfig() {
     document.getElementById('configOverlay').style.display = 'flex';
 }
 
-function proceedToIntro() {
+function applyFullscreenSetting() {
+    const container = document.getElementById('game-container');
+    if (fullscreenEnabled) {
+        container.classList.add('fullscreen-mode');
+        try {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen();
+            }
+        } catch(e) {}
+    } else {
+        container.classList.remove('fullscreen-mode');
+        try {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        } catch(e) {}
+    }
+}
+
+function proceedToModeSelect() {
     fireMode = document.getElementById('fireModeSelect').value;
-    maxLevelSetting = parseInt(document.getElementById('maxLevelSelect').value);
     flashEnabled = document.getElementById('flashSelect').value === 'on';
+    fullscreenEnabled = document.getElementById('fullscreenSelect').value === 'on';
+    
+    applyFullscreenSetting();
+
     document.getElementById('configOverlay').style.display = 'none';
+    document.getElementById('modeOverlay').style.display = 'flex';
+}
+
+function selectDifficulty(levelMax) {
+    maxLevelSetting = levelMax;
+    document.getElementById('modeOverlay').style.display = 'none';
     document.getElementById('welcomeOverlay').style.display = 'flex';
 }
 
 function restartGame() {
     document.getElementById('warningOverlay').style.display = 'none';
     document.getElementById('configOverlay').style.display = 'none';
+    document.getElementById('modeOverlay').style.display = 'none';
     document.getElementById('welcomeOverlay').style.display = 'none';
     startGame();
 }
 
 function exitGame() {
-    try { window.close(); } catch(e) {}
-    window.location.href = "about:blank"; // Fallback jika window.close diblokir browser
+    // Mengarahkan keluar web ke halaman blank
+    window.location.href = "about:blank";
 }
 
 let gameActive = false;
-let isVictorySequence = false; // Mencegah bug spawn musuh saat layar perayaan
+let isVictorySequence = false;
 let score = 0;
 let level = 1;
 let currentWave = 1;
 let baseLaserDamage = 10;
 let currentLaserDamage = 10;
 let baseAlienHealth = 25;
+
+let energyLevel = 0; 
+let superLaserActive = false;
+let superLaserTimer = 0;
 
 let keys = {};
 let player = {};
@@ -549,7 +744,6 @@ let aliensSpawnedInWave = 0;
 let aliensToSpawnInWave = 5;
 let spawnTimer = 0;
 
-// Setup Bintang
 for(let i=0; i<70; i++) {
     stars.push({
         x: Math.random() * canvas.width,
@@ -559,20 +753,18 @@ for(let i=0; i<70; i++) {
     });
 }
 
-// Setup Dekorasi Bulan Jupiter
-let jupiterMoonsList = ['Io', 'Europa', 'Ganymede', 'Callisto'];
+let solarMoonsList = ['Phobos (Mars)', 'Europa (Jupiter)', 'Titan (Saturnus)', 'Venus-Moon'];
 for(let i=0; i<4; i++) {
     backgroundMoons.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        radius: 12 + Math.random() * 8,
+        radius: 10 + Math.random() * 8,
         speedX: (Math.random() - 0.5) * 0.4,
         speedY: (Math.random() - 0.5) * 0.4,
-        name: jupiterMoonsList[i]
+        name: solarMoonsList[i]
     });
 }
 
-// Event Keyboard
 window.addEventListener('keydown', e => {
     if(['ArrowUp', 'ArrowDown', 'KeyW', 'KeyS'].includes(e.code)) keys[e.code] = true;
     if(e.code === 'Space') keys['Space'] = true;
@@ -582,17 +774,16 @@ window.addEventListener('keyup', e => {
     if(e.code === 'Space') keys['Space'] = false;
 });
 
-// Event Touch / Mouse Tombol (Anti-Stuck Optimized)
 function bindBtn(id, code) {
     const btn = document.getElementById(id);
     const start = (e) => { e.preventDefault(); keys[code] = true; };
     const end = (e) => { e.preventDefault(); keys[code] = false; };
     btn.addEventListener('mousedown', start);
     btn.addEventListener('mouseup', end);
-    btn.addEventListener('mouseleave', end); // Mencegah stuck jika kursor geser
+    btn.addEventListener('mouseleave', end);
     btn.addEventListener('touchstart', start, {passive: false});
     btn.addEventListener('touchend', end);
-    btn.addEventListener('touchcancel', end); // Mencegah stuck jika layar terswipe
+    btn.addEventListener('touchcancel', end);
 }
 bindBtn('btn-up', 'ArrowUp');
 bindBtn('btn-down', 'ArrowDown');
@@ -626,6 +817,9 @@ function startGame() {
     currentWave = 1;
     isVictorySequence = false;
     currentLaserDamage = baseLaserDamage;
+    energyLevel = 0;
+    superLaserActive = false;
+    superLaserTimer = 0;
     lasers = [];
     aliens = [];
     deadUfos = [];
@@ -644,14 +838,14 @@ function startGame() {
 }
 
 function triggerVictorySequence() {
-    isVictorySequence = true; // Mengunci spawn alien dan bos baru
+    if (isVictorySequence) return;
+    isVictorySequence = true;
     playSound('mega-explode');
     triggerFlash(3000);
     boss = null;
-    aliens = []; // Sapu bersih alien tersisa
-    score += 1000;
+    aliens = [];
+    score += 1000 * (maxLevelSetting / 10);
 
-    // Puing UFO melayang bebas
     for(let i=0; i<6; i++) {
         deadUfos.push({
             x: Math.random() * (canvas.width - 150) + 100,
@@ -662,7 +856,6 @@ function triggerVictorySequence() {
         });
     }
 
-    // Perayaan Bulan Menari
     let moonData = [
         {name: 'Titania', emoji: '🎉'},
         {name: 'Oberon', emoji: '🏆'},
@@ -682,7 +875,6 @@ function triggerVictorySequence() {
         });
     });
 
-    // Kembang Api Bertubi-tubi
     for(let i=0; i<8; i++) {
         setTimeout(() => {
             playSound('firework');
@@ -696,23 +888,23 @@ function triggerVictorySequence() {
         }, i * 400 + 1000);
     }
 
-    // Tampilkan Layar Teks Kemenangan
     setTimeout(() => {
         document.getElementById('mainTitle').innerText = "Congratulations\nYOU ARE THE WINNER";
         document.getElementById('mainTitle').style.color = "#00ff66";
         document.getElementById('mainDesc').innerText = currentLang === 'en' ? `Incredible! Final Boss defeated at Level ${maxLevelSetting}! Score: ${score}` : `Luar Biasa! Kamu berhasil menaklukkan Sektor Alien hingga Level ${maxLevelSetting}! Skor Akhir: ${score}`;
         document.getElementById('welcomeOverlay').style.display = 'flex';
-        document.getElementById('startBtn').style.display = 'none'; // Sembunyikan tombol mulai (Ganti pakai 'Coba Lagi' di kiri atas)
+        document.getElementById('startBtn').style.display = 'none';
     }, 3000);
 }
 
 function gameOver() {
+    if (!gameActive) return;
     gameActive = false;
     document.getElementById('welcomeOverlay').style.display = 'flex';
     document.getElementById('mainTitle').innerText = "GAME OVER";
     document.getElementById('mainTitle').style.color = "#00f3ff";
     document.getElementById('mainDesc').innerText = currentLang === 'en' ? `Ship destroyed at Level ${level}. Score: ${score}` : `Pesawat hancur di Level ${level} (Gelombang ${currentWave}). Skor: ${score}.`;
-    document.getElementById('startBtn').style.display = 'block'; // Tampilkan tombol untuk ngulang normal
+    document.getElementById('startBtn').style.display = 'block';
 }
 
 function updateUI() {
@@ -721,10 +913,11 @@ function updateUI() {
     document.getElementById('waveDisplay').innerText = `${currentWave}/3`;
     document.getElementById('damageDisplay').innerText = currentLaserDamage.toFixed(1);
     document.getElementById('hpDisplay').innerText = Math.max(0, Math.ceil(player.hp));
+    document.getElementById('energy-fill').style.width = energyLevel + '%';
 }
 
 function checkLevelProgression() {
-    if (isVictorySequence) return; // Mencegah bug boss repsawn
+    if (isVictorySequence) return;
 
     if (level % 10 === 0 && !boss && aliens.length === 0) {
         spawnBoss();
@@ -776,13 +969,16 @@ function applyLevelScaling() {
 function spawnAlien() {
     if (level % 10 === 0 && aliensSpawnedInWave === 0) return;
     if (aliensSpawnedInWave >= aliensToSpawnInWave) return;
-    let alienHp = baseAlienHealth * Math.pow(1.03, level - 1);
+    
+    let crazyMultiplier = (maxLevelSetting === 200) ? (1 + (level / 40)) : 1.03;
+    let alienHp = baseAlienHealth * Math.pow(crazyMultiplier, level - 1);
+    
     aliens.push({
         x: canvas.width + 40,
         y: Math.random() * (canvas.height - 70) + 20,
         width: 42,
         height: 28,
-        speed: 2 + Math.random() * 1.5 + (level * 0.05),
+        speed: (2 + Math.random() * 1.5 + (level * 0.05)) * ((maxLevelSetting === 200) ? 1.3 : 1.0),
         hp: alienHp,
         maxHp: alienHp
     });
@@ -791,13 +987,15 @@ function spawnAlien() {
 
 function spawnBoss() {
     let bossMultiplier = 1 + (level / 10);
+    if (maxLevelSetting === 200) bossMultiplier *= 2.5;
+    
     let bossHp = baseAlienHealth * 15 * Math.pow(1.05, level - 1) * bossMultiplier;
     boss = {
         x: canvas.width - 130,
         y: canvas.height / 2 - 50,
         width: 95,
         height: 85,
-        speed: 1.2 + (level * 0.01),
+        speed: (1.2 + (level * 0.01)) * ((maxLevelSetting === 200) ? 1.4 : 1.0),
         direction: 1,
         hp: bossHp,
         maxHp: bossHp,
@@ -820,27 +1018,57 @@ function createParticles(x, y, color, count = 8) {
 
 function shootLaser() {
     let now = Date.now();
-    if (now - player.lastShoot > 180) {
+    let cooldown = superLaserActive ? 60 : 180;
+    if (now - player.lastShoot > cooldown) {
+        let width = superLaserActive ? 54 : 18;  
+        let height = superLaserActive ? 12 : 4;
+        let speed = superLaserActive ? 18 : 13;
+
         lasers.push({
             x: player.x + player.width - 5,
-            y: player.y + player.height / 2 - 2,
-            width: 18,
-            height: 4,
-            speed: 13
+            y: player.y + player.height / 2 - (height/2),
+            width: width,
+            height: height,
+            speed: speed,
+            isSuper: superLaserActive
         });
         playSound('laser');
         player.lastShoot = now;
+        
+        if (!superLaserActive && energyLevel < 100) {
+            energyLevel = Math.min(100, energyLevel + 1.5);
+            updateUI();
+        }
     }
 }
 
 function update() {
+    if (!gameActive) return;
+
     if ((keys['ArrowUp'] || keys['KeyW']) && player.y > 0) player.y -= player.speed;
     if ((keys['ArrowDown'] || keys['KeyS']) && player.y < canvas.height - player.height) player.y += player.speed;
 
-    // Laser bisa ditembak terus (meski menang, buat seru-seruan)
     if (fireMode === 'auto' || keys['Space']) shootLaser();
 
-    // Hentikan logika musuh saat perayaan kemenangan
+    if (!superLaserActive && energyLevel < 100) {
+        energyLevel = Math.min(100, energyLevel + 0.08);
+        updateUI();
+    }
+
+    if (energyLevel >= 100 && !superLaserActive) {
+        superLaserActive = true;
+        superLaserTimer = 480; 
+    }
+
+    if (superLaserActive) {
+        superLaserTimer--;
+        if (superLaserTimer <= 0) {
+            superLaserActive = false;
+            energyLevel = 0;
+        }
+        updateUI();
+    }
+
     if (!isVictorySequence) {
         if (!boss && level % 10 !== 0) {
             spawnTimer++;
@@ -852,13 +1080,11 @@ function update() {
         checkLevelProgression();
     }
 
-    // Update Lasers
     for (let i = lasers.length - 1; i >= 0; i--) {
         lasers[i].x += lasers[i].speed;
         if (lasers[i].x > canvas.width) lasers.splice(i, 1);
     }
 
-    // Update Boss (Kalau belum mati)
     if (boss && !isVictorySequence) {
         boss.y += boss.speed * boss.direction;
         if (boss.y <= 10 || boss.y >= canvas.height - boss.height - 10) boss.direction *= -1;
@@ -883,7 +1109,6 @@ function update() {
         }
     }
 
-    // Update Aliens (Kalau belum menang)
     if (!isVictorySequence) {
         for (let i = aliens.length - 1; i >= 0; i--) {
             let a = aliens[i];
@@ -904,14 +1129,38 @@ function update() {
                 let l = lasers[j];
                 if (l.x < a.x + a.width && l.x + l.width > a.x &&
                     l.y < a.y + a.height && l.y + l.height > a.y) {
-                    a.hp -= currentLaserDamage;
+                    
+                    let dmg = superLaserActive ? currentLaserDamage * 3 : currentLaserDamage;
+                    a.hp -= dmg;
                     createParticles(l.x, l.y, '#ffff00', 4);
-                    lasers.splice(j, 1);
+                    if (!l.isSuper) lasers.splice(j, 1);
+
                     if (a.hp <= 0) {
-                        createParticles(a.x, a.y, '#ff5500', 10);
+                        let deadX = a.x;
+                        let deadY = a.y;
+                        createParticles(deadX, deadY, '#ff5500', 10);
                         playSound('explode-small');
                         aliens.splice(i, 1);
                         score += 15;
+
+                        let splashDamage = a.maxHp * 0.3;
+                        aliens.forEach(otherAlien => {
+                            let dist = Math.hypot(otherAlien.x - deadX, otherAlien.y - deadY);
+                            if (dist < 100) { 
+                                otherAlien.hp -= splashDamage;
+                                createParticles(otherAlien.x, otherAlien.y, '#ff0055', 3);
+                            }
+                        });
+
+                        aliens = aliens.filter(o => {
+                            if (o.hp <= 0) {
+                                score += 10;
+                                createParticles(o.x, o.y, '#ff8800', 8);
+                                return false;
+                            }
+                            return true;
+                        });
+
                         updateUI();
                     }
                     break;
@@ -921,7 +1170,6 @@ function update() {
         }
     }
 
-    // Animasi Latar & Kemenangan
     backgroundMoons.forEach(bm => {
         bm.x += bm.speedX;
         bm.y += bm.speedY;
@@ -956,7 +1204,6 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Render Bintang
     ctx.fillStyle = "#ffffff";
     stars.forEach(s => {
         s.x -= s.speed;
@@ -966,14 +1213,13 @@ function draw() {
     });
     ctx.globalAlpha = 1.0;
 
-    // Render Bulan Jupiter (Backdrop)
     backgroundMoons.forEach(bm => {
         ctx.save();
-        ctx.fillStyle = '#ffcc99';
+        ctx.fillStyle = '#f1c40f';
         ctx.beginPath();
         ctx.arc(bm.x, bm.y, bm.radius, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#ffa500';
+        ctx.strokeStyle = '#d35400';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
@@ -984,7 +1230,6 @@ function draw() {
         ctx.restore();
     });
 
-    // Puing UFO Kemenangan
     deadUfos.forEach(u => {
         ctx.save();
         ctx.translate(u.x, u.y);
@@ -1000,7 +1245,6 @@ function draw() {
         ctx.restore();
     });
 
-    // Kembang Api Kemenangan
     fireworks.forEach(f => {
         ctx.save();
         ctx.strokeStyle = f.color;
@@ -1011,7 +1255,6 @@ function draw() {
         ctx.restore();
     });
 
-    // Bulan Uranus Menari Kemenangan
     dancingMoons.forEach(m => {
         ctx.save();
         ctx.translate(m.x, m.y);
@@ -1040,9 +1283,8 @@ function draw() {
         ctx.restore();
     });
 
-    // Render Pesawat
     ctx.save();
-    ctx.fillStyle = '#00f3ff';
+    ctx.fillStyle = superLaserActive ? '#ffcc00' : '#00f3ff';
     ctx.beginPath();
     ctx.moveTo(player.x, player.y + player.height / 2);
     ctx.lineTo(player.x + player.width - 10, player.y + 2);
@@ -1051,7 +1293,7 @@ function draw() {
     ctx.closePath();
     ctx.fill();
 
-    ctx.fillStyle = '#ff00ff';
+    ctx.fillStyle = superLaserActive ? '#ff0000' : '#ff00ff';
     ctx.fillRect(player.x + 8, player.y - 4, 12, player.height + 8);
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
@@ -1067,14 +1309,14 @@ function draw() {
     ctx.fill();
     ctx.restore();
 
-    // Lasers
-    ctx.fillStyle = '#ff0055';
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = '#ff0055';
-    lasers.forEach(l => ctx.fillRect(l.x, l.y, l.width, l.height));
+    lasers.forEach(l => {
+        ctx.fillStyle = l.isSuper ? '#00ff66' : '#ff0055';
+        ctx.shadowBlur = l.isSuper ? 15 : 10;
+        ctx.shadowColor = l.isSuper ? '#00ff66' : '#ff0055';
+        ctx.fillRect(l.x, l.y, l.width, l.height);
+    });
     ctx.shadowBlur = 0;
 
-    // Aliens
     aliens.forEach(a => {
         ctx.fillStyle = '#b000ff';
         ctx.beginPath();
@@ -1092,7 +1334,6 @@ function draw() {
         ctx.fillRect(a.x, a.y - 8, a.width * hpPct, 4);
     });
 
-    // Boss
     if (boss) {
         ctx.fillStyle = '#ff2200';
         ctx.beginPath();
@@ -1112,7 +1353,6 @@ function draw() {
         ctx.strokeRect(boss.x, boss.y - 14, boss.width, 8);
     }
 
-    // Particles
     particles.forEach(p => {
         ctx.fillStyle = p.color;
         ctx.beginPath();
