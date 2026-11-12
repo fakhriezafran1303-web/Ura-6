@@ -141,6 +141,37 @@
             pointer-events: none;
         }
 
+        /* PANEL SHIELD (di samping panel super laser) */
+        .shield-label {
+            position: absolute;
+            bottom: 22px;
+            left: calc(50% + 140px);
+            font-size: 11px;
+            font-weight: bold;
+            color: #5dade2;
+            letter-spacing: 1.5px;
+            z-index: 6;
+            pointer-events: none;
+        }
+        .shield-bar-container {
+            position: absolute;
+            bottom: 8px;
+            left: calc(50% + 140px);
+            width: 100px;
+            height: 12px;
+            background: rgba(11, 12, 16, 0.85);
+            border: 1px solid #5dade2;
+            border-radius: 3px;
+            overflow: hidden;
+            z-index: 6;
+            pointer-events: none;
+        }
+        #shield-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #2980b9, #5dade2);
+        }
+
         #top-options {
             position: absolute;
             top: 8px;
@@ -431,6 +462,9 @@
         <div id="energy-fill"></div>
     </div>
 
+    <div class="shield-label">SHIELD</div>
+    <div class="shield-bar-container"><div id="shield-fill"></div></div>
+
     <div id="dpad-container">
         <button class="dbtn" id="btn-up">▲</button>
         <button class="dbtn" id="btn-down">▼</button>
@@ -448,7 +482,7 @@
 
         <h1 class="title-glow" id="mainTitle">WELCOME</h1>
         <p class="story-text" id="mainDesc">
-            Sektor antariksa terkunci. Kalahkan alien (setiap 8 kill mengisi 10% energi laser).<br><br>
+            Sektor antariksa terkunci. Kalahkan alien (setiap 5 kill mengisi 5% energi laser, setiap 15 kill mengaktifkan shield).<br><br>
             <strong>INFO:</strong> Nama-nama badan antariksa dunia melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!
         </p>
         <button class="blackhole-btn" id="startBtn" onclick="proceedToUra()">MULAI</button>
@@ -537,7 +571,8 @@
         <p class="story-text" style="max-width: 440px; text-align: left; font-size: 11px; line-height: 1.5;">
             🚀 <strong>KONTROL:</strong> Gunakan D-Pad (`▲` dan `▼`) di kiri bawah layar untuk menggerakkan pesawat naik/turun.<br>
             🎯 <strong>TEMBAKAN:</strong> Tekan tombol `FIRE` (atau Spasi di keyboard). Jika memilih Mode Auto di pengaturan, tembakan akan keluar otomatis!<br>
-            ⚡ <strong>SUPER LASER:</strong> Setiap 8 alien yang berhasil dihancurkan akan mengisi 10% Energi Super Laser. Saat penuh, laser berubah kuat!<br>
+            ⚡ <strong>SUPER LASER:</strong> Setiap 5 alien yang dihancurkan mengisi 5% Energi Super Laser. Saat penuh, laser berubah kuat!<br>
+            🛡️ <strong>SHIELD:</strong> Setiap 15 alien yang dihancurkan mengaktifkan Shield selama 9,5 detik. Kebal dari semua damage!<br>
             🛸 <strong>BOS & LEVEL:</strong> Bertahanlah melewati setiap gelombang (Wave) dan kalahkan Bos di setiap kelipatan Level 10.
         </p>
         <button class="blackhole-btn" onclick="proceedToModeSelect()">MENGERTI</button>
@@ -685,7 +720,7 @@ function changeLanguage() {
         document.getElementById('flashLabel').innerText = "Flash Effect:";
         document.getElementById('volLabel').innerText = "Sound Volume:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "Space sector locked. Defeat aliens to charge your Super Laser energy!<br><br><strong>INFO:</strong> Floating space agencies get sucked into the top-left blackhole and emerge from the bottom-center.";
+        document.getElementById('mainDesc').innerHTML = "Space sector locked. Every 5 kills charge 5% Super Laser energy, every 15 kills activate your Shield!<br><br><strong>INFO:</strong> Floating space agencies get sucked into the top-left blackhole and emerge from the bottom-center.";
         document.getElementById('mainHint').innerHTML = "Controls: Extra Large D-Pad Buttons on Screen<br><i>Tip: Use Fullscreen mode for the best landscape experience!</i>";
     } else {
         document.getElementById('langLabel').innerText = "Bahasa / Language:";
@@ -694,7 +729,7 @@ function changeLanguage() {
         document.getElementById('flashLabel').innerText = "Flash / Kilatan:";
         document.getElementById('volLabel').innerText = "Volume Suara:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "Sektor antariksa terkunci. Kalahkan alien (setiap 8 kill mengisi 10% energi laser).<br><br><strong>INFO:</strong> Nama-nama badan antariksa melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!";
+        document.getElementById('mainDesc').innerHTML = "Sektor antariksa terkunci. Kalahkan alien (setiap 5 kill mengisi 5% energi laser, setiap 15 kill mengaktifkan shield).<br><br><strong>INFO:</strong> Nama-nama badan antariksa melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!";
         document.getElementById('mainHint').innerHTML = "Kontrol: Tombol D-Pad Ekstra Besar di Layar<br><i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>";
     }
 }
@@ -781,7 +816,6 @@ function restartGame() {
     document.getElementById('welcomeOverlay').style.display = 'flex';
     document.getElementById('startBtn').style.display = 'block';
     document.getElementById('mainTitle').style.color = "#66fcf1";
-    // FIX: teks ikut bahasa pilihan
     changeLanguage();
 }
 
@@ -801,6 +835,10 @@ let baseAlienHealth = 25;
 let energyLevel = 0; 
 let superLaserActive = false;
 let superLaserTimer = 0;
+
+let shieldKillCount = 0;
+let shieldActive = false;
+let shieldEndTime = 0;
 
 let keys = {};
 let player = {};
@@ -885,6 +923,8 @@ function initPlayer() {
 }
 
 function startGame() {
+    shieldKillCount = 0;
+    shieldActive = false;
     initAudio();
     score = 0;
     level = 1;
@@ -988,6 +1028,8 @@ function updateUI() {
     document.getElementById('damageDisplay').innerText = currentLaserDamage.toFixed(1);
     document.getElementById('hpDisplay').innerText = Math.max(0, Math.ceil(player.hp));
     document.getElementById('energy-fill').style.width = energyLevel + '%';
+    let shieldPct = shieldActive ? Math.max(0, (shieldEndTime - Date.now()) / 9500 * 100) : (shieldKillCount / 15 * 100);
+    document.getElementById('shield-fill').style.width = shieldPct + '%';
 }
 
 function checkLevelProgression() {
@@ -1024,7 +1066,6 @@ function checkLevelProgression() {
             if (currentWave === 2) aliensToSpawnInWave = 18;
             if (currentWave === 3) aliensToSpawnInWave = 26;
         } else {
-            // FIX: level terakhir non-kelipatan 10 (Medium = 25) langsung menang
             if (level >= maxLevelSetting) { triggerVictorySequence(); return; }
             level++;
             currentWave = 1;
@@ -1112,15 +1153,23 @@ function shootLaser() {
     }
 }
 
-// FIX: logika energi dijadikan 1 fungsi (sebelumnya ditulis dobel)
+// Setiap 5 kill = +5% energi laser, setiap 15 kill = shield 9,5 detik
 function addKillEnergy() {
     alienKillCount++;
-    if (!superLaserActive && energyLevel < 100 && alienKillCount >= 8) {
+    if (!superLaserActive && energyLevel < 100 && alienKillCount >= 5) {
         alienKillCount = 0;
-        energyLevel = Math.min(100, energyLevel + 10);
+        energyLevel = Math.min(100, energyLevel + 5);
         if (energyLevel >= 100) {
             superLaserActive = true;
             superLaserTimer = 480;
+        }
+    }
+    if (!shieldActive) {
+        shieldKillCount++;
+        if (shieldKillCount >= 15) {
+            shieldKillCount = 0;
+            shieldActive = true;
+            shieldEndTime = Date.now() + 9500;
         }
     }
 }
@@ -1139,6 +1188,11 @@ function update() {
             superLaserActive = false;
             energyLevel = 0;
         }
+        updateUI();
+    }
+
+    if (shieldActive) {
+        if (Date.now() >= shieldEndTime) shieldActive = false;
         updateUI();
     }
 
@@ -1164,7 +1218,7 @@ function update() {
 
         if (player.x < boss.x + boss.width && player.x + player.width > boss.x &&
             player.y < boss.y + boss.height && player.y + player.height > boss.y) {
-            player.hp -= boss.damage * 0.08;
+            if (!shieldActive) player.hp -= boss.damage * 0.08;
             createParticles(player.x, player.y, '#e74c3c', 4);
             updateUI();
             if (player.hp <= 0) gameOver();
@@ -1172,7 +1226,6 @@ function update() {
 
         for (let j = lasers.length - 1; j >= 0; j--) {
             let l = lasers[j];
-            // FIX: pakai l.height (tinggi laser)
             if (l.x < boss.x + boss.width && l.x + l.width > boss.x &&
                 l.y < boss.y + boss.height && l.y + l.height > boss.y) {
                 boss.hp -= currentLaserDamage;
@@ -1186,10 +1239,9 @@ function update() {
     if (!isVictorySequence) {
         for (let i = aliens.length - 1; i >= 0; i--) {
             let a = aliens[i];
-            // FIX: anti crash
             if (!a) continue;
 
-            // FIX: alien mati karena splash dibersihkan di sini (tanpa reassign array)
+            // Alien mati karena splash dibersihkan di sini
             if (a.hp <= 0) {
                 createParticles(a.x, a.y, '#f39c12', 8);
                 aliens.splice(i, 1);
@@ -1203,7 +1255,7 @@ function update() {
 
             if (player.x < a.x + a.width && player.x + player.width > a.x &&
                 player.y < a.y + a.height && player.y + player.height > a.y) {
-                player.hp -= 20;
+                if (!shieldActive) player.hp -= 20;
                 createParticles(a.x, a.y, '#e74c3c', 12);
                 playSound('explode-small');
                 aliens.splice(i, 1);
@@ -1216,7 +1268,6 @@ function update() {
 
             for (let j = lasers.length - 1; j >= 0; j--) {
                 let l = lasers[j];
-                // FIX: pakai l.height (tinggi laser)
                 if (l.x < a.x + a.width && l.x + l.width > a.x &&
                     l.y < a.y + a.height && l.y + l.height > a.y) {
                     
@@ -1304,7 +1355,6 @@ function update() {
         m.y = m.baseY + Math.sin(m.angle) * 15;
     });
 
-    // FIX: loop mundur
     for (let i = fireworks.length - 1; i >= 0; i--) {
         fireworks[i].life--;
         if (fireworks[i].life <= 0) fireworks.splice(i, 1);
@@ -1434,6 +1484,21 @@ function draw() {
     ctx.closePath();
     ctx.fill();
     ctx.restore();
+
+    // BUBBLE SHIELD
+    if (shieldActive) {
+        let left = shieldEndTime - Date.now();
+        ctx.save();
+        ctx.strokeStyle = '#5dade2';
+        ctx.lineWidth = 3;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#5dade2';
+        ctx.globalAlpha = left < 2000 ? (Math.floor(Date.now() / 150) % 2 ? 0.3 : 0.9) : 0.9;
+        ctx.beginPath();
+        ctx.arc(player.x + player.width / 2, player.y + player.height / 2, 36, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+    }
 
     lasers.forEach(l => {
         ctx.fillStyle = l.isSuper ? '#2ecc71' : '#e74c3c';
