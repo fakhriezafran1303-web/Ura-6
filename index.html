@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ura-6 - Terjebak di Luar Angkasa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #020208;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            font-family: 'Courier Prime', Courier, monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -19,7 +20,6 @@
             user-select: none;
         }
 
-        /* Blackhole Besar di Pojok Kiri Atas Web */
         #page-blackhole {
             position: fixed;
             top: 20px;
@@ -27,51 +27,49 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: radial-gradient(circle, #000 30%, #00f3ff 65%, #ff00ff 100%);
-            box-shadow: 0 0 50px rgba(0, 243, 255, 0.7), inset 0 0 30px #000;
-            animation: spin-bh 6s linear infinite;
+            background: radial-gradient(circle, #000 30%, #1f2833 65%, #66fcf1 100%);
+            box-shadow: 0 0 35px rgba(102, 252, 241, 0.5), inset 0 0 30px #000;
+            animation: spin-bh 8s linear infinite;
             z-index: 50;
             pointer-events: none;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px dashed rgba(102, 252, 241, 0.4);
         }
         #page-blackhole::before {
             content: '';
             position: absolute;
             width: 150px;
             height: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(197, 198, 199, 0.3);
             border-radius: 50%;
             transform: rotate(-20deg);
         }
         @keyframes spin-bh { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* Label Developer di Pojok Kanan Atas */
         #dev-watermark {
             position: fixed;
             top: 15px;
             right: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            color: rgba(0, 243, 255, 0.6);
-            letter-spacing: 1.5px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: rgba(102, 252, 241, 0.7);
             z-index: 50;
             pointer-events: none;
-            text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+            font-family: 'Special Elite', cursive;
         }
 
         #game-container {
             position: relative;
-            box-shadow: 0 0 45px rgba(0, 243, 255, 0.4);
-            border: 2px solid #00f3ff;
-            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(31, 40, 51, 0.8);
+            border: 2px solid #1f2833;
+            border-radius: 6px;
             overflow: hidden;
-            background: #000;
+            background: #0b0c10;
             max-width: 100%;
         }
 
-        /* Styling Fullscreen / Layar Penuh Berbaring */
         #game-container.fullscreen-mode {
             width: 100vw !important;
             height: 100vh !important;
@@ -89,7 +87,7 @@
         }
 
         canvas {
-            background: radial-gradient(circle at center, #0a0a25 0%, #010105 100%);
+            background: radial-gradient(circle at center, #1f2833 0%, #0b0c10 100%);
             display: block;
             max-width: 100%;
             height: auto;
@@ -103,7 +101,8 @@
             justify-content: space-between;
             font-size: 14px;
             font-weight: bold;
-            text-shadow: 0 0 8px #000;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px #000;
             pointer-events: none;
             z-index: 5;
             padding-left: 140px;
@@ -115,10 +114,10 @@
             left: 50%;
             transform: translateX(-50%);
             width: 250px;
-            height: 14px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid #00f3ff;
-            border-radius: 7px;
+            height: 12px;
+            background: rgba(11, 12, 16, 0.85);
+            border: 1px solid #66fcf1;
+            border-radius: 3px;
             overflow: hidden;
             z-index: 6;
             pointer-events: none;
@@ -126,21 +125,20 @@
         #energy-fill {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, #00f3ff, #ff00ff);
+            background: linear-gradient(90deg, #45a29e, #66fcf1);
             transition: width 0.1s linear;
         }
         .energy-label {
             position: absolute;
-            bottom: 24px;
+            bottom: 22px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: bold;
-            color: #00f3ff;
-            letter-spacing: 1px;
+            color: #66fcf1;
+            letter-spacing: 1.5px;
             z-index: 6;
             pointer-events: none;
-            text-shadow: 0 0 5px #000;
         }
 
         #top-options {
@@ -152,26 +150,25 @@
             z-index: 20;
         }
         .opt-btn {
-            background: rgba(0, 243, 255, 0.2);
-            border: 1px solid #00f3ff;
-            color: #00f3ff;
+            background: rgba(31, 40, 51, 0.8);
+            border: 1px solid #45a29e;
+            color: #66fcf1;
             padding: 4px 10px;
-            font-size: 11px;
-            font-weight: bold;
-            border-radius: 5px;
+            font-size: 13px;
+            border-radius: 3px;
             cursor: pointer;
             transition: 0.2s;
+            font-family: 'Courier Prime', Courier, monospace;
         }
         .opt-btn:hover {
-            background: rgba(0, 243, 255, 0.6);
-            color: #fff;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            background: #45a29e;
+            color: #0b0c10;
         }
 
         .overlay-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(5, 5, 20, 0.96), rgba(1, 1, 5, 0.99));
+            background: radial-gradient(circle at center, rgba(11, 12, 16, 0.96), rgba(5, 6, 8, 0.99));
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -183,219 +180,216 @@
 
         .planet-bg {
             position: absolute;
-            width: 170px;
-            height: 170px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #e67e22, #d35400 60%, #78281f 90%);
-            box-shadow: inset -20px -20px 40px rgba(0,0,0,0.8), 0 0 50px rgba(230, 126, 34, 0.3);
+            background: radial-gradient(circle at 30% 30%, #c5c6c7, #45a29e 60%, #1f2833 90%);
+            box-shadow: inset -15px -15px 30px rgba(0,0,0,0.9), 0 0 30px rgba(69, 162, 158, 0.2);
             z-index: -2;
-            opacity: 0.85;
+            opacity: 0.75;
         }
         .saturn-ring {
             position: absolute;
-            width: 280px;
-            height: 40px;
-            border: 6px solid rgba(241, 196, 15, 0.5);
+            width: 260px;
+            height: 35px;
+            border: 4px solid rgba(197, 198, 199, 0.3);
             border-radius: 50%;
-            transform: rotate(-25deg);
+            transform: rotate(-20deg);
             z-index: -2;
         }
 
         .solar-orbit {
             position: absolute;
-            width: 320px;
-            height: 320px;
-            border: 1px dashed rgba(0, 243, 255, 0.15);
+            width: 300px;
+            height: 300px;
+            border: 1px dotted rgba(102, 252, 241, 0.2);
             border-radius: 50%;
             z-index: -3;
-            animation: spin 35s linear infinite;
+            animation: spin 40s linear infinite;
         }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .moon {
             position: absolute;
             border-radius: 50%;
-            background: #b0c4de;
-            box-shadow: 0 0 8px rgba(255,255,255,0.6);
+            background: #c5c6c7;
+            box-shadow: 0 0 6px rgba(255,255,255,0.4);
             z-index: -1;
             animation: orbit linear infinite;
         }
-        #phobos { width: 10px; height: 10px; animation-duration: 8s; background: #c0392b; }
-        #europa { width: 12px; height: 12px; animation-duration: 14s; background: #f39c12; }
-        #titan { width: 15px; height: 15px; animation-duration: 20s; background: #e67e22; }
-        #venus-moon { width: 9px; height: 9px; animation-duration: 11s; background: #bdc3c7; }
+        #phobos { width: 9px; height: 9px; animation-duration: 9s; background: #c0392b; }
+        #europa { width: 11px; height: 11px; animation-duration: 15s; background: #e67e22; }
+        #titan { width: 13px; height: 13px; animation-duration: 22s; background: #d35400; }
+        #venus-moon { width: 8px; height: 8px; animation-duration: 12s; background: #95a5a6; }
 
         @keyframes orbit {
-            from { transform: rotate(0deg) translateX(170px) rotate(0deg); }
-            to { transform: rotate(360deg) translateX(170px) rotate(-360deg); }
+            from { transform: rotate(0deg) translateX(150px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
         }
 
         .title-glow {
-            background: linear-gradient(90deg, #00f3ff, #ff00ff, #00f3ff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            animation: shine 4s linear infinite;
-            text-shadow: 0 0 20px rgba(0,243,255,0.4);
+            font-family: 'Special Elite', cursive;
+            color: #66fcf1;
+            font-size: 26px;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px rgba(102, 252, 241, 0.5);
             white-space: pre-line;
+            line-height: 1.3;
         }
-        @keyframes shine { to { background-position: 200% center; } }
 
         .settings-box {
-            background: rgba(0, 0, 0, 0.65);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            padding: 10px 18px;
-            border-radius: 10px;
+            background: rgba(31, 40, 51, 0.7);
+            border: 1px solid #45a29e;
+            padding: 10px 16px;
+            border-radius: 5px;
             margin-bottom: 12px;
             width: 85%;
-            max-width: 450px;
+            max-width: 420px;
         }
         .setting-group {
             margin: 6px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
+            font-size: 13px;
         }
         select, input[type="range"] {
-            background: #0b0b26;
-            color: #00f3ff;
-            border: 1px solid #00f3ff;
+            background: #0b0c10;
+            color: #66fcf1;
+            border: 1px solid #45a29e;
             padding: 3px 6px;
-            border-radius: 5px;
+            border-radius: 3px;
             font-weight: bold;
             outline: none;
             cursor: pointer;
+            font-family: 'Courier Prime', Courier, monospace;
+            font-size: 12px;
         }
 
         p.story-text {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             max-width: 85%;
             line-height: 1.4;
-            color: #dcdcdc;
-            font-size: 11px;
-            background: rgba(0,0,0,0.7);
+            color: #c5c6c7;
+            font-size: 12px;
+            background: rgba(31, 40, 51, 0.5);
             padding: 8px;
-            border-radius: 8px;
-            border: 1px solid rgba(0,243,255,0.2);
+            border-radius: 4px;
+            border: 1px solid #45a29e;
         }
 
         .blackhole-btn {
             position: relative;
-            width: 70px;
-            height: 70px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
-            background: radial-gradient(circle, #000000 40%, #00f3ff 70%, #ff00ff 100%);
+            background: radial-gradient(circle, #0b0c10 40%, #45a29e 70%, #66fcf1 100%);
             border: none;
-            color: white;
+            color: #0b0c10;
             font-weight: bold;
             font-size: 11px;
+            font-family: 'Special Elite', cursive;
             cursor: pointer;
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.8), inset 0 0 15px #000;
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.6), inset 0 0 10px #000;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: 0.3s;
-            animation: pulse-bh 2s infinite;
         }
         .blackhole-btn:hover {
-            transform: scale(1.12) rotate(180deg);
-            box-shadow: 0 0 40px #ff00ff, inset 0 0 20px #00f3ff;
-        }
-        @keyframes pulse-bh {
-            0% { box-shadow: 0 0 15px rgba(0, 243, 255, 0.5), inset 0 0 10px #000; }
-            50% { box-shadow: 0 0 30px rgba(255, 0, 255, 0.8), inset 0 0 15px #000; }
-            100% { box-shadow: 0 0 15px rgba(0, 243, 255, 0.5), inset 0 0 10px #000; }
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #66fcf1, inset 0 0 15px #45a29e;
         }
 
         .mode-btn-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
             width: 85%;
-            max-width: 400px;
-            margin-bottom: 15px;
+            max-width: 380px;
+            margin-bottom: 12px;
         }
         .mode-btn {
-            background: rgba(0, 243, 255, 0.15);
-            border: 2px solid #00f3ff;
-            color: #00f3ff;
-            padding: 10px;
-            border-radius: 8px;
+            background: rgba(31, 40, 51, 0.6);
+            border: 1px solid #45a29e;
+            color: #66fcf1;
+            padding: 8px;
+            border-radius: 4px;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 12px;
+            font-family: 'Courier Prime', Courier, monospace;
             cursor: pointer;
             transition: 0.2s;
         }
         .mode-btn:hover {
-            background: rgba(0, 243, 255, 0.4);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(0,243,255,0.6);
+            background: #45a29e;
+            color: #0b0c10;
         }
         .mode-btn.crazy {
-            border-color: #ff0055;
-            color: #ff0055;
-            background: rgba(255, 0, 85, 0.15);
+            border-color: #c0392b;
+            color: #e74c3c;
+            background: rgba(192, 57, 43, 0.2);
         }
         .mode-btn.crazy:hover {
-            background: rgba(255, 0, 85, 0.4);
+            background: #c0392b;
             color: #fff;
-            box-shadow: 0 0 15px rgba(255,0,85,0.6);
         }
 
         .controls-hint {
             margin-top: 6px;
-            font-size: 10px;
-            color: #ffcc00;
+            font-size: 11px;
+            color: #f39c12;
             line-height: 1.3;
         }
 
         #dpad-container {
             position: absolute;
-            bottom: 15px;
-            left: 15px;
+            bottom: 25px;
+            left: 25px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 14px;
             z-index: 6;
         }
         .dbtn {
-            width: 55px;
-            height: 48px;
-            background: rgba(0, 243, 255, 0.15);
-            border: 1px solid rgba(0, 243, 255, 0.5);
-            color: #00f3ff;
-            border-radius: 8px;
+            width: 100px;
+            height: 85px;
+            background: rgba(31, 40, 51, 0.85);
+            border: 2px solid #66fcf1;
+            color: #66fcf1;
+            border-radius: 16px;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             touch-action: manipulation;
+            box-shadow: 0 0 18px rgba(102, 252, 241, 0.5);
         }
-        .dbtn:active { background: rgba(0, 243, 255, 0.5); }
+        .dbtn:active { background: #66fcf1; color: #0b0c10; }
 
         #fire-btn {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 75px;
-            height: 75px;
+            bottom: 25px;
+            right: 25px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background: radial-gradient(circle, #ff0055 0%, #990033 100%);
-            border: 2px solid #ff6699;
+            background: radial-gradient(circle, #c0392b 0%, #78281f 100%);
+            border: 3px solid #e74c3c;
             color: white;
             font-weight: bold;
-            font-size: 13px;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+            font-size: 20px;
+            font-family: 'Special Elite', cursive;
+            box-shadow: 0 0 25px rgba(192, 57, 43, 0.8);
             cursor: pointer;
             z-index: 6;
             touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         #fire-btn:active { transform: scale(0.92); }
 
@@ -412,30 +406,26 @@
 </head>
 <body>
 
-    <!-- Blackhole Besar di Pojok Kiri Atas Web -->
     <div id="page-blackhole" title="Cosmic Anomaly"></div>
-
-    <!-- Tulisan Kecil Developer di Pojok Kanan Atas -->
-    <div id="dev-watermark">Developer; only 1</div>
+    <div id="dev-watermark">DEV: ONLY 1</div>
 
 <div id="game-container">
     <canvas id="gameCanvas" width="850" height="500"></canvas>
     <div id="flash-overlay"></div>
     
     <div id="top-options">
-        <button class="opt-btn" onclick="restartGame()">Coba Lagi</button>
-        <button class="opt-btn" onclick="exitGame()">Keluar</button>
+        <button class="opt-btn" onclick="restartGame()">RESTART</button>
+        <button class="opt-btn" onclick="exitGame()">KELUAR</button>
     </div>
 
     <div class="ui-panel">
-        <div>Skor: <span id="scoreDisplay" style="color: #00f3ff;">0</span></div>
-        <div>Level: <span id="levelDisplay" style="color: #ff00ff;">1</span></div>
-        <div>Gelombang: <span id="waveDisplay" style="color: #ff8800;">1/3</span></div>
-        <div>Laser Dmg: <span id="damageDisplay" style="color: #ffcc00;">10</span></div>
-        <div>HP Pesawat: <span id="hpDisplay" style="color: #00ff66;">200</span></div>
+        <div>SKOR: <span id="scoreDisplay" style="color: #66fcf1;">0</span></div>
+        <div>LEVEL: <span id="levelDisplay" style="color: #45a29e;">1</span></div>
+        <div>WAVE: <span id="waveDisplay" style="color: #f39c12;">1/3</span></div>
+        <div>DMG: <span id="damageDisplay" style="color: #c5c6c7;">10</span></div>
+        <div>HP: <span id="hpDisplay" style="color: #2ecc71;">200</span></div>
     </div>
 
-    <!-- Panel Energi Super Laser -->
     <div class="energy-label">ENERGI SUPER LASER</div>
     <div class="energy-bar-container">
         <div id="energy-fill"></div>
@@ -445,9 +435,9 @@
         <button class="dbtn" id="btn-up">▲</button>
         <button class="dbtn" id="btn-down">▼</button>
     </div>
-    <button id="fire-btn">LASER</button>
+    <button id="fire-btn">FIRE</button>
 
-    <!-- STEP 1: WELCOME OVERLAY (Pertama Kali Muncul) -->
+    <!-- STEP 1: WELCOME -->
     <div id="welcomeOverlay" class="overlay-screen">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
@@ -458,48 +448,48 @@
 
         <h1 class="title-glow" id="mainTitle">WELCOME</h1>
         <p class="story-text" id="mainDesc">
-            Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal.<br><br>
-            <strong>CATATAN:</strong> Versi optimal tanpa bug.
+            Sektor antariksa terkunci. Kalahkan alien (setiap 8 kill mengisi 10% energi laser).<br><br>
+            <strong>INFO:</strong> Nama-nama badan antariksa dunia melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!
         </p>
         <button class="blackhole-btn" id="startBtn" onclick="proceedToUra()">MULAI</button>
         <div class="controls-hint" id="mainHint">
-            Kontrol: Tombol Panah Atas/Bawah (Naik/Turun) atau Tombol di Layar<br>
+            Kontrol: Tombol D-Pad Super Besar di Layar<br>
             <i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>
         </div>
     </div>
 
-    <!-- STEP 2: URA-6 OVERLAY (Kedua) -->
+    <!-- STEP 2: URA-6 -->
     <div id="uraOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
-        <h1 class="title-glow">Ura-6</h1>
+        <h1 class="title-glow">URA-6</h1>
         <p class="story-text">
-            Tanggal Rilis / Pembaruan: <strong>1 Nov 2026</strong><br><br>
-            Selamat datang di portal game antariksa resmi. Silakan lanjut untuk meninjau peringatan dan pengaturan sistem.
+            Arsip Pembaruan: <strong>1 NOV 2026</strong><br><br>
+            Selamat datang di protokol penerbangan klasik. Lanjutkan untuk meninjau peringatan dan pengaturan sistem.
         </p>
         <button class="blackhole-btn" onclick="proceedToWarning()">LANJUT</button>
     </div>
 
-    <!-- STEP 3: WARNING OVERLAY (Ketiga) -->
+    <!-- STEP 3: WARNING -->
     <div id="warningOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
-        <h1 class="title-glow">PERINGATAN / WARNING</h1>
+        <h1 class="title-glow">PERINGATAN</h1>
         <p class="story-text">
-            Game ini mengandung efek kilatan cahaya (flashbang) dan ledakan visual intens saat mengalahkan Bos. Pemain yang sensitif terhadap kilatan cahaya disarankan mematikan efek Flash di menu pengaturan.<br><br>
-            <i>This game contains flashing lights and intense explosion effects. Player discretion is advised.</i>
+            Simulasi ini memuat efek kilatan cahaya tinggi saat eliminasi Bos. Matikan efek Flash di menu konfigurasi jika sensitif terhadap cahaya.<br><br>
+            <i>Operational safety protocols engaged.</i>
         </p>
         <button class="blackhole-btn" onclick="proceedToConfig()">MENGERTI</button>
     </div>
 
-    <!-- STEP 4: CONFIG OVERLAY (Keempat) -->
+    <!-- STEP 4: CONFIG -->
     <div id="configOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
-        <h1 class="title-glow">PENGATURAN / CONFIG</h1>
+        <h1 class="title-glow">PENGATURAN</h1>
         <div class="settings-box">
             <div class="setting-group">
                 <label id="langLabel">Bahasa / Language:</label>
@@ -517,7 +507,7 @@
             </div>
             <div class="setting-group">
                 <label id="fireModeLabel">Mode Tembak:</label>
-                <select id="fireModeSelect">
+                <select id="fireModeSelect" onchange="handleFireModeChange()">
                     <option value="manual">Manual (Tombol/Spasi)</option>
                     <option value="auto">Otomatis / Auto</option>
                 </select>
@@ -532,30 +522,44 @@
             <div class="setting-group">
                 <label id="volLabel">Volume Suara:</label>
                 <input type="range" id="volRange" min="0" max="100" value="50" oninput="updateVolumeLabel()">
-                <span id="volVal" style="color:#00f3ff; font-weight:bold;">50%</span>
+                <span id="volVal" style="color:#66fcf1; font-weight:bold;">50%</span>
             </div>
         </div>
-        <button class="blackhole-btn" onclick="proceedToModeSelect()">LANJUT</button>
+        <button class="blackhole-btn" onclick="proceedToGuide()">LANJUT</button>
     </div>
 
-    <!-- STEP 5: DIFFICULTY OVERLAY (Kelima - Menggunakan Sistem 2x Pencet) -->
+    <!-- STEP 5: PANDUAN -->
+    <div id="guideOverlay" class="overlay-screen" style="display: none;">
+        <div class="planet-bg"></div>
+        <div class="saturn-ring"></div>
+        <div class="solar-orbit"></div>
+        <h1 class="title-glow">PANDUAN BERMAIN</h1>
+        <p class="story-text" style="max-width: 440px; text-align: left; font-size: 11px; line-height: 1.5;">
+            🚀 <strong>KONTROL:</strong> Gunakan D-Pad (`▲` dan `▼`) di kiri bawah layar untuk menggerakkan pesawat naik/turun.<br>
+            🎯 <strong>TEMBAKAN:</strong> Tekan tombol `FIRE` (atau Spasi di keyboard). Jika memilih Mode Auto di pengaturan, tembakan akan keluar otomatis!<br>
+            ⚡ <strong>SUPER LASER:</strong> Setiap 8 alien yang berhasil dihancurkan akan mengisi 10% Energi Super Laser. Saat penuh, laser berubah kuat!<br>
+            🛸 <strong>BOS & LEVEL:</strong> Bertahanlah melewati setiap gelombang (Wave) dan kalahkan Bos di setiap kelipatan Level 10.
+        </p>
+        <button class="blackhole-btn" onclick="proceedToModeSelect()">MENGERTI</button>
+    </div>
+
+    <!-- STEP 6: KESULITAN -->
     <div id="modeOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
-        <h1 class="title-glow">PILIH TINGKAT KESULITAN</h1>
+        <h1 class="title-glow">TINGKAT KESULITAN</h1>
         <p class="story-text" id="diffHintText">
-            Pilih mode tantanganmu! Klik sekali untuk memilih, lalu klik tombol mulai yang muncul untuk konfirmasi.
+            Pilih tingkat tantangan. Klik sekali untuk memilih, lalu tekan tombol "Yakin?" untuk konfirmasi.
         </p>
         <div class="mode-btn-container">
-            <button class="mode-btn" onclick="selectDifficulty(10, this)">EASY / MUDAH<br><span style="font-size:10px; color:#00ff66;">Max Level 10</span></button>
-            <button class="mode-btn" onclick="selectDifficulty(25, this)">MEDIUM / SEDANG<br><span style="font-size:10px; color:#00f3ff;">Max Level 25</span></button>
-            <button class="mode-btn" onclick="selectDifficulty(100, this)">HARD / SULIT<br><span style="font-size:10px; color:#ffcc00;">Max Level 100</span></button>
-            <button class="mode-btn crazy" onclick="selectDifficulty(200, this)">CRAZY / GILA<br><span style="font-size:10px; color:#ff0055;">Max Level 200</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(10, this)">EASY / MUDAH<br><span style="font-size:11px; color:#2ecc71;">Max Level 10</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(25, this)">MEDIUM / SEDANG<br><span style="font-size:11px; color:#66fcf1;">Max Level 25</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(100, this)">HARD / SULIT<br><span style="font-size:11px; color:#f39c12;">Max Level 100</span></button>
+            <button class="mode-btn crazy" onclick="selectDifficulty(200, this)">CRAZY / GILA<br><span style="font-size:11px; color:#e74c3c;">Max Level 200</span></button>
         </div>
-        <!-- Tombol Konfirmasi 2x Pencet -->
         <div id="confirmContainer" style="display: none; margin-top: 10px;">
-            <button class="blackhole-btn" id="confirmBtn" onclick="confirmStartGame()" style="width: 120px; height: 50px; border-radius: 10px; font-size: 13px;">Yakin?</button>
+            <button class="blackhole-btn" id="confirmBtn" onclick="confirmStartGame()" style="width: 100px; height: 45px; border-radius: 4px; font-size: 12px;">Yakin?</button>
         </div>
     </div>
 </div>
@@ -571,6 +575,16 @@ let soundVolume = 0.5;
 let maxLevelSetting = 100;
 let fullscreenEnabled = false;
 let selectedLevelMaxTemp = 100;
+let alienKillCount = 0; 
+
+let spaceAgencies = [
+    { name: "NASA (USA)", x: 250, y: 150, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, color: "rgba(102, 252, 241, 0.5)" },
+    { name: "ESA (Europe)", x: 450, y: 220, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, color: "rgba(69, 162, 158, 0.5)" },
+    { name: "CNSA (China)", x: 650, y: 180, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, color: "rgba(231, 76, 60, 0.5)" },
+    { name: "Roscosmos (Russia)", x: 300, y: 350, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, color: "rgba(197, 198, 199, 0.5)" },
+    { name: "JAXA (Japan)", x: 550, y: 320, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, color: "rgba(243, 156, 18, 0.5)" },
+    { name: "ISRO (India)", x: 400, y: 280, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, color: "rgba(46, 204, 113, 0.5)" }
+];
 
 let audioCtx = null;
 function initAudio() {
@@ -592,42 +606,42 @@ function playSound(type) {
         
         let now = audioCtx.currentTime;
         if (type === 'laser') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(800, now);
-            osc.frequency.exponentialRampToValueAtTime(200, now + 0.1);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(700, now);
+            osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
             gain.gain.setValueAtTime(0.1 * soundVolume, now);
             gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
             osc.start(now);
             osc.stop(now + 0.1);
         } else if (type === 'explode-small') {
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(150, now);
-            osc.frequency.exponentialRampToValueAtTime(40, now + 0.2);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(120, now);
+            osc.frequency.exponentialRampToValueAtTime(30, now + 0.2);
             gain.gain.setValueAtTime(0.2 * soundVolume, now);
             gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
             osc.start(now);
             osc.stop(now + 0.2);
         } else if (type === 'flashbang') {
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(900, now);
-            osc.frequency.exponentialRampToValueAtTime(100, now + 0.4);
-            gain.gain.setValueAtTime(0.4 * soundVolume, now);
+            osc.frequency.setValueAtTime(800, now);
+            osc.frequency.exponentialRampToValueAtTime(80, now + 0.4);
+            gain.gain.setValueAtTime(0.3 * soundVolume, now);
             gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
             osc.start(now);
             osc.stop(now + 0.4);
         } else if (type === 'mega-explode') {
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(80, now);
-            osc.frequency.linearRampToValueAtTime(20, now + 3.0);
-            gain.gain.setValueAtTime(0.8 * soundVolume, now);
+            osc.frequency.setValueAtTime(70, now);
+            osc.frequency.linearRampToValueAtTime(15, now + 3.0);
+            gain.gain.setValueAtTime(0.7 * soundVolume, now);
             gain.gain.linearRampToValueAtTime(0.01, now + 3.0);
             osc.start(now);
             osc.stop(now + 3.0);
         } else if (type === 'firework') {
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(300 + Math.random() * 400, now);
-            osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
-            gain.gain.setValueAtTime(0.3 * soundVolume, now);
+            osc.frequency.setValueAtTime(250 + Math.random() * 300, now);
+            osc.frequency.exponentialRampToValueAtTime(40, now + 0.3);
+            gain.gain.setValueAtTime(0.25 * soundVolume, now);
             gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
             osc.start(now);
             osc.stop(now + 0.3);
@@ -652,6 +666,16 @@ function updateVolumeLabel() {
     document.getElementById('volVal').innerText = val + '%';
 }
 
+function handleFireModeChange() {
+    fireMode = document.getElementById('fireModeSelect').value;
+    const fireBtn = document.getElementById('fire-btn');
+    if (fireMode === 'auto') {
+        fireBtn.style.display = 'none';
+    } else {
+        fireBtn.style.display = 'flex';
+    }
+}
+
 function changeLanguage() {
     currentLang = document.getElementById('langSelect').value;
     if(currentLang === 'en') {
@@ -661,8 +685,8 @@ function changeLanguage() {
         document.getElementById('flashLabel').innerText = "Flash Effect:";
         document.getElementById('volLabel').innerText = "Sound Volume:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "You are trapped in an alien sector. Defeat aliens to charge your Super Laser energy! Face UFO Bosses up to your selected difficulty level.<br><br><strong>NOTE:</strong> Bug-free optimized version.";
-        document.getElementById('mainHint').innerHTML = "Controls: Up/Down Arrow Keys or On-Screen Buttons<br><i>Tip: Use Fullscreen mode for the best landscape experience!</i>";
+        document.getElementById('mainDesc').innerHTML = "Space sector locked. Defeat aliens to charge your Super Laser energy!<br><br><strong>INFO:</strong> Floating space agencies get sucked into the top-left blackhole and emerge from the bottom-center.";
+        document.getElementById('mainHint').innerHTML = "Controls: Extra Large D-Pad Buttons on Screen<br><i>Tip: Use Fullscreen mode for the best landscape experience!</i>";
     } else {
         document.getElementById('langLabel').innerText = "Bahasa / Language:";
         document.getElementById('fullscreenLabel').innerText = "Layar Penuh (Fullscreen):";
@@ -670,8 +694,8 @@ function changeLanguage() {
         document.getElementById('flashLabel').innerText = "Flash / Kilatan:";
         document.getElementById('volLabel').innerText = "Volume Suara:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal.<br><br><strong>CATATAN:</strong> Versi optimal tanpa bug.";
-        document.getElementById('mainHint').innerHTML = "Kontrol: Tombol Panah Atas/Bawah (Naik/Turun) atau Tombol di Layar<br><i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>";
+        document.getElementById('mainDesc').innerHTML = "Sektor antariksa terkunci. Kalahkan alien (setiap 8 kill mengisi 10% energi laser).<br><br><strong>INFO:</strong> Nama-nama badan antariksa melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!";
+        document.getElementById('mainHint').innerHTML = "Kontrol: Tombol D-Pad Ekstra Besar di Layar<br><i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>";
     }
 }
 
@@ -689,6 +713,11 @@ function proceedToWarning() {
 function proceedToConfig() {
     document.getElementById('warningOverlay').style.display = 'none';
     document.getElementById('configOverlay').style.display = 'flex';
+}
+
+function proceedToGuide() {
+    document.getElementById('configOverlay').style.display = 'none';
+    document.getElementById('guideOverlay').style.display = 'flex';
 }
 
 function applyFullscreenSetting() {
@@ -715,26 +744,22 @@ function applyFullscreenSetting() {
 }
 
 function proceedToModeSelect() {
-    fireMode = document.getElementById('fireModeSelect').value;
+    handleFireModeChange();
     flashEnabled = document.getElementById('flashSelect').value === 'on';
     fullscreenEnabled = document.getElementById('fullscreenSelect').value === 'on';
     
     applyFullscreenSetting();
 
-    document.getElementById('configOverlay').style.display = 'none';
+    document.getElementById('guideOverlay').style.display = 'none';
     document.getElementById('modeOverlay').style.display = 'flex';
 }
 
-// Fungsi Pilihan Kesulitan dengan Sistem 2x Pencet (Konfirmasi "Yakin?")
 function selectDifficulty(levelMax, btnElement) {
     selectedLevelMaxTemp = levelMax;
-    
-    // Beri efek visual tombol yang dipilih
     let allBtns = document.querySelectorAll('#modeOverlay .mode-btn');
-    allBtns.forEach(b => b.style.borderColor = '#00f3ff');
-    btnElement.style.borderColor = '#00ff66';
+    allBtns.forEach(b => b.style.borderColor = '#45a29e');
+    btnElement.style.borderColor = '#66fcf1';
 
-    // Tampilkan tombol konfirmasi "Yakin?"
     document.getElementById('confirmContainer').style.display = 'block';
     document.getElementById('diffHintText').innerHTML = `Mode terpilih (Max Level: ${levelMax}). Tekan tombol <strong>"Yakin?"</strong> di bawah untuk memulai permainan!`;
 }
@@ -750,13 +775,14 @@ function restartGame() {
     document.getElementById('uraOverlay').style.display = 'none';
     document.getElementById('warningOverlay').style.display = 'none';
     document.getElementById('configOverlay').style.display = 'none';
+    document.getElementById('guideOverlay').style.display = 'none';
     document.getElementById('modeOverlay').style.display = 'none';
     document.getElementById('confirmContainer').style.display = 'none';
     document.getElementById('welcomeOverlay').style.display = 'flex';
     document.getElementById('startBtn').style.display = 'block';
-    document.getElementById('mainTitle').innerText = "WELCOME";
-    document.getElementById('mainTitle').style.color = "#00f3ff";
-    document.getElementById('mainDesc').innerHTML = "Kamu terjebak di sektor alien. Kalahkan alien untuk mengisi panel energi super laser! Hadapi Bos UFO hingga Level Maksimal.<br><br><strong>CATATAN:</strong> Versi optimal tanpa bug.";
+    document.getElementById('mainTitle').style.color = "#66fcf1";
+    // FIX: teks ikut bahasa pilihan
+    changeLanguage();
 }
 
 function exitGame() {
@@ -796,7 +822,7 @@ for(let i=0; i<70; i++) {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         size: Math.random() * 2 + 0.5,
-        speed: Math.random() * 1.5 + 0.5
+        speed: Math.random() * 1.2 + 0.3
     });
 }
 
@@ -806,8 +832,8 @@ for(let i=0; i<4; i++) {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         radius: 10 + Math.random() * 8,
-        speedX: (Math.random() - 0.5) * 0.4,
-        speedY: (Math.random() - 0.5) * 0.4,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
         name: solarMoonsList[i]
     });
 }
@@ -843,6 +869,7 @@ fireBtn.addEventListener('mouseup', triggerFireEnd);
 fireBtn.addEventListener('mouseleave', triggerFireEnd);
 fireBtn.addEventListener('touchstart', triggerFireStart, {passive: false});
 fireBtn.addEventListener('touchend', triggerFireEnd);
+fireBtn.addEventListener('touchcancel', triggerFireEnd);
 
 function initPlayer() {
     player = {
@@ -865,6 +892,7 @@ function startGame() {
     isVictorySequence = false;
     currentLaserDamage = baseLaserDamage;
     energyLevel = 0;
+    alienKillCount = 0;
     superLaserActive = false;
     superLaserTimer = 0;
     lasers = [];
@@ -928,16 +956,16 @@ function triggerVictorySequence() {
                 x: 100 + Math.random() * (canvas.width - 200),
                 y: 50 + Math.random() * (canvas.height / 2),
                 radius: 40 + Math.random() * 30,
-                color: ['#ff00ff', '#00f3ff', '#ffcc00', '#00ff66'][Math.floor(Math.random()*4)],
+                color: ['#66fcf1', '#45a29e', '#f39c12', '#2ecc71'][Math.floor(Math.random()*4)],
                 life: 30
             });
         }, i * 400 + 1000);
     }
 
     setTimeout(() => {
-        document.getElementById('mainTitle').innerText = "Congratulations\nYOU ARE THE WINNER";
-        document.getElementById('mainTitle').style.color = "#00ff66";
-        document.getElementById('mainDesc').innerText = currentLang === 'en' ? `Incredible! Final Boss defeated at Level ${maxLevelSetting}! Score: ${score}` : `Luar Biasa! Kamu berhasil menaklukkan Sektor Alien hingga Level ${maxLevelSetting}! Skor Akhir: ${score}`;
+        document.getElementById('mainTitle').innerText = "MISSION SUCCESS\nVICTORY";
+        document.getElementById('mainTitle').style.color = "#2ecc71";
+        document.getElementById('mainDesc').innerText = currentLang === 'en' ? `Incredible! Final Boss defeated at Level ${maxLevelSetting}! Score: ${score}` : `Luar Biasa! Kamu berhasil menaklukkan Sektor Antariksa hingga Level ${maxLevelSetting}! Skor Akhir: ${score}`;
         document.getElementById('welcomeOverlay').style.display = 'flex';
         document.getElementById('startBtn').style.display = 'none';
     }, 3000);
@@ -948,7 +976,7 @@ function gameOver() {
     gameActive = false;
     document.getElementById('welcomeOverlay').style.display = 'flex';
     document.getElementById('mainTitle').innerText = "GAME OVER";
-    document.getElementById('mainTitle').style.color = "#00f3ff";
+    document.getElementById('mainTitle').style.color = "#e74c3c";
     document.getElementById('mainDesc').innerText = currentLang === 'en' ? `Ship destroyed at Level ${level}. Score: ${score}` : `Pesawat hancur di Level ${level} (Gelombang ${currentWave}). Skor: ${score}.`;
     document.getElementById('startBtn').style.display = 'block';
 }
@@ -978,7 +1006,7 @@ function checkLevelProgression() {
 
         playSound('flashbang');
         triggerFlash(200);
-        createParticles(boss.x + boss.width/2, boss.y + boss.height/2, '#ff8800', 30);
+        createParticles(boss.x + boss.width/2, boss.y + boss.height/2, '#f39c12', 30);
         boss = null;
         score += 300;
         level++;
@@ -996,7 +1024,8 @@ function checkLevelProgression() {
             if (currentWave === 2) aliensToSpawnInWave = 18;
             if (currentWave === 3) aliensToSpawnInWave = 26;
         } else {
-            if (level >= maxLevelSetting) return; 
+            // FIX: level terakhir non-kelipatan 10 (Medium = 25) langsung menang
+            if (level >= maxLevelSetting) { triggerVictorySequence(); return; }
             level++;
             currentWave = 1;
             aliensSpawnedInWave = 0;
@@ -1008,7 +1037,7 @@ function checkLevelProgression() {
 
 function applyLevelScaling() {
     currentLaserDamage = baseLaserDamage * Math.pow(1.05, level - 1);
-    createParticles(player.x, player.y, '#00f3ff', 25);
+    createParticles(player.x, player.y, '#66fcf1', 25);
     updateUI();
 }
 
@@ -1053,8 +1082,8 @@ function createParticles(x, y, color, count = 8) {
     for (let i = 0; i < count; i++) {
         particles.push({
             x: x, y: y,
-            vx: (Math.random() - 0.5) * 7,
-            vy: (Math.random() - 0.5) * 7,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6,
             radius: Math.random() * 3 + 1,
             color: color,
             life: 25
@@ -1080,10 +1109,18 @@ function shootLaser() {
         });
         playSound('laser');
         player.lastShoot = now;
-        
-        if (!superLaserActive && energyLevel < 100) {
-            energyLevel = Math.min(100, energyLevel + 1.5);
-            updateUI();
+    }
+}
+
+// FIX: logika energi dijadikan 1 fungsi (sebelumnya ditulis dobel)
+function addKillEnergy() {
+    alienKillCount++;
+    if (!superLaserActive && energyLevel < 100 && alienKillCount >= 8) {
+        alienKillCount = 0;
+        energyLevel = Math.min(100, energyLevel + 10);
+        if (energyLevel >= 100) {
+            superLaserActive = true;
+            superLaserTimer = 480;
         }
     }
 }
@@ -1095,16 +1132,6 @@ function update() {
     if ((keys['ArrowDown'] || keys['KeyS']) && player.y < canvas.height - player.height) player.y += player.speed;
 
     if (fireMode === 'auto' || keys['Space']) shootLaser();
-
-    if (!superLaserActive && energyLevel < 100) {
-        energyLevel = Math.min(100, energyLevel + 0.08);
-        updateUI();
-    }
-
-    if (energyLevel >= 100 && !superLaserActive) {
-        superLaserActive = true;
-        superLaserTimer = 480; 
-    }
 
     if (superLaserActive) {
         superLaserTimer--;
@@ -1138,17 +1165,18 @@ function update() {
         if (player.x < boss.x + boss.width && player.x + player.width > boss.x &&
             player.y < boss.y + boss.height && player.y + player.height > boss.y) {
             player.hp -= boss.damage * 0.08;
-            createParticles(player.x, player.y, '#ff0055', 4);
+            createParticles(player.x, player.y, '#e74c3c', 4);
             updateUI();
             if (player.hp <= 0) gameOver();
         }
 
         for (let j = lasers.length - 1; j >= 0; j--) {
             let l = lasers[j];
+            // FIX: pakai l.height (tinggi laser)
             if (l.x < boss.x + boss.width && l.x + l.width > boss.x &&
-                l.y < boss.y + boss.height && l.y + boss.height > boss.y) {
+                l.y < boss.y + boss.height && l.y + l.height > boss.y) {
                 boss.hp -= currentLaserDamage;
-                createParticles(l.x, l.y, '#00ff66', 5);
+                createParticles(l.x, l.y, '#2ecc71', 5);
                 lasers.splice(j, 1);
                 break;
             }
@@ -1158,12 +1186,25 @@ function update() {
     if (!isVictorySequence) {
         for (let i = aliens.length - 1; i >= 0; i--) {
             let a = aliens[i];
+            // FIX: anti crash
+            if (!a) continue;
+
+            // FIX: alien mati karena splash dibersihkan di sini (tanpa reassign array)
+            if (a.hp <= 0) {
+                createParticles(a.x, a.y, '#f39c12', 8);
+                aliens.splice(i, 1);
+                score += 10;
+                addKillEnergy();
+                updateUI();
+                continue;
+            }
+
             a.x -= a.speed;
 
             if (player.x < a.x + a.width && player.x + player.width > a.x &&
                 player.y < a.y + a.height && player.y + player.height > a.y) {
                 player.hp -= 20;
-                createParticles(a.x, a.y, '#ff0055', 12);
+                createParticles(a.x, a.y, '#e74c3c', 12);
                 playSound('explode-small');
                 aliens.splice(i, 1);
                 updateUI();
@@ -1171,40 +1212,36 @@ function update() {
                 continue;
             }
 
+            let removed = false;
+
             for (let j = lasers.length - 1; j >= 0; j--) {
                 let l = lasers[j];
+                // FIX: pakai l.height (tinggi laser)
                 if (l.x < a.x + a.width && l.x + l.width > a.x &&
-                    l.y < a.y + a.height && l.y + a.height > a.y) {
+                    l.y < a.y + a.height && l.y + l.height > a.y) {
                     
                     let dmg = superLaserActive ? currentLaserDamage * 3 : currentLaserDamage;
                     a.hp -= dmg;
-                    createParticles(l.x, l.y, '#ffff00', 4);
+                    createParticles(l.x, l.y, '#f39c12', 4);
                     if (!l.isSuper) lasers.splice(j, 1);
 
                     if (a.hp <= 0) {
                         let deadX = a.x;
                         let deadY = a.y;
-                        createParticles(deadX, deadY, '#ff5500', 10);
+                        createParticles(deadX, deadY, '#e74c3c', 10);
                         playSound('explode-small');
                         aliens.splice(i, 1);
+                        removed = true;
                         score += 15;
+                        addKillEnergy();
 
                         let splashDamage = a.maxHp * 0.3;
                         aliens.forEach(otherAlien => {
                             let dist = Math.hypot(otherAlien.x - deadX, otherAlien.y - deadY);
                             if (dist < 100) { 
                                 otherAlien.hp -= splashDamage;
-                                createParticles(otherAlien.x, otherAlien.y, '#ff0055', 3);
+                                createParticles(otherAlien.x, otherAlien.y, '#e74c3c', 3);
                             }
-                        });
-
-                        aliens = aliens.filter(o => {
-                            if (o.hp <= 0) {
-                                score += 10;
-                                createParticles(o.x, o.y, '#ff8800', 8);
-                                return false;
-                            }
-                            return true;
                         });
 
                         updateUI();
@@ -1212,9 +1249,41 @@ function update() {
                     break;
                 }
             }
-            if (a && a.x + a.width < 0) aliens.splice(i, 1);
+
+            if (removed) continue;
+            if (a.x + a.width < 0) aliens.splice(i, 1);
         }
     }
+
+    // FISIKA BADAN ANTARIKSA & BLACKHOLE (KIRI ATAS: X 60, Y 60)
+    let bhX = 60;
+    let bhY = 60;
+
+    spaceAgencies.forEach(sa => {
+        let distToBh = Math.hypot(sa.x - bhX, sa.y - bhY);
+        
+        if (distToBh < 120) {
+            let angleToBh = Math.atan2(bhY - sa.y, bhX - sa.x);
+            sa.vx += Math.cos(angleToBh) * 0.35;
+            sa.vy += Math.sin(angleToBh) * 0.35;
+            
+            if (distToBh < 25) {
+                sa.x = canvas.width / 2 + (Math.random() - 0.5) * 180;
+                sa.y = canvas.height + 20;
+                sa.vx = (Math.random() - 0.5) * 1.5;
+                sa.vy = - (0.8 + Math.random() * 0.8);
+            }
+        } else {
+            sa.x += sa.vx;
+            sa.y += sa.vy;
+
+            if (sa.x < 20 || sa.x > canvas.width - 120) sa.vx *= -1;
+            if (sa.y < 20 || sa.y > canvas.height - 20) sa.vy *= -1;
+
+            if (Math.abs(sa.vx) < 0.3) sa.vx = (Math.random() - 0.5) * 1.2;
+            if (Math.abs(sa.vy) < 0.3) sa.vy = (Math.random() - 0.5) * 1.2;
+        }
+    });
 
     backgroundMoons.forEach(bm => {
         bm.x += bm.speedX;
@@ -1235,10 +1304,11 @@ function update() {
         m.y = m.baseY + Math.sin(m.angle) * 15;
     });
 
-    fireworks.forEach((f, idx) => {
-        f.life--;
-        if(f.life <= 0) fireworks.splice(idx, 1);
-    });
+    // FIX: loop mundur
+    for (let i = fireworks.length - 1; i >= 0; i--) {
+        fireworks[i].life--;
+        if (fireworks[i].life <= 0) fireworks.splice(i, 1);
+    }
 
     for (let i = particles.length - 1; i >= 0; i--) {
         let p = particles[i];
@@ -1250,29 +1320,39 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = "#c5c6c7";
     stars.forEach(s => {
         s.x -= s.speed;
         if (s.x < 0) s.x = canvas.width;
-        ctx.globalAlpha = Math.sin(Date.now() * 0.003 + s.x) * 0.5 + 0.5;
+        ctx.globalAlpha = Math.sin(Date.now() * 0.002 + s.x) * 0.4 + 0.5;
         ctx.fillRect(s.x, s.y, s.size, s.size);
     });
     ctx.globalAlpha = 1.0;
 
+    spaceAgencies.forEach(sa => {
+        ctx.save();
+        ctx.font = '13px "Courier Prime", Courier, monospace';
+        ctx.fillStyle = sa.color;
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = sa.color;
+        ctx.fillText(sa.name, sa.x, sa.y);
+        ctx.restore();
+    });
+
     backgroundMoons.forEach(bm => {
         ctx.save();
-        ctx.fillStyle = '#f1c40f';
+        ctx.fillStyle = '#45a29e';
         ctx.beginPath();
         ctx.arc(bm.x, bm.y, bm.radius, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#d35400';
+        ctx.strokeStyle = '#1f2833';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '9px sans-serif';
+        ctx.fillStyle = '#c5c6c7';
+        ctx.font = '11px "Courier Prime", Courier, monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(bm.name, bm.x, bm.y + bm.radius + 10);
+        ctx.fillText(bm.name, bm.x, bm.y + bm.radius + 12);
         ctx.restore();
     });
 
@@ -1280,11 +1360,11 @@ function draw() {
         ctx.save();
         ctx.translate(u.x, u.y);
         ctx.rotate(u.angle);
-        ctx.fillStyle = '#660099';
+        ctx.fillStyle = '#1f2833';
         ctx.beginPath();
         ctx.ellipse(0, 0, 20, 10, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#00aaaa';
+        ctx.fillStyle = '#45a29e';
         ctx.beginPath();
         ctx.arc(0, -4, 8, Math.PI, 0, false);
         ctx.fill();
@@ -1304,33 +1384,33 @@ function draw() {
     dancingMoons.forEach(m => {
         ctx.save();
         ctx.translate(m.x, m.y);
-        ctx.fillStyle = '#b0c4de';
+        ctx.fillStyle = '#c5c6c7';
         ctx.beginPath();
         ctx.arc(0, 0, m.radius, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = '#66fcf1';
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        ctx.fillStyle = '#000';
+        ctx.fillStyle = '#0b0c10';
         ctx.fillRect(-8, -6, 4, 6);
         ctx.fillRect(4, -6, 4, 6);
         ctx.beginPath();
         ctx.arc(0, 4, 6, 0, Math.PI, false);
         ctx.stroke();
 
-        ctx.font = '18px sans-serif';
+        ctx.font = '16px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(m.emoji, 0, -m.radius - 8);
 
-        ctx.fillStyle = '#ffcc00';
-        ctx.font = '11px sans-serif';
+        ctx.fillStyle = '#66fcf1';
+        ctx.font = '12px "Courier Prime", Courier, monospace';
         ctx.fillText(m.name, 0, m.radius + 14);
         ctx.restore();
     });
 
     ctx.save();
-    ctx.fillStyle = superLaserActive ? '#ffcc00' : '#00f3ff';
+    ctx.fillStyle = superLaserActive ? '#f39c12' : '#66fcf1';
     ctx.beginPath();
     ctx.moveTo(player.x, player.y + player.height / 2);
     ctx.lineTo(player.x + player.width - 10, player.y + 2);
@@ -1339,63 +1419,63 @@ function draw() {
     ctx.closePath();
     ctx.fill();
 
-    ctx.fillStyle = superLaserActive ? '#ff0000' : '#ff00ff';
+    ctx.fillStyle = superLaserActive ? '#e74c3c' : '#45a29e';
     ctx.fillRect(player.x + 8, player.y - 4, 12, player.height + 8);
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#0b0c10';
     ctx.beginPath();
-    ctx.arc(player.x + player.width - 16, player.y + player.height / 2, 5, 0, Math.PI * 2);
+    ctx.arc(player.x + player.width - 16, player.y + player.height / 2, 4, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#ffaa00';
+    ctx.fillStyle = '#f39c12';
     ctx.beginPath();
     ctx.moveTo(player.x, player.y + 8);
-    ctx.lineTo(player.x - 12 - Math.random() * 6, player.y + player.height / 2);
+    ctx.lineTo(player.x - 12 - Math.random() * 5, player.y + player.height / 2);
     ctx.lineTo(player.x, player.y + player.height - 8);
     ctx.closePath();
     ctx.fill();
     ctx.restore();
 
     lasers.forEach(l => {
-        ctx.fillStyle = l.isSuper ? '#00ff66' : '#ff0055';
-        ctx.shadowBlur = l.isSuper ? 15 : 10;
-        ctx.shadowColor = l.isSuper ? '#00ff66' : '#ff0055';
+        ctx.fillStyle = l.isSuper ? '#2ecc71' : '#e74c3c';
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = l.isSuper ? '#2ecc71' : '#e74c3c';
         ctx.fillRect(l.x, l.y, l.width, l.height);
     });
     ctx.shadowBlur = 0;
 
     aliens.forEach(a => {
-        ctx.fillStyle = '#b000ff';
+        ctx.fillStyle = '#1f2833';
         ctx.beginPath();
         ctx.ellipse(a.x + a.width/2, a.y + a.height/2, a.width/2, a.height/3, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#00ffff';
+        ctx.fillStyle = '#66fcf1';
         ctx.beginPath();
         ctx.arc(a.x + a.width/2, a.y + a.height/3, a.width/4, Math.PI, 0, false);
         ctx.fill();
 
         let hpPct = Math.max(0, a.hp / a.maxHp);
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = '#78281f';
         ctx.fillRect(a.x, a.y - 8, a.width, 4);
-        ctx.fillStyle = '#00ff66';
+        ctx.fillStyle = '#2ecc71';
         ctx.fillRect(a.x, a.y - 8, a.width * hpPct, 4);
     });
 
     if (boss) {
-        ctx.fillStyle = '#ff2200';
+        ctx.fillStyle = '#78281f';
         ctx.beginPath();
         ctx.ellipse(boss.x + boss.width/2, boss.y + boss.height/2, boss.width/2, boss.height/3, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#ffcc00';
+        ctx.fillStyle = '#f39c12';
         ctx.beginPath();
         ctx.arc(boss.x + boss.width/2, boss.y + boss.height/3, boss.width/3, Math.PI, 0, false);
         ctx.fill();
 
         let bossHpPct = Math.max(0, boss.hp / boss.maxHp);
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = '#78281f';
         ctx.fillRect(boss.x, boss.y - 14, boss.width, 8);
-        ctx.fillStyle = '#ff0055';
+        ctx.fillStyle = '#e74c3c';
         ctx.fillRect(boss.x, boss.y - 14, boss.width * bossHpPct, 8);
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = '#c5c6c7';
         ctx.strokeRect(boss.x, boss.y - 14, boss.width, 8);
     }
 
