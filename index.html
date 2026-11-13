@@ -8,7 +8,10 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #0b0c10;
+            background:
+                radial-gradient(ellipse at 20% 10%, #1b1035 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 90%, #0a2540 0%, transparent 55%),
+                #05060a;
             color: #c5c6c7;
             font-family: 'Courier Prime', Courier, monospace;
             display: flex;
@@ -18,8 +21,109 @@
             min-height: 100vh;
             overflow: hidden;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
+        /* ===== LATAR KOSMIK DEKORATIF ===== */
+        #cosmic-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bg-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 0.12; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.4); } }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.3;
+            animation: drift 14s ease-in-out infinite alternate;
+        }
+        .nebula.n1 { width: 380px; height: 380px; left: -100px; bottom: -80px; background: #6f42c1; }
+        .nebula.n2 { width: 320px; height: 320px; right: -80px; top: -60px; background: #0e7c86; animation-delay: -6s; }
+        @keyframes drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(40px, 25px) scale(1.2); } }
+
+        .deco-planet {
+            position: absolute;
+            right: -70px;
+            bottom: -70px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #7d3cff, #2b1a5e 55%, #0b0c10 95%);
+            box-shadow: inset -25px -25px 50px rgba(0,0,0,0.85), 0 0 60px rgba(125, 60, 255, 0.35);
+            opacity: 0.8;
+            animation: float 9s ease-in-out infinite;
+        }
+        .deco-planet::after {
+            content: '';
+            position: absolute;
+            width: 380px;
+            height: 50px;
+            border: 5px solid rgba(197, 198, 199, 0.2);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+        }
+        .deco-moon {
+            position: absolute;
+            left: 6%;
+            bottom: 12%;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #e0e0e0, #7f8c8d 60%, #1f2833 100%);
+            box-shadow: inset -8px -8px 14px rgba(0,0,0,0.8), 0 0 14px rgba(197,198,199,0.25);
+            animation: float 7s ease-in-out infinite;
+            animation-delay: -3s;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+        .shooting-star {
+            position: absolute;
+            top: -10px;
+            left: var(--x);
+            width: 2px;
+            height: 90px;
+            background: linear-gradient(to bottom, rgba(102, 252, 241, 0), #fff);
+            opacity: 0;
+            animation: shoot 9s linear infinite;
+            animation-delay: var(--d);
+        }
+        @keyframes shoot {
+            0% { opacity: 0; transform: translate(0, 0) rotate(45deg); }
+            2% { opacity: 1; }
+            10% { opacity: 0; transform: translate(-450px, 450px) rotate(45deg); }
+            100% { opacity: 0; transform: translate(-450px, 450px) rotate(45deg); }
+        }
+
+        #cosmic-caption {
+            position: absolute;
+            bottom: 6px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-family: 'Special Elite', cursive;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: rgba(102, 252, 241, 0.45);
+            animation: blink-soft 4s ease-in-out infinite;
+        }
+        @keyframes blink-soft { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.9; } }
+
+        /* ===== BLACKHOLE & WATERMARK ===== */
         #page-blackhole {
             position: fixed;
             top: 20px;
@@ -62,12 +166,18 @@
 
         #game-container {
             position: relative;
+            z-index: 1;
             box-shadow: 0 0 30px rgba(31, 40, 51, 0.8);
             border: 2px solid #1f2833;
             border-radius: 6px;
             overflow: hidden;
             background: #0b0c10;
             max-width: 100%;
+            animation: frame-glow 5s ease-in-out infinite alternate;
+        }
+        @keyframes frame-glow {
+            from { box-shadow: 0 0 22px rgba(102, 252, 241, 0.15); }
+            to { box-shadow: 0 0 48px rgba(125, 60, 255, 0.4); }
         }
 
         #game-container.fullscreen-mode {
@@ -76,6 +186,7 @@
             border: none;
             border-radius: 0;
             box-shadow: none;
+            animation: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -87,7 +198,9 @@
         }
 
         canvas {
-            background: radial-gradient(circle at center, #1f2833 0%, #0b0c10 100%);
+            background:
+                radial-gradient(circle at 30% 30%, rgba(111, 66, 193, 0.18), transparent 50%),
+                radial-gradient(circle at center, #1f2833 0%, #0b0c10 100%);
             display: block;
             max-width: 100%;
             height: auto;
@@ -141,7 +254,6 @@
             pointer-events: none;
         }
 
-        /* PANEL SHIELD (di samping panel super laser) */
         .shield-label {
             position: absolute;
             bottom: 22px;
@@ -195,11 +307,15 @@
             background: #45a29e;
             color: #0b0c10;
         }
+        .opt-btn:active { transform: scale(0.92); }
 
         .overlay-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(11, 12, 16, 0.96), rgba(5, 6, 8, 0.99));
+            background:
+                radial-gradient(circle at 15% 20%, rgba(111, 66, 193, 0.28), transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(0, 180, 216, 0.2), transparent 50%),
+                radial-gradient(circle at center, rgba(11, 12, 16, 0.96), rgba(5, 6, 8, 0.99));
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -218,6 +334,7 @@
             box-shadow: inset -15px -15px 30px rgba(0,0,0,0.9), 0 0 30px rgba(69, 162, 158, 0.2);
             z-index: -2;
             opacity: 0.75;
+            animation: float 6s ease-in-out infinite;
         }
         .saturn-ring {
             position: absolute;
@@ -264,9 +381,16 @@
             font-size: 26px;
             letter-spacing: 3px;
             margin-bottom: 12px;
-            text-shadow: 0 0 10px rgba(102, 252, 241, 0.5);
+            text-shadow: 0 0 10px rgba(102, 252, 241, 0.5), 0 0 24px rgba(125, 60, 255, 0.4);
             white-space: pre-line;
             line-height: 1.3;
+            animation: title-flicker 5s infinite;
+        }
+        @keyframes title-flicker {
+            0%, 90%, 100% { opacity: 1; }
+            92% { opacity: 0.55; }
+            94% { opacity: 1; }
+            96% { opacity: 0.7; }
         }
 
         .settings-box {
@@ -310,27 +434,53 @@
             border: 1px solid #45a29e;
         }
 
+        /* ===== TOMBOL UTAMA (MULAI / LANJUT / MENGERTI / YAKIN) ===== */
         .blackhole-btn {
             position: relative;
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #0b0c10 40%, #45a29e 70%, #66fcf1 100%);
-            border: none;
-            color: #0b0c10;
+            overflow: hidden;
+            min-width: 170px;
+            height: 54px;
+            padding: 0 28px;
+            border-radius: 40px;
+            background: linear-gradient(135deg, #45a29e, #66fcf1);
+            border: 2px solid #c5fffb;
+            color: #05060a;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 16px;
+            letter-spacing: 2px;
             font-family: 'Special Elite', cursive;
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(102, 252, 241, 0.6), inset 0 0 10px #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.3s;
+            gap: 8px;
+            touch-action: manipulation;
+            transition: transform 0.2s, filter 0.2s;
+            animation: btn-pulse 2s ease-in-out infinite;
+        }
+        .blackhole-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -80%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transform: skewX(-20deg);
+            animation: btn-shine 3s ease-in-out infinite;
+        }
+        @keyframes btn-shine { 0% { left: -80%; } 60%, 100% { left: 140%; } }
+        @keyframes btn-pulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(102, 252, 241, 0.5), 0 0 0 0 rgba(102, 252, 241, 0.55); }
+            50% { box-shadow: 0 0 26px rgba(102, 252, 241, 0.95), 0 0 0 12px rgba(102, 252, 241, 0); }
         }
         .blackhole-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 30px #66fcf1, inset 0 0 15px #45a29e;
+            transform: scale(1.08);
+            filter: brightness(1.15);
+        }
+        .blackhole-btn:active {
+            transform: scale(0.93);
+            filter: brightness(0.9);
         }
 
         .mode-btn-container {
@@ -352,11 +502,13 @@
             font-family: 'Courier Prime', Courier, monospace;
             cursor: pointer;
             transition: 0.2s;
+            touch-action: manipulation;
         }
         .mode-btn:hover {
             background: #45a29e;
             color: #0b0c10;
         }
+        .mode-btn:active { transform: scale(0.94); }
         .mode-btn.crazy {
             border-color: #c0392b;
             color: #e74c3c;
@@ -366,9 +518,15 @@
             background: #c0392b;
             color: #fff;
         }
+        .mode-btn.selected {
+            border-color: #66fcf1;
+            background: rgba(102, 252, 241, 0.2);
+            box-shadow: 0 0 16px #66fcf1;
+            transform: scale(1.05);
+        }
 
         .controls-hint {
-            margin-top: 6px;
+            margin-top: 10px;
             font-size: 11px;
             color: #f39c12;
             line-height: 1.3;
@@ -437,6 +595,18 @@
 </head>
 <body>
 
+    <!-- LATAR KOSMIK (bintang dibuat otomatis oleh JavaScript) -->
+    <div id="cosmic-bg">
+        <div class="nebula n1"></div>
+        <div class="nebula n2"></div>
+        <div class="deco-planet"></div>
+        <div class="deco-moon"></div>
+        <div class="shooting-star" style="--x: 85%; --d: 1s;"></div>
+        <div class="shooting-star" style="--x: 60%; --d: 4.5s;"></div>
+        <div class="shooting-star" style="--x: 95%; --d: 7s;"></div>
+        <div id="cosmic-caption">◈ SINYAL TAK DIKENAL TERDETEKSI DI SEKTOR URA-6 ◈</div>
+    </div>
+
     <div id="page-blackhole" title="Cosmic Anomaly"></div>
     <div id="dev-watermark">DEV: ONLY 1</div>
 
@@ -482,10 +652,10 @@
 
         <h1 class="title-glow" id="mainTitle">WELCOME</h1>
         <p class="story-text" id="mainDesc">
-            Sektor antariksa terkunci. Kalahkan alien (setiap 5 kill mengisi 5% energi laser, setiap 15 kill mengaktifkan shield).<br><br>
+            Sektor antariksa terkunci. Kalahkan alien (setiap 8 kill mengisi 10% energi laser, setiap 15 kill mengaktifkan shield).<br><br>
             <strong>INFO:</strong> Nama-nama badan antariksa dunia melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!
         </p>
-        <button class="blackhole-btn" id="startBtn" onclick="proceedToUra()">MULAI</button>
+        <button class="blackhole-btn" id="startBtn" onclick="proceedToUra()">▶ MULAI</button>
         <div class="controls-hint" id="mainHint">
             Kontrol: Tombol D-Pad Super Besar di Layar<br>
             <i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>
@@ -502,7 +672,7 @@
             Arsip Pembaruan: <strong>1 NOV 2026</strong><br><br>
             Selamat datang di protokol penerbangan klasik. Lanjutkan untuk meninjau peringatan dan pengaturan sistem.
         </p>
-        <button class="blackhole-btn" onclick="proceedToWarning()">LANJUT</button>
+        <button class="blackhole-btn" onclick="proceedToWarning()">LANJUT ➤</button>
     </div>
 
     <!-- STEP 3: WARNING -->
@@ -515,7 +685,7 @@
             Simulasi ini memuat efek kilatan cahaya tinggi saat eliminasi Bos. Matikan efek Flash di menu konfigurasi jika sensitif terhadap cahaya.<br><br>
             <i>Operational safety protocols engaged.</i>
         </p>
-        <button class="blackhole-btn" onclick="proceedToConfig()">MENGERTI</button>
+        <button class="blackhole-btn" onclick="proceedToConfig()">MENGERTI ✔</button>
     </div>
 
     <!-- STEP 4: CONFIG -->
@@ -559,7 +729,7 @@
                 <span id="volVal" style="color:#66fcf1; font-weight:bold;">50%</span>
             </div>
         </div>
-        <button class="blackhole-btn" onclick="proceedToGuide()">LANJUT</button>
+        <button class="blackhole-btn" onclick="proceedToGuide()">LANJUT ➤</button>
     </div>
 
     <!-- STEP 5: PANDUAN -->
@@ -571,11 +741,11 @@
         <p class="story-text" style="max-width: 440px; text-align: left; font-size: 11px; line-height: 1.5;">
             🚀 <strong>KONTROL:</strong> Gunakan D-Pad (`▲` dan `▼`) di kiri bawah layar untuk menggerakkan pesawat naik/turun.<br>
             🎯 <strong>TEMBAKAN:</strong> Tekan tombol `FIRE` (atau Spasi di keyboard). Jika memilih Mode Auto di pengaturan, tembakan akan keluar otomatis!<br>
-            ⚡ <strong>SUPER LASER:</strong> Setiap 5 alien yang dihancurkan mengisi 5% Energi Super Laser. Saat penuh, laser berubah kuat!<br>
+            ⚡ <strong>SUPER LASER:</strong> Setiap 8 alien yang dihancurkan mengisi 10% Energi Super Laser. Saat penuh, laser berubah kuat!<br>
             🛡️ <strong>SHIELD:</strong> Setiap 15 alien yang dihancurkan mengaktifkan Shield selama 9,5 detik. Kebal dari semua damage!<br>
             🛸 <strong>BOS & LEVEL:</strong> Bertahanlah melewati setiap gelombang (Wave) dan kalahkan Bos di setiap kelipatan Level 10.
         </p>
-        <button class="blackhole-btn" onclick="proceedToModeSelect()">MENGERTI</button>
+        <button class="blackhole-btn" onclick="proceedToModeSelect()">MENGERTI ✔</button>
     </div>
 
     <!-- STEP 6: KESULITAN -->
@@ -594,7 +764,7 @@
             <button class="mode-btn crazy" onclick="selectDifficulty(200, this)">CRAZY / GILA<br><span style="font-size:11px; color:#e74c3c;">Max Level 200</span></button>
         </div>
         <div id="confirmContainer" style="display: none; margin-top: 10px;">
-            <button class="blackhole-btn" id="confirmBtn" onclick="confirmStartGame()" style="width: 100px; height: 45px; border-radius: 4px; font-size: 12px;">Yakin?</button>
+            <button class="blackhole-btn" id="confirmBtn" onclick="confirmStartGame()">YAKIN? ✔</button>
         </div>
     </div>
 </div>
@@ -602,6 +772,25 @@
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+
+// ===== BINTANG LATAR HALAMAN (DEKORATIF) =====
+(function buildCosmicStars() {
+    const bg = document.getElementById('cosmic-bg');
+    const tints = ['#ffffff', '#ffffff', '#cfe9ff', '#66fcf1', '#d9c2ff'];
+    for (let i = 0; i < 70; i++) {
+        const s = document.createElement('div');
+        s.className = 'bg-star';
+        s.style.left = (Math.random() * 100) + '%';
+        s.style.top = (Math.random() * 100) + '%';
+        const size = Math.random() < 0.15 ? 3 : 2;
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.background = tints[Math.floor(Math.random() * tints.length)];
+        s.style.animationDuration = (2 + Math.random() * 4) + 's';
+        s.style.animationDelay = (-Math.random() * 5) + 's';
+        bg.appendChild(s);
+    }
+})();
 
 let currentLang = 'id';
 let fireMode = 'manual';
@@ -648,6 +837,14 @@ function playSound(type) {
             gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
             osc.start(now);
             osc.stop(now + 0.1);
+        } else if (type === 'click') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(500, now);
+            osc.frequency.exponentialRampToValueAtTime(900, now + 0.08);
+            gain.gain.setValueAtTime(0.15 * soundVolume, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+            osc.start(now);
+            osc.stop(now + 0.1);
         } else if (type === 'explode-small') {
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(120, now);
@@ -683,6 +880,14 @@ function playSound(type) {
         }
     } catch(e) {}
 }
+
+// Suara "klik" untuk semua tombol menu
+document.addEventListener('click', e => {
+    if (e.target.closest('.blackhole-btn, .mode-btn, .opt-btn')) {
+        initAudio();
+        playSound('click');
+    }
+});
 
 function triggerFlash(duration = 150) {
     if (!flashEnabled) return;
@@ -720,7 +925,7 @@ function changeLanguage() {
         document.getElementById('flashLabel').innerText = "Flash Effect:";
         document.getElementById('volLabel').innerText = "Sound Volume:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "Space sector locked. Every 5 kills charge 5% Super Laser energy, every 15 kills activate your Shield!<br><br><strong>INFO:</strong> Floating space agencies get sucked into the top-left blackhole and emerge from the bottom-center.";
+        document.getElementById('mainDesc').innerHTML = "Space sector locked. Every 8 kills charge 10% Super Laser energy, every 15 kills activate your Shield!<br><br><strong>INFO:</strong> Floating space agencies get sucked into the top-left blackhole and emerge from the bottom-center.";
         document.getElementById('mainHint').innerHTML = "Controls: Extra Large D-Pad Buttons on Screen<br><i>Tip: Use Fullscreen mode for the best landscape experience!</i>";
     } else {
         document.getElementById('langLabel').innerText = "Bahasa / Language:";
@@ -729,7 +934,7 @@ function changeLanguage() {
         document.getElementById('flashLabel').innerText = "Flash / Kilatan:";
         document.getElementById('volLabel').innerText = "Volume Suara:";
         document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "Sektor antariksa terkunci. Kalahkan alien (setiap 5 kill mengisi 5% energi laser, setiap 15 kill mengaktifkan shield).<br><br><strong>INFO:</strong> Nama-nama badan antariksa melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!";
+        document.getElementById('mainDesc').innerHTML = "Sektor antariksa terkunci. Kalahkan alien (setiap 8 kill mengisi 10% energi laser, setiap 15 kill mengaktifkan shield).<br><br><strong>INFO:</strong> Nama-nama badan antariksa melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!";
         document.getElementById('mainHint').innerHTML = "Kontrol: Tombol D-Pad Ekstra Besar di Layar<br><i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>";
     }
 }
@@ -792,8 +997,8 @@ function proceedToModeSelect() {
 function selectDifficulty(levelMax, btnElement) {
     selectedLevelMaxTemp = levelMax;
     let allBtns = document.querySelectorAll('#modeOverlay .mode-btn');
-    allBtns.forEach(b => b.style.borderColor = '#45a29e');
-    btnElement.style.borderColor = '#66fcf1';
+    allBtns.forEach(b => b.classList.remove('selected'));
+    btnElement.classList.add('selected');
 
     document.getElementById('confirmContainer').style.display = 'block';
     document.getElementById('diffHintText').innerHTML = `Mode terpilih (Max Level: ${levelMax}). Tekan tombol <strong>"Yakin?"</strong> di bawah untuk memulai permainan!`;
@@ -814,7 +1019,7 @@ function restartGame() {
     document.getElementById('modeOverlay').style.display = 'none';
     document.getElementById('confirmContainer').style.display = 'none';
     document.getElementById('welcomeOverlay').style.display = 'flex';
-    document.getElementById('startBtn').style.display = 'block';
+    document.getElementById('startBtn').style.display = 'flex';
     document.getElementById('mainTitle').style.color = "#66fcf1";
     changeLanguage();
 }
@@ -1018,7 +1223,7 @@ function gameOver() {
     document.getElementById('mainTitle').innerText = "GAME OVER";
     document.getElementById('mainTitle').style.color = "#e74c3c";
     document.getElementById('mainDesc').innerText = currentLang === 'en' ? `Ship destroyed at Level ${level}. Score: ${score}` : `Pesawat hancur di Level ${level} (Gelombang ${currentWave}). Skor: ${score}.`;
-    document.getElementById('startBtn').style.display = 'block';
+    document.getElementById('startBtn').style.display = 'flex';
 }
 
 function updateUI() {
@@ -1153,12 +1358,12 @@ function shootLaser() {
     }
 }
 
-// Setiap 5 kill = +5% energi laser, setiap 15 kill = shield 9,5 detik
+// Setiap 8 kill = +10% energi laser, setiap 15 kill = shield 9,5 detik
 function addKillEnergy() {
     alienKillCount++;
-    if (!superLaserActive && energyLevel < 100 && alienKillCount >= 5) {
+    if (!superLaserActive && energyLevel < 100 && alienKillCount >= 8) {
         alienKillCount = 0;
-        energyLevel = Math.min(100, energyLevel + 5);
+        energyLevel = Math.min(100, energyLevel + 10);
         if (energyLevel >= 100) {
             superLaserActive = true;
             superLaserTimer = 480;
