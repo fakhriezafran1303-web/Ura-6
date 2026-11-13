@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ura-6 - Terjebak di Luar Angkasa</title>
+    <title>Ura-6 - Lost in Space</title>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,7 +24,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* ===== LATAR KOSMIK DEKORATIF ===== */
+        /* ===== LATAR KOSMIK ===== */
         #cosmic-bg {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -221,6 +221,20 @@
             padding-left: 140px;
         }
 
+        #buff-indicator {
+            position: absolute;
+            top: 36px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px currentColor;
+            pointer-events: none;
+            z-index: 5;
+            display: none;
+        }
+
         .energy-bar-container {
             position: absolute;
             bottom: 8px;
@@ -229,7 +243,7 @@
             width: 250px;
             height: 12px;
             background: rgba(11, 12, 16, 0.85);
-            border: 1px solid #66fcf1;
+            border: 1px solid #ffb347;
             border-radius: 3px;
             overflow: hidden;
             z-index: 6;
@@ -238,7 +252,7 @@
         #energy-fill {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, #45a29e, #66fcf1);
+            background: linear-gradient(90deg, #e67e22, #f1c40f);
             transition: width 0.1s linear;
         }
         .energy-label {
@@ -248,7 +262,7 @@
             transform: translateX(-50%);
             font-size: 11px;
             font-weight: bold;
-            color: #66fcf1;
+            color: #ffb347;
             letter-spacing: 1.5px;
             z-index: 6;
             pointer-events: none;
@@ -434,7 +448,33 @@
             border: 1px solid #45a29e;
         }
 
-        /* ===== TOMBOL UTAMA (MULAI / LANJUT / MENGERTI / YAKIN) ===== */
+        /* ===== PILIHAN BAHASA (DI OVERLAY WELCOME) ===== */
+        .lang-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .lang-btn {
+            background: rgba(31, 40, 51, 0.8);
+            border: 1px solid #45a29e;
+            color: #66fcf1;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: 0.2s;
+            font-family: 'Courier Prime', Courier, monospace;
+        }
+        .lang-btn.active {
+            background: #66fcf1;
+            color: #05060a;
+            box-shadow: 0 0 14px #66fcf1;
+        }
+        .lang-btn:active { transform: scale(0.92); }
+
+        /* ===== TOMBOL UTAMA ===== */
         .blackhole-btn {
             position: relative;
             overflow: hidden;
@@ -595,7 +635,6 @@
 </head>
 <body>
 
-    <!-- LATAR KOSMIK (bintang dibuat otomatis oleh JavaScript) -->
     <div id="cosmic-bg">
         <div class="nebula n1"></div>
         <div class="nebula n2"></div>
@@ -604,7 +643,7 @@
         <div class="shooting-star" style="--x: 85%; --d: 1s;"></div>
         <div class="shooting-star" style="--x: 60%; --d: 4.5s;"></div>
         <div class="shooting-star" style="--x: 95%; --d: 7s;"></div>
-        <div id="cosmic-caption">◈ SINYAL TAK DIKENAL TERDETEKSI DI SEKTOR URA-6 ◈</div>
+        <div id="cosmic-caption" data-i18n="caption">◈ UNKNOWN SIGNAL DETECTED IN SECTOR URA-6 ◈</div>
     </div>
 
     <div id="page-blackhole" title="Cosmic Anomaly"></div>
@@ -615,24 +654,26 @@
     <div id="flash-overlay"></div>
     
     <div id="top-options">
-        <button class="opt-btn" onclick="restartGame()">RESTART</button>
-        <button class="opt-btn" onclick="exitGame()">KELUAR</button>
+        <button class="opt-btn" onclick="restartGame()" data-i18n="restart">RESTART</button>
+        <button class="opt-btn" onclick="exitGame()" data-i18n="exit">EXIT</button>
     </div>
 
     <div class="ui-panel">
-        <div>SKOR: <span id="scoreDisplay" style="color: #66fcf1;">0</span></div>
-        <div>LEVEL: <span id="levelDisplay" style="color: #45a29e;">1</span></div>
-        <div>WAVE: <span id="waveDisplay" style="color: #f39c12;">1/3</span></div>
-        <div>DMG: <span id="damageDisplay" style="color: #c5c6c7;">10</span></div>
-        <div>HP: <span id="hpDisplay" style="color: #2ecc71;">200</span></div>
+        <div><span data-i18n="score">SCORE:</span> <span id="scoreDisplay" style="color: #66fcf1;">0</span></div>
+        <div><span data-i18n="level">LEVEL:</span> <span id="levelDisplay" style="color: #45a29e;">1</span></div>
+        <div><span data-i18n="wave">WAVE:</span> <span id="waveDisplay" style="color: #f39c12;">1/3</span></div>
+        <div><span data-i18n="dmg">DMG:</span> <span id="damageDisplay" style="color: #c5c6c7;">10</span></div>
+        <div><span data-i18n="hp">HP:</span> <span id="hpDisplay" style="color: #2ecc71;">200</span></div>
     </div>
 
-    <div class="energy-label">ENERGI SUPER LASER</div>
+    <div id="buff-indicator"></div>
+
+    <div class="energy-label" data-i18n="bombLabel">BIG BOMBA</div>
     <div class="energy-bar-container">
         <div id="energy-fill"></div>
     </div>
 
-    <div class="shield-label">SHIELD</div>
+    <div class="shield-label" data-i18n="shieldLabel">SHIELD</div>
     <div class="shield-bar-container"><div id="shield-fill"></div></div>
 
     <div id="dpad-container">
@@ -641,7 +682,7 @@
     </div>
     <button id="fire-btn">FIRE</button>
 
-    <!-- STEP 1: WELCOME -->
+    <!-- STEP 1: WELCOME (SELALU MULAI DALAM BAHASA INGGRIS) -->
     <div id="welcomeOverlay" class="overlay-screen">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
@@ -651,15 +692,15 @@
         <div class="moon" id="venus-moon" style="animation-delay: -9s;"></div>
 
         <h1 class="title-glow" id="mainTitle">WELCOME</h1>
-        <p class="story-text" id="mainDesc">
-            Sektor antariksa terkunci. Kalahkan alien (setiap 8 kill mengisi 10% energi laser, setiap 15 kill mengaktifkan shield).<br><br>
-            <strong>INFO:</strong> Nama-nama badan antariksa dunia melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!
-        </p>
-        <button class="blackhole-btn" id="startBtn" onclick="proceedToUra()">▶ MULAI</button>
-        <div class="controls-hint" id="mainHint">
-            Kontrol: Tombol D-Pad Super Besar di Layar<br>
-            <i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>
+        <p class="story-text" id="mainDesc"></p>
+
+        <div class="lang-row">
+            <button class="lang-btn active" id="langBtnEn" onclick="setLang('en')">🇬🇧 English</button>
+            <button class="lang-btn" id="langBtnId" onclick="setLang('id')">🇮🇩 Indonesia</button>
         </div>
+
+        <button class="blackhole-btn" id="startBtn" onclick="proceedToUra()" data-i18n="start">▶ START</button>
+        <div class="controls-hint" data-i18n="welcomeHint"></div>
     </div>
 
     <!-- STEP 2: URA-6 -->
@@ -668,11 +709,8 @@
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
         <h1 class="title-glow">URA-6</h1>
-        <p class="story-text">
-            Arsip Pembaruan: <strong>1 NOV 2026</strong><br><br>
-            Selamat datang di protokol penerbangan klasik. Lanjutkan untuk meninjau peringatan dan pengaturan sistem.
-        </p>
-        <button class="blackhole-btn" onclick="proceedToWarning()">LANJUT ➤</button>
+        <p class="story-text" data-i18n="uraDesc"></p>
+        <button class="blackhole-btn" onclick="proceedToWarning()" data-i18n="next">NEXT ➤</button>
     </div>
 
     <!-- STEP 3: WARNING -->
@@ -680,91 +718,73 @@
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
-        <h1 class="title-glow">PERINGATAN</h1>
-        <p class="story-text">
-            Simulasi ini memuat efek kilatan cahaya tinggi saat eliminasi Bos. Matikan efek Flash di menu konfigurasi jika sensitif terhadap cahaya.<br><br>
-            <i>Operational safety protocols engaged.</i>
-        </p>
-        <button class="blackhole-btn" onclick="proceedToConfig()">MENGERTI ✔</button>
+        <h1 class="title-glow" data-i18n="warnTitle">WARNING</h1>
+        <p class="story-text" data-i18n="warnDesc"></p>
+        <button class="blackhole-btn" onclick="proceedToConfig()" data-i18n="understood">UNDERSTOOD ✔</button>
     </div>
 
-    <!-- STEP 4: CONFIG -->
+    <!-- STEP 4: SETTINGS (TANPA PILIHAN BAHASA) -->
     <div id="configOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
-        <h1 class="title-glow">PENGATURAN</h1>
+        <h1 class="title-glow" data-i18n="settingsTitle">SETTINGS</h1>
         <div class="settings-box">
             <div class="setting-group">
-                <label id="langLabel">Bahasa / Language:</label>
-                <select id="langSelect" onchange="changeLanguage()">
-                    <option value="id">Indonesia</option>
-                    <option value="en">English</option>
-                </select>
-            </div>
-            <div class="setting-group">
-                <label id="fullscreenLabel">Layar Penuh (Fullscreen):</label>
+                <label data-i18n="fullscreen">Fullscreen:</label>
                 <select id="fullscreenSelect">
-                    <option value="off">OFF (Standar)</option>
-                    <option value="on">ON (Layar Penuh)</option>
+                    <option value="off" data-i18n="fsOff">OFF (Standard)</option>
+                    <option value="on" data-i18n="fsOn">ON (Full screen)</option>
                 </select>
             </div>
             <div class="setting-group">
-                <label id="fireModeLabel">Mode Tembak:</label>
+                <label data-i18n="fireMode">Fire Mode:</label>
                 <select id="fireModeSelect" onchange="handleFireModeChange()">
-                    <option value="manual">Manual (Tombol/Spasi)</option>
-                    <option value="auto">Otomatis / Auto</option>
+                    <option value="manual" data-i18n="fmManual">Manual (Button/Space)</option>
+                    <option value="auto" data-i18n="fmAuto">Auto</option>
                 </select>
             </div>
             <div class="setting-group">
-                <label id="flashLabel">Flash / Kilatan:</label>
+                <label data-i18n="flash">Flash Effect:</label>
                 <select id="flashSelect">
-                    <option value="on">ON (Aktif)</option>
-                    <option value="off">OFF (Mati)</option>
+                    <option value="on" data-i18n="flashOn">ON (Enabled)</option>
+                    <option value="off" data-i18n="flashOff">OFF (Disabled)</option>
                 </select>
             </div>
             <div class="setting-group">
-                <label id="volLabel">Volume Suara:</label>
+                <label data-i18n="volume">Sound Volume:</label>
                 <input type="range" id="volRange" min="0" max="100" value="50" oninput="updateVolumeLabel()">
                 <span id="volVal" style="color:#66fcf1; font-weight:bold;">50%</span>
             </div>
         </div>
-        <button class="blackhole-btn" onclick="proceedToGuide()">LANJUT ➤</button>
+        <button class="blackhole-btn" onclick="proceedToGuide()" data-i18n="next">NEXT ➤</button>
     </div>
 
-    <!-- STEP 5: PANDUAN -->
+    <!-- STEP 5: GUIDE -->
     <div id="guideOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
-        <h1 class="title-glow">PANDUAN BERMAIN</h1>
-        <p class="story-text" style="max-width: 440px; text-align: left; font-size: 11px; line-height: 1.5;">
-            🚀 <strong>KONTROL:</strong> Gunakan D-Pad (`▲` dan `▼`) di kiri bawah layar untuk menggerakkan pesawat naik/turun.<br>
-            🎯 <strong>TEMBAKAN:</strong> Tekan tombol `FIRE` (atau Spasi di keyboard). Jika memilih Mode Auto di pengaturan, tembakan akan keluar otomatis!<br>
-            ⚡ <strong>SUPER LASER:</strong> Setiap 8 alien yang dihancurkan mengisi 10% Energi Super Laser. Saat penuh, laser berubah kuat!<br>
-            🛡️ <strong>SHIELD:</strong> Setiap 15 alien yang dihancurkan mengaktifkan Shield selama 9,5 detik. Kebal dari semua damage!<br>
-            🛸 <strong>BOS & LEVEL:</strong> Bertahanlah melewati setiap gelombang (Wave) dan kalahkan Bos di setiap kelipatan Level 10.
-        </p>
-        <button class="blackhole-btn" onclick="proceedToModeSelect()">MENGERTI ✔</button>
+        <h1 class="title-glow" data-i18n="guideTitle">HOW TO PLAY</h1>
+        <p class="story-text" style="max-width: 460px; text-align: left; font-size: 11px; line-height: 1.45;" data-i18n="guideText"></p>
+        <button class="blackhole-btn" onclick="proceedToModeSelect()" data-i18n="understood">UNDERSTOOD ✔</button>
     </div>
 
-    <!-- STEP 6: KESULITAN -->
+    <!-- STEP 6: DIFFICULTY -->
     <div id="modeOverlay" class="overlay-screen" style="display: none;">
         <div class="planet-bg"></div>
         <div class="saturn-ring"></div>
         <div class="solar-orbit"></div>
-        <h1 class="title-glow">TINGKAT KESULITAN</h1>
-        <p class="story-text" id="diffHintText">
-            Pilih tingkat tantangan. Klik sekali untuk memilih, lalu tekan tombol "Yakin?" untuk konfirmasi.
-        </p>
+        <h1 class="title-glow" data-i18n="diffTitle">DIFFICULTY</h1>
+        <p class="story-text" id="diffHintText"></p>
         <div class="mode-btn-container">
-            <button class="mode-btn" onclick="selectDifficulty(10, this)">EASY / MUDAH<br><span style="font-size:11px; color:#2ecc71;">Max Level 10</span></button>
-            <button class="mode-btn" onclick="selectDifficulty(25, this)">MEDIUM / SEDANG<br><span style="font-size:11px; color:#66fcf1;">Max Level 25</span></button>
-            <button class="mode-btn" onclick="selectDifficulty(100, this)">HARD / SULIT<br><span style="font-size:11px; color:#f39c12;">Max Level 100</span></button>
-            <button class="mode-btn crazy" onclick="selectDifficulty(200, this)">CRAZY / GILA<br><span style="font-size:11px; color:#e74c3c;">Max Level 200</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(10, this)"><span data-i18n="easy">EASY</span><br><span style="font-size:11px; color:#2ecc71;"><span data-i18n="maxLevel">Max Level</span> 10</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(25, this)"><span data-i18n="medium">MEDIUM</span><br><span style="font-size:11px; color:#66fcf1;"><span data-i18n="maxLevel">Max Level</span> 25</span></button>
+            <button class="mode-btn" onclick="selectDifficulty(100, this)"><span data-i18n="hard">HARD</span><br><span style="font-size:11px; color:#f39c12;"><span data-i18n="maxLevel">Max Level</span> 100</span></button>
+            <button class="mode-btn crazy" onclick="selectDifficulty(200, this)"><span data-i18n="crazy">CRAZY</span><br><span style="font-size:11px; color:#e74c3c;"><span data-i18n="maxLevel">Max Level</span> 200</span></button>
         </div>
         <div id="confirmContainer" style="display: none; margin-top: 10px;">
-            <button class="blackhole-btn" id="confirmBtn" onclick="confirmStartGame()">YAKIN? ✔</button>
+            <button class="blackhole-btn" id="confirmBtn" onclick="confirmStartGame()" data-i18n="confirm">SURE? ✔</button>
         </div>
     </div>
 </div>
@@ -773,7 +793,117 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// ===== BINTANG LATAR HALAMAN (DEKORATIF) =====
+// ================== BAHASA (I18N) ==================
+const I18N = {
+    en: {
+        caption: "◈ UNKNOWN SIGNAL DETECTED IN SECTOR URA-6 ◈",
+        restart: "RESTART", exit: "EXIT",
+        score: "SCORE:", level: "LEVEL:", wave: "WAVE:", dmg: "DMG:", hp: "HP:",
+        bombLabel: "BIG BOMBA", shieldLabel: "SHIELD",
+        welcomeTitle: "WELCOME",
+        welcomeDesc: "Space sector locked. Destroy the aliens! Every 20 kills your ship launches a giant nuke, and every 15 kills raise your Shield.<br><br><strong>INFO:</strong> Space agency names drift in the background, get sucked into the top-left black hole, then re-emerge from the bottom-center!",
+        welcomeHint: "Controls: Extra-large D-Pad buttons on screen<br><i>Tip: enable Fullscreen in Settings for the best landscape view!</i>",
+        start: "▶ START",
+        uraDesc: "Update Archive: <strong>1 NOV 2026</strong><br><br>Welcome to the classic flight protocol. Continue to review warnings and system settings.",
+        next: "NEXT ➤",
+        warnTitle: "WARNING",
+        warnDesc: "This simulation contains bright flashing effects (nuke blasts and boss eliminations). Turn the Flash effect off in Settings if you are sensitive to light.<br><br><i>Operational safety protocols engaged.</i>",
+        understood: "UNDERSTOOD ✔",
+        settingsTitle: "SETTINGS",
+        fullscreen: "Fullscreen:", fsOff: "OFF (Standard)", fsOn: "ON (Full screen)",
+        fireMode: "Fire Mode:", fmManual: "Manual (Button/Space)", fmAuto: "Auto",
+        flash: "Flash Effect:", flashOn: "ON (Enabled)", flashOff: "OFF (Disabled)",
+        volume: "Sound Volume:",
+        guideTitle: "HOW TO PLAY",
+        guideText: "🚀 <strong>CONTROLS:</strong> Use the D-Pad (▲ ▼) at the bottom-left to move your ship up/down.<br>🎯 <strong>FIRE:</strong> Press FIRE (or Space). Your ship launches mini missiles. In Auto mode it fires by itself!<br>☢️ <strong>BIG BOMBA:</strong> Every 20 kills the ship launches ONE giant nuke. It detonates far from your ship or on contact with an alien!<br>🛡️ <strong>SHIELD:</strong> Every 15 kills = 9.5 seconds of invincibility.<br>👾 <strong>ENEMIES:</strong> Some aliens (red dome) shoot lasers: -15 HP.<br>🎁 <strong>DROPS:</strong> Gold-ringed aliens drop items: ×5 BOOST (damage &amp; HP for 6 s), HEALTH, or a DEBUFF (-25% for 6 s).<br>🛸 <strong>BOSS:</strong> Defeat the boss on every level that is a multiple of 10.",
+        diffTitle: "DIFFICULTY",
+        diffHint: "Choose your challenge. Tap once to select, then press the confirm button.",
+        diffChosen: (n) => `Mode selected (Max Level: ${n}). Press <strong>"SURE?"</strong> below to start the game!`,
+        easy: "EASY", medium: "MEDIUM", hard: "HARD", crazy: "CRAZY", maxLevel: "Max Level",
+        confirm: "SURE? ✔",
+        gameOverTitle: "GAME OVER",
+        gameOverDesc: (l, w, s) => `Ship destroyed at Level ${l} (Wave ${w}). Score: ${s}`,
+        victoryTitle: "MISSION SUCCESS\nVICTORY",
+        victoryDesc: (m, s) => `Incredible! Final Boss defeated at Level ${m}! Score: ${s}`,
+        buffUp: "BOOST ×5", buffDown: "DEBUFF -25%"
+    },
+    id: {
+        caption: "◈ SINYAL TAK DIKENAL TERDETEKSI DI SEKTOR URA-6 ◈",
+        restart: "RESTART", exit: "KELUAR",
+        score: "SKOR:", level: "LEVEL:", wave: "WAVE:", dmg: "DMG:", hp: "HP:",
+        bombLabel: "BIG BOMBA", shieldLabel: "SHIELD",
+        welcomeTitle: "WELCOME",
+        welcomeDesc: "Sektor antariksa terkunci. Hancurkan alien! Setiap 20 kill pesawat menembak 1 bom nuklir raksasa, dan setiap 15 kill mengaktifkan Shield.<br><br><strong>INFO:</strong> Nama-nama badan antariksa melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!",
+        welcomeHint: "Kontrol: Tombol D-Pad Ekstra Besar di Layar<br><i>Saran: Aktifkan Fullscreen di Pengaturan agar tampilan berbaring maksimal!</i>",
+        start: "▶ MULAI",
+        uraDesc: "Arsip Pembaruan: <strong>1 NOV 2026</strong><br><br>Selamat datang di protokol penerbangan klasik. Lanjutkan untuk meninjau peringatan dan pengaturan sistem.",
+        next: "LANJUT ➤",
+        warnTitle: "PERINGATAN",
+        warnDesc: "Simulasi ini memuat efek kilatan cahaya tinggi (ledakan nuklir dan eliminasi Bos). Matikan efek Flash di Pengaturan jika sensitif terhadap cahaya.<br><br><i>Operational safety protocols engaged.</i>",
+        understood: "MENGERTI ✔",
+        settingsTitle: "PENGATURAN",
+        fullscreen: "Layar Penuh:", fsOff: "OFF (Standar)", fsOn: "ON (Layar Penuh)",
+        fireMode: "Mode Tembak:", fmManual: "Manual (Tombol/Spasi)", fmAuto: "Otomatis",
+        flash: "Efek Kilatan:", flashOn: "ON (Aktif)", flashOff: "OFF (Mati)",
+        volume: "Volume Suara:",
+        guideTitle: "PANDUAN BERMAIN",
+        guideText: "🚀 <strong>KONTROL:</strong> Gunakan D-Pad (▲ ▼) di kiri bawah layar untuk menggerakkan pesawat naik/turun.<br>🎯 <strong>TEMBAKAN:</strong> Tekan tombol FIRE (atau Spasi). Pesawat menembakkan rudal mini. Di Mode Auto, tembakan keluar otomatis!<br>☢️ <strong>BIG BOMBA:</strong> Setiap 20 kill pesawat menembak SATU bom nuklir raksasa. Meledak saat sudah jauh dari pesawat atau saat kena alien!<br>🛡️ <strong>SHIELD:</strong> Setiap 15 kill = kebal selama 9,5 detik.<br>👾 <strong>MUSUH:</strong> Beberapa alien (kubah merah) menembak laser: -15 HP.<br>🎁 <strong>DROP:</strong> Alien dengan cincin emas menjatuhkan item: BOOST ×5 (damage &amp; HP selama 6 detik), HEALTH, atau DEBUFF (-25% selama 6 detik).<br>🛸 <strong>BOS:</strong> Kalahkan Bos di setiap level kelipatan 10.",
+        diffTitle: "TINGKAT KESULITAN",
+        diffHint: "Pilih tingkat tantangan. Klik sekali untuk memilih, lalu tekan tombol konfirmasi.",
+        diffChosen: (n) => `Mode terpilih (Max Level: ${n}). Tekan tombol <strong>"YAKIN?"</strong> di bawah untuk memulai permainan!`,
+        easy: "MUDAH", medium: "SEDANG", hard: "SULIT", crazy: "GILA", maxLevel: "Max Level",
+        confirm: "YAKIN? ✔",
+        gameOverTitle: "GAME OVER",
+        gameOverDesc: (l, w, s) => `Pesawat hancur di Level ${l} (Gelombang ${w}). Skor: ${s}`,
+        victoryTitle: "MISSION SUCCESS\nVICTORY",
+        victoryDesc: (m, s) => `Luar Biasa! Kamu berhasil menaklukkan Sektor Antariksa hingga Level ${m}! Skor Akhir: ${s}`,
+        buffUp: "BOOST ×5", buffDown: "DEBUFF -25%"
+    }
+};
+
+let currentLang = 'en';          // Overlay pertama WAJIB bahasa Inggris
+let welcomeState = 'welcome';    // 'welcome' | 'gameover' | 'victory'
+let difficultyChosen = false;
+
+function renderWelcome() {
+    const t = I18N[currentLang];
+    const title = document.getElementById('mainTitle');
+    const desc = document.getElementById('mainDesc');
+    if (welcomeState === 'gameover') {
+        title.innerText = t.gameOverTitle;
+        title.style.color = '#e74c3c';
+        desc.innerText = t.gameOverDesc(level, currentWave, score);
+    } else if (welcomeState === 'victory') {
+        title.innerText = t.victoryTitle;
+        title.style.color = '#2ecc71';
+        desc.innerText = t.victoryDesc(maxLevelSetting, score);
+    } else {
+        title.innerText = t.welcomeTitle;
+        title.style.color = '#66fcf1';
+        desc.innerHTML = t.welcomeDesc;
+    }
+}
+
+function renderDiffHint() {
+    const t = I18N[currentLang];
+    document.getElementById('diffHintText').innerHTML = difficultyChosen ? t.diffChosen(selectedLevelMaxTemp) : t.diffHint;
+}
+
+function setLang(l) {
+    currentLang = l;
+    document.documentElement.lang = l;
+    const t = I18N[l];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (typeof t[key] === 'string') el.innerHTML = t[key];
+    });
+    document.getElementById('langBtnEn').classList.toggle('active', l === 'en');
+    document.getElementById('langBtnId').classList.toggle('active', l === 'id');
+    renderWelcome();
+    renderDiffHint();
+}
+
+// ===== BINTANG LATAR HALAMAN =====
 (function buildCosmicStars() {
     const bg = document.getElementById('cosmic-bg');
     const tints = ['#ffffff', '#ffffff', '#cfe9ff', '#66fcf1', '#d9c2ff'];
@@ -792,14 +922,22 @@ const ctx = canvas.getContext('2d');
     }
 })();
 
-let currentLang = 'id';
+// ================== PENGATURAN GAME ==================
 let fireMode = 'manual';
 let flashEnabled = true;
 let soundVolume = 0.5;
 let maxLevelSetting = 100;
 let fullscreenEnabled = false;
 let selectedLevelMaxTemp = 100;
-let alienKillCount = 0; 
+
+const BOMB_W = 75;           // ukuran bom nuklir (1,5x panjang pesawat). Ubah di sini kalau mau
+const BOMB_H = 22;
+const BOMB_RANGE = 420;      // jarak terbang sebelum meledak otomatis
+const BOMB_BLAST_RADIUS = 280;
+const BOMB_KILLS = 20;       // kill yang dibutuhkan untuk 1 bom
+const SHIELD_KILLS = 15;
+const SHIELD_DURATION = 9500;
+const BUFF_DURATION = 6000;
 
 let spaceAgencies = [
     { name: "NASA (USA)", x: 250, y: 150, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, color: "rgba(102, 252, 241, 0.5)" },
@@ -810,6 +948,7 @@ let spaceAgencies = [
     { name: "ISRO (India)", x: 400, y: 280, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, color: "rgba(46, 204, 113, 0.5)" }
 ];
 
+// ================== AUDIO ==================
 let audioCtx = null;
 function initAudio() {
     if (!audioCtx) {
@@ -829,14 +968,38 @@ function playSound(type) {
         gain.connect(audioCtx.destination);
         
         let now = audioCtx.currentTime;
-        if (type === 'laser') {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(700, now);
-            osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
-            gain.gain.setValueAtTime(0.1 * soundVolume, now);
-            gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+        if (type === 'missile') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(260, now);
+            osc.frequency.exponentialRampToValueAtTime(90, now + 0.15);
+            gain.gain.setValueAtTime(0.07 * soundVolume, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
             osc.start(now);
-            osc.stop(now + 0.1);
+            osc.stop(now + 0.15);
+        } else if (type === 'enemy-laser') {
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(900, now);
+            osc.frequency.exponentialRampToValueAtTime(300, now + 0.12);
+            gain.gain.setValueAtTime(0.05 * soundVolume, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+            osc.start(now);
+            osc.stop(now + 0.12);
+        } else if (type === 'pickup') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(500, now);
+            osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
+            gain.gain.setValueAtTime(0.15 * soundVolume, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+            osc.start(now);
+            osc.stop(now + 0.18);
+        } else if (type === 'nuke') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(100, now);
+            osc.frequency.exponentialRampToValueAtTime(18, now + 1.6);
+            gain.gain.setValueAtTime(0.6 * soundVolume, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 1.6);
+            osc.start(now);
+            osc.stop(now + 1.6);
         } else if (type === 'click') {
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(500, now);
@@ -881,9 +1044,8 @@ function playSound(type) {
     } catch(e) {}
 }
 
-// Suara "klik" untuk semua tombol menu
 document.addEventListener('click', e => {
-    if (e.target.closest('.blackhole-btn, .mode-btn, .opt-btn')) {
+    if (e.target.closest('.blackhole-btn, .mode-btn, .opt-btn, .lang-btn')) {
         initAudio();
         playSound('click');
     }
@@ -916,29 +1078,7 @@ function handleFireModeChange() {
     }
 }
 
-function changeLanguage() {
-    currentLang = document.getElementById('langSelect').value;
-    if(currentLang === 'en') {
-        document.getElementById('langLabel').innerText = "Language:";
-        document.getElementById('fullscreenLabel').innerText = "Fullscreen Mode:";
-        document.getElementById('fireModeLabel').innerText = "Fire Mode:";
-        document.getElementById('flashLabel').innerText = "Flash Effect:";
-        document.getElementById('volLabel').innerText = "Sound Volume:";
-        document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "Space sector locked. Every 8 kills charge 10% Super Laser energy, every 15 kills activate your Shield!<br><br><strong>INFO:</strong> Floating space agencies get sucked into the top-left blackhole and emerge from the bottom-center.";
-        document.getElementById('mainHint').innerHTML = "Controls: Extra Large D-Pad Buttons on Screen<br><i>Tip: Use Fullscreen mode for the best landscape experience!</i>";
-    } else {
-        document.getElementById('langLabel').innerText = "Bahasa / Language:";
-        document.getElementById('fullscreenLabel').innerText = "Layar Penuh (Fullscreen):";
-        document.getElementById('fireModeLabel').innerText = "Mode Tembak:";
-        document.getElementById('flashLabel').innerText = "Flash / Kilatan:";
-        document.getElementById('volLabel').innerText = "Volume Suara:";
-        document.getElementById('mainTitle').innerText = "WELCOME";
-        document.getElementById('mainDesc').innerHTML = "Sektor antariksa terkunci. Kalahkan alien (setiap 8 kill mengisi 10% energi laser, setiap 15 kill mengaktifkan shield).<br><br><strong>INFO:</strong> Nama-nama badan antariksa melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!";
-        document.getElementById('mainHint').innerHTML = "Kontrol: Tombol D-Pad Ekstra Besar di Layar<br><i>Saran: Gunakan mode Fullscreen di pengaturan agar tampilan berbaring maksimal!</i>";
-    }
-}
-
+// ================== NAVIGASI OVERLAY ==================
 function proceedToUra() {
     initAudio();
     document.getElementById('welcomeOverlay').style.display = 'none';
@@ -990,18 +1130,23 @@ function proceedToModeSelect() {
     
     applyFullscreenSetting();
 
+    difficultyChosen = false;
+    document.querySelectorAll('#modeOverlay .mode-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('confirmContainer').style.display = 'none';
+    renderDiffHint();
+
     document.getElementById('guideOverlay').style.display = 'none';
     document.getElementById('modeOverlay').style.display = 'flex';
 }
 
 function selectDifficulty(levelMax, btnElement) {
     selectedLevelMaxTemp = levelMax;
-    let allBtns = document.querySelectorAll('#modeOverlay .mode-btn');
-    allBtns.forEach(b => b.classList.remove('selected'));
+    difficultyChosen = true;
+    document.querySelectorAll('#modeOverlay .mode-btn').forEach(b => b.classList.remove('selected'));
     btnElement.classList.add('selected');
 
     document.getElementById('confirmContainer').style.display = 'block';
-    document.getElementById('diffHintText').innerHTML = `Mode terpilih (Max Level: ${levelMax}). Tekan tombol <strong>"Yakin?"</strong> di bawah untuk memulai permainan!`;
+    renderDiffHint();
 }
 
 function confirmStartGame() {
@@ -1012,6 +1157,7 @@ function confirmStartGame() {
 
 function restartGame() {
     gameActive = false;
+    isVictorySequence = false;
     document.getElementById('uraOverlay').style.display = 'none';
     document.getElementById('warningOverlay').style.display = 'none';
     document.getElementById('configOverlay').style.display = 'none';
@@ -1020,14 +1166,15 @@ function restartGame() {
     document.getElementById('confirmContainer').style.display = 'none';
     document.getElementById('welcomeOverlay').style.display = 'flex';
     document.getElementById('startBtn').style.display = 'flex';
-    document.getElementById('mainTitle').style.color = "#66fcf1";
-    changeLanguage();
+    welcomeState = 'welcome';
+    renderWelcome();
 }
 
 function exitGame() {
     window.location.href = "about:blank";
 }
 
+// ================== STATE GAME ==================
 let gameActive = false;
 let isVictorySequence = false;
 let score = 0;
@@ -1037,17 +1184,22 @@ let baseLaserDamage = 10;
 let currentLaserDamage = 10;
 let baseAlienHealth = 25;
 
-let energyLevel = 0; 
-let superLaserActive = false;
-let superLaserTimer = 0;
+let alienKillCount = 0;      // progres menuju Big Bomba (0-20)
 
 let shieldKillCount = 0;
 let shieldActive = false;
 let shieldEndTime = 0;
 
+let buffType = null;         // null | 'up' | 'debuff'
+let buffEnd = 0;
+
 let keys = {};
 let player = {};
-let lasers = [];
+let lasers = [];             // rudal mini
+let bombs = [];              // bom nuklir
+let explosions = [];
+let alienBullets = [];
+let drops = [];
 let aliens = [];
 let deadUfos = [];
 let dancingMoons = [];
@@ -1127,20 +1279,29 @@ function initPlayer() {
     };
 }
 
+// Pengali buff/debuff (berlaku untuk damage DAN darah)
+function buffMult() {
+    if (buffType === 'up') return 5;
+    if (buffType === 'debuff') return 0.75;
+    return 1;
+}
+
 function startGame() {
-    shieldKillCount = 0;
-    shieldActive = false;
     initAudio();
     score = 0;
     level = 1;
     currentWave = 1;
     isVictorySequence = false;
     currentLaserDamage = baseLaserDamage;
-    energyLevel = 0;
     alienKillCount = 0;
-    superLaserActive = false;
-    superLaserTimer = 0;
+    shieldKillCount = 0;
+    shieldActive = false;
+    buffType = null;
     lasers = [];
+    bombs = [];
+    explosions = [];
+    alienBullets = [];
+    drops = [];
     aliens = [];
     deadUfos = [];
     dancingMoons = [];
@@ -1163,6 +1324,8 @@ function triggerVictorySequence() {
     triggerFlash(3000);
     boss = null;
     aliens = [];
+    alienBullets = [];
+    drops = [];
     score += 1000 * (maxLevelSetting / 10);
 
     for(let i=0; i<6; i++) {
@@ -1208,9 +1371,9 @@ function triggerVictorySequence() {
     }
 
     setTimeout(() => {
-        document.getElementById('mainTitle').innerText = "MISSION SUCCESS\nVICTORY";
-        document.getElementById('mainTitle').style.color = "#2ecc71";
-        document.getElementById('mainDesc').innerText = currentLang === 'en' ? `Incredible! Final Boss defeated at Level ${maxLevelSetting}! Score: ${score}` : `Luar Biasa! Kamu berhasil menaklukkan Sektor Antariksa hingga Level ${maxLevelSetting}! Skor Akhir: ${score}`;
+        if (!isVictorySequence) return; // batal kalau user sudah restart
+        welcomeState = 'victory';
+        renderWelcome();
         document.getElementById('welcomeOverlay').style.display = 'flex';
         document.getElementById('startBtn').style.display = 'none';
     }, 3000);
@@ -1219,24 +1382,36 @@ function triggerVictorySequence() {
 function gameOver() {
     if (!gameActive) return;
     gameActive = false;
+    welcomeState = 'gameover';
+    renderWelcome();
     document.getElementById('welcomeOverlay').style.display = 'flex';
-    document.getElementById('mainTitle').innerText = "GAME OVER";
-    document.getElementById('mainTitle').style.color = "#e74c3c";
-    document.getElementById('mainDesc').innerText = currentLang === 'en' ? `Ship destroyed at Level ${level}. Score: ${score}` : `Pesawat hancur di Level ${level} (Gelombang ${currentWave}). Skor: ${score}.`;
     document.getElementById('startBtn').style.display = 'flex';
 }
 
 function updateUI() {
+    const t = I18N[currentLang];
     document.getElementById('scoreDisplay').innerText = score;
     document.getElementById('levelDisplay').innerText = level;
     document.getElementById('waveDisplay').innerText = `${currentWave}/3`;
-    document.getElementById('damageDisplay').innerText = currentLaserDamage.toFixed(1);
-    document.getElementById('hpDisplay').innerText = Math.max(0, Math.ceil(player.hp));
-    document.getElementById('energy-fill').style.width = energyLevel + '%';
-    let shieldPct = shieldActive ? Math.max(0, (shieldEndTime - Date.now()) / 9500 * 100) : (shieldKillCount / 15 * 100);
+    document.getElementById('damageDisplay').innerText = (currentLaserDamage * buffMult()).toFixed(1);
+    // HP yang tampil = HP efektif (ikut buff/debuff)
+    document.getElementById('hpDisplay').innerText = Math.max(0, Math.ceil((player.hp || 0) * buffMult()));
+    document.getElementById('energy-fill').style.width = Math.min(100, (alienKillCount / BOMB_KILLS) * 100) + '%';
+    let shieldPct = shieldActive ? Math.max(0, (shieldEndTime - Date.now()) / SHIELD_DURATION * 100) : (shieldKillCount / SHIELD_KILLS * 100);
     document.getElementById('shield-fill').style.width = shieldPct + '%';
+
+    const bi = document.getElementById('buff-indicator');
+    if (buffType) {
+        let left = Math.max(0, (buffEnd - Date.now()) / 1000).toFixed(1);
+        bi.style.display = 'block';
+        bi.style.color = buffType === 'up' ? '#2ecc71' : '#c39bd3';
+        bi.innerText = (buffType === 'up' ? t.buffUp : t.buffDown) + '  ' + left + 's';
+    } else {
+        bi.style.display = 'none';
+    }
 }
 
+// ================== LEVEL ==================
 function checkLevelProgression() {
     if (isVictorySequence) return;
 
@@ -1301,7 +1476,10 @@ function spawnAlien() {
         height: 28,
         speed: (2 + Math.random() * 1.5 + (level * 0.05)) * ((maxLevelSetting === 200) ? 1.3 : 1.0),
         hp: alienHp,
-        maxHp: alienHp
+        maxHp: alienHp,
+        shooter: Math.random() < 0.25,   // 25% alien bisa menembak (kubah merah)
+        dropper: Math.random() < 0.15,   // 15% alien menjatuhkan item (cincin emas)
+        shootTimer: 60 + Math.random() * 120
     });
     aliensSpawnedInWave++;
 }
@@ -1337,48 +1515,133 @@ function createParticles(x, y, color, count = 8) {
     }
 }
 
+// ================== TEMBAKAN ==================
+// Tembakan biasa = rudal mini (2x ukuran laser lama: 36x8)
 function shootLaser() {
     let now = Date.now();
-    let cooldown = superLaserActive ? 60 : 180;
-    if (now - player.lastShoot > cooldown) {
-        let width = superLaserActive ? 54 : 18;  
-        let height = superLaserActive ? 12 : 4;
-        let speed = superLaserActive ? 18 : 13;
-
+    if (now - player.lastShoot > 200) {
         lasers.push({
             x: player.x + player.width - 5,
-            y: player.y + player.height / 2 - (height/2),
-            width: width,
-            height: height,
-            speed: speed,
-            isSuper: superLaserActive
+            y: player.y + player.height / 2 - 4,
+            width: 36,
+            height: 8,
+            speed: 13
         });
-        playSound('laser');
+        playSound('missile');
         player.lastShoot = now;
     }
 }
 
-// Setiap 8 kill = +10% energi laser, setiap 15 kill = shield 9,5 detik
-function addKillEnergy() {
-    alienKillCount++;
-    if (!superLaserActive && energyLevel < 100 && alienKillCount >= 8) {
-        alienKillCount = 0;
-        energyLevel = Math.min(100, energyLevel + 10);
-        if (energyLevel >= 100) {
-            superLaserActive = true;
-            superLaserTimer = 480;
+// Big Bomba: 1 bom nuklir ukuran Tsar Bomba
+function fireNuke() {
+    bombs.push({
+        x: player.x + player.width - 5,
+        y: player.y + player.height / 2 - BOMB_H / 2,
+        width: BOMB_W,
+        height: BOMB_H,
+        speed: 8,
+        startX: player.x + player.width - 5
+    });
+    playSound('flashbang');
+}
+
+function explodeBomb(b) {
+    const cx = b.x + b.width;
+    const cy = b.y + b.height / 2;
+    const R = BOMB_BLAST_RADIUS;
+
+    explosions.push({ x: cx, y: cy, maxR: R, life: 45, maxLife: 45 });
+    playSound('nuke');
+    triggerFlash(350);
+    createParticles(cx, cy, '#ff9f1a', 40);
+    createParticles(cx, cy, '#ffffff', 20);
+
+    // Semua alien dalam radius ledakan hancur
+    for (let i = aliens.length - 1; i >= 0; i--) {
+        let a = aliens[i];
+        let d = Math.hypot(a.x + a.width / 2 - cx, a.y + a.height / 2 - cy);
+        if (d <= R) {
+            handleAlienDeath(a, 15, true);
+            aliens.splice(i, 1);
+        }
+    }
+    // Peluru alien dalam radius ikut hilang
+    alienBullets = alienBullets.filter(bl => Math.hypot(bl.x - cx, bl.y - cy) > R);
+
+    // Boss kena 40% darah maksimal kalau dalam radius
+    if (boss) {
+        let d = Math.hypot(boss.x + boss.width / 2 - cx, boss.y + boss.height / 2 - cy);
+        if (d <= R + boss.width / 2) boss.hp -= boss.maxHp * 0.4;
+    }
+    updateUI();
+}
+
+// Kill counter: 20 kill = 1 bom, 15 kill = shield
+function addKillEnergy(fromBomb) {
+    if (!fromBomb) {
+        alienKillCount++;
+        if (alienKillCount >= BOMB_KILLS) {
+            alienKillCount = 0;
+            fireNuke();
         }
     }
     if (!shieldActive) {
         shieldKillCount++;
-        if (shieldKillCount >= 15) {
+        if (shieldKillCount >= SHIELD_KILLS) {
             shieldKillCount = 0;
             shieldActive = true;
-            shieldEndTime = Date.now() + 9500;
+            shieldEndTime = Date.now() + SHIELD_DURATION;
         }
     }
+    updateUI();
 }
 
+function handleAlienDeath(a, pts, fromBomb) {
+    createParticles(a.x + a.width / 2, a.y + a.height / 2, '#e74c3c', 10);
+    playSound('explode-small');
+    score += pts;
+    addKillEnergy(fromBomb);
+    if (a.dropper) spawnDrop(a.x, a.y);
+}
+
+// ================== DROP ITEM ==================
+// 55% upgrade (60% boost x5, 40% health), 45% debuff
+function spawnDrop(x, y) {
+    let type;
+    if (Math.random() < 0.55) {
+        type = Math.random() < 0.6 ? 'boost' : 'health';
+    } else {
+        type = 'debuff';
+    }
+    drops.push({ x: x, y: y, type: type, size: 26, t: Math.random() * 6 });
+}
+
+function applyDrop(d) {
+    playSound('pickup');
+    if (d.type === 'health') {
+        player.hp = Math.min(player.maxHp, player.hp + 40);
+        createParticles(player.x + 20, player.y + 10, '#2ecc71', 14);
+    } else if (d.type === 'boost') {
+        buffType = 'up';
+        buffEnd = Date.now() + BUFF_DURATION;
+        createParticles(player.x + 20, player.y + 10, '#f1c40f', 18);
+    } else {
+        buffType = 'debuff';
+        buffEnd = Date.now() + BUFF_DURATION;
+        createParticles(player.x + 20, player.y + 10, '#8e44ad', 18);
+    }
+    updateUI();
+}
+
+// Semua damage ke pemain lewat sini (shield & buff ikut dihitung)
+function damagePlayer(raw) {
+    if (shieldActive) return;
+    player.hp -= raw / buffMult();
+    updateUI();
+    if (player.hp <= 0) gameOver();
+}
+
+// ================== UPDATE ==================
 function update() {
     if (!gameActive) return;
 
@@ -1387,17 +1650,13 @@ function update() {
 
     if (fireMode === 'auto' || keys['Space']) shootLaser();
 
-    if (superLaserActive) {
-        superLaserTimer--;
-        if (superLaserTimer <= 0) {
-            superLaserActive = false;
-            energyLevel = 0;
-        }
+    if (shieldActive) {
+        if (Date.now() >= shieldEndTime) shieldActive = false;
         updateUI();
     }
 
-    if (shieldActive) {
-        if (Date.now() >= shieldEndTime) shieldActive = false;
+    if (buffType) {
+        if (Date.now() >= buffEnd) buffType = null;
         updateUI();
     }
 
@@ -1412,28 +1671,28 @@ function update() {
         checkLevelProgression();
     }
 
+    // Rudal mini
     for (let i = lasers.length - 1; i >= 0; i--) {
         lasers[i].x += lasers[i].speed;
         if (lasers[i].x > canvas.width) lasers.splice(i, 1);
     }
 
+    // Boss
     if (boss && !isVictorySequence) {
         boss.y += boss.speed * boss.direction;
         if (boss.y <= 10 || boss.y >= canvas.height - boss.height - 10) boss.direction *= -1;
 
         if (player.x < boss.x + boss.width && player.x + player.width > boss.x &&
             player.y < boss.y + boss.height && player.y + player.height > boss.y) {
-            if (!shieldActive) player.hp -= boss.damage * 0.08;
+            damagePlayer(boss.damage * 0.08);
             createParticles(player.x, player.y, '#e74c3c', 4);
-            updateUI();
-            if (player.hp <= 0) gameOver();
         }
 
         for (let j = lasers.length - 1; j >= 0; j--) {
             let l = lasers[j];
             if (l.x < boss.x + boss.width && l.x + l.width > boss.x &&
                 l.y < boss.y + boss.height && l.y + l.height > boss.y) {
-                boss.hp -= currentLaserDamage;
+                boss.hp -= currentLaserDamage * buffMult();
                 createParticles(l.x, l.y, '#2ecc71', 5);
                 lasers.splice(j, 1);
                 break;
@@ -1441,6 +1700,7 @@ function update() {
         }
     }
 
+    // Alien
     if (!isVictorySequence) {
         for (let i = aliens.length - 1; i >= 0; i--) {
             let a = aliens[i];
@@ -1448,24 +1708,36 @@ function update() {
 
             // Alien mati karena splash dibersihkan di sini
             if (a.hp <= 0) {
-                createParticles(a.x, a.y, '#f39c12', 8);
+                handleAlienDeath(a, 10, false);
                 aliens.splice(i, 1);
-                score += 10;
-                addKillEnergy();
-                updateUI();
                 continue;
             }
 
             a.x -= a.speed;
 
+            // Alien penembak
+            if (a.shooter) {
+                a.shootTimer--;
+                if (a.shootTimer <= 0 && a.x < canvas.width - 30 && a.x > player.x + 60) {
+                    alienBullets.push({
+                        x: a.x - 6,
+                        y: a.y + a.height / 2 - 2,
+                        width: 16,
+                        height: 4,
+                        speed: 7
+                    });
+                    playSound('enemy-laser');
+                    a.shootTimer = 100 + Math.random() * 100;
+                }
+            }
+
+            // Tabrakan dengan pemain
             if (player.x < a.x + a.width && player.x + player.width > a.x &&
                 player.y < a.y + a.height && player.y + player.height > a.y) {
-                if (!shieldActive) player.hp -= 20;
+                damagePlayer(20);
                 createParticles(a.x, a.y, '#e74c3c', 12);
                 playSound('explode-small');
                 aliens.splice(i, 1);
-                updateUI();
-                if (player.hp <= 0) gameOver();
                 continue;
             }
 
@@ -1476,21 +1748,18 @@ function update() {
                 if (l.x < a.x + a.width && l.x + l.width > a.x &&
                     l.y < a.y + a.height && l.y + l.height > a.y) {
                     
-                    let dmg = superLaserActive ? currentLaserDamage * 3 : currentLaserDamage;
-                    a.hp -= dmg;
+                    a.hp -= currentLaserDamage * buffMult();
                     createParticles(l.x, l.y, '#f39c12', 4);
-                    if (!l.isSuper) lasers.splice(j, 1);
+                    lasers.splice(j, 1);
 
                     if (a.hp <= 0) {
                         let deadX = a.x;
                         let deadY = a.y;
-                        createParticles(deadX, deadY, '#e74c3c', 10);
-                        playSound('explode-small');
+                        handleAlienDeath(a, 15, false);
                         aliens.splice(i, 1);
                         removed = true;
-                        score += 15;
-                        addKillEnergy();
 
+                        // Splash damage ke alien sekitar (yang mati dibersihkan di awal loop)
                         let splashDamage = a.maxHp * 0.3;
                         aliens.forEach(otherAlien => {
                             let dist = Math.hypot(otherAlien.x - deadX, otherAlien.y - deadY);
@@ -1499,8 +1768,6 @@ function update() {
                                 createParticles(otherAlien.x, otherAlien.y, '#e74c3c', 3);
                             }
                         });
-
-                        updateUI();
                     }
                     break;
                 }
@@ -1508,6 +1775,63 @@ function update() {
 
             if (removed) continue;
             if (a.x + a.width < 0) aliens.splice(i, 1);
+        }
+    }
+
+    // Bom nuklir: meledak jauh dari pesawat ATAU saat kena alien/boss
+    for (let i = bombs.length - 1; i >= 0; i--) {
+        let b = bombs[i];
+        b.x += b.speed;
+        let hit = false;
+
+        if (b.x - b.startX >= BOMB_RANGE || b.x > canvas.width) {
+            hit = true;
+        } else {
+            for (let k = 0; k < aliens.length; k++) {
+                let a = aliens[k];
+                if (b.x < a.x + a.width && b.x + b.width > a.x &&
+                    b.y < a.y + a.height && b.y + b.height > a.y) { hit = true; break; }
+            }
+            if (!hit && boss &&
+                b.x < boss.x + boss.width && b.x + b.width > boss.x &&
+                b.y < boss.y + boss.height && b.y + b.height > boss.y) hit = true;
+        }
+
+        if (hit) {
+            bombs.splice(i, 1);
+            explodeBomb(b);
+        }
+    }
+
+    // Efek ledakan
+    for (let i = explosions.length - 1; i >= 0; i--) {
+        explosions[i].life--;
+        if (explosions[i].life <= 0) explosions.splice(i, 1);
+    }
+
+    // Peluru alien (-15 HP)
+    for (let i = alienBullets.length - 1; i >= 0; i--) {
+        let bl = alienBullets[i];
+        bl.x -= bl.speed;
+        if (bl.x + bl.width < 0) { alienBullets.splice(i, 1); continue; }
+        if (bl.x < player.x + player.width && bl.x + bl.width > player.x &&
+            bl.y < player.y + player.height && bl.y + bl.height > player.y) {
+            alienBullets.splice(i, 1);
+            createParticles(player.x + 10, bl.y, '#ff4d6d', 8);
+            damagePlayer(15);
+        }
+    }
+
+    // Item drop
+    for (let i = drops.length - 1; i >= 0; i--) {
+        let d = drops[i];
+        d.x -= 2;
+        d.t += 0.1;
+        if (d.x + d.size < 0) { drops.splice(i, 1); continue; }
+        if (player.x < d.x + d.size && player.x + player.width > d.x &&
+            player.y < d.y + d.size && player.y + player.height > d.y) {
+            drops.splice(i, 1);
+            applyDrop(d);
         }
     }
 
@@ -1570,6 +1894,35 @@ function update() {
         p.x += p.vx; p.y += p.vy; p.life--;
         if (p.life <= 0) particles.splice(i, 1);
     }
+}
+
+// ================== GAMBAR ==================
+function drawDrop(d) {
+    let cy = d.y + Math.sin(d.t) * 4;
+    let cx = d.x + d.size / 2;
+    let r = d.size / 2;
+    let color, label;
+    if (d.type === 'boost') { color = '#f1c40f'; label = '×5'; }
+    else if (d.type === 'health') { color = '#2ecc71'; label = '+'; }
+    else { color = '#8e44ad'; label = '-25'; }
+
+    ctx.save();
+    ctx.shadowBlur = 14;
+    ctx.shadowColor = color;
+    ctx.fillStyle = '#0b0c10';
+    ctx.beginPath();
+    ctx.arc(cx, cy + r, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = color;
+    ctx.font = 'bold 12px "Courier Prime", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, cx, cy + r);
+    ctx.restore();
 }
 
 function draw() {
@@ -1664,8 +2017,12 @@ function draw() {
         ctx.restore();
     });
 
+    // Item drop
+    drops.forEach(drawDrop);
+
+    // Pesawat pemain
     ctx.save();
-    ctx.fillStyle = superLaserActive ? '#f39c12' : '#66fcf1';
+    ctx.fillStyle = '#66fcf1';
     ctx.beginPath();
     ctx.moveTo(player.x, player.y + player.height / 2);
     ctx.lineTo(player.x + player.width - 10, player.y + 2);
@@ -1674,7 +2031,7 @@ function draw() {
     ctx.closePath();
     ctx.fill();
 
-    ctx.fillStyle = superLaserActive ? '#e74c3c' : '#45a29e';
+    ctx.fillStyle = '#45a29e';
     ctx.fillRect(player.x + 8, player.y - 4, 12, player.height + 8);
     ctx.fillStyle = '#0b0c10';
     ctx.beginPath();
@@ -1690,7 +2047,21 @@ function draw() {
     ctx.fill();
     ctx.restore();
 
-    // BUBBLE SHIELD
+    // Aura buff / debuff
+    if (buffType) {
+        ctx.save();
+        ctx.strokeStyle = buffType === 'up' ? '#f1c40f' : '#8e44ad';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = ctx.strokeStyle;
+        ctx.globalAlpha = 0.6 + Math.sin(Date.now() * 0.01) * 0.3;
+        ctx.beginPath();
+        ctx.arc(player.x + player.width / 2, player.y + player.height / 2, 30, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // Bubble shield
     if (shieldActive) {
         let left = shieldEndTime - Date.now();
         ctx.save();
@@ -1705,23 +2076,108 @@ function draw() {
         ctx.restore();
     }
 
+    // Rudal mini
     lasers.forEach(l => {
-        ctx.fillStyle = l.isSuper ? '#2ecc71' : '#e74c3c';
+        ctx.save();
         ctx.shadowBlur = 8;
-        ctx.shadowColor = l.isSuper ? '#2ecc71' : '#e74c3c';
-        ctx.fillRect(l.x, l.y, l.width, l.height);
+        ctx.shadowColor = '#ff7043';
+        // api
+        ctx.fillStyle = '#f39c12';
+        ctx.beginPath();
+        ctx.moveTo(l.x, l.y + 1);
+        ctx.lineTo(l.x - 8 - Math.random() * 4, l.y + l.height / 2);
+        ctx.lineTo(l.x, l.y + l.height - 1);
+        ctx.closePath();
+        ctx.fill();
+        // badan
+        ctx.fillStyle = '#d5d8dc';
+        ctx.fillRect(l.x, l.y + 1, l.width - 8, l.height - 2);
+        // hidung
+        ctx.fillStyle = '#e74c3c';
+        ctx.beginPath();
+        ctx.moveTo(l.x + l.width - 8, l.y);
+        ctx.lineTo(l.x + l.width, l.y + l.height / 2);
+        ctx.lineTo(l.x + l.width - 8, l.y + l.height);
+        ctx.closePath();
+        ctx.fill();
+        // sirip
+        ctx.fillStyle = '#7f8c8d';
+        ctx.fillRect(l.x, l.y - 2, 7, 2);
+        ctx.fillRect(l.x, l.y + l.height, 7, 2);
+        ctx.restore();
     });
-    ctx.shadowBlur = 0;
 
+    // Bom nuklir (Tsar Bomba)
+    bombs.forEach(b => {
+        ctx.save();
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = '#ffb347';
+        // api belakang
+        ctx.fillStyle = '#f39c12';
+        ctx.beginPath();
+        ctx.moveTo(b.x, b.y + 4);
+        ctx.lineTo(b.x - 16 - Math.random() * 8, b.y + b.height / 2);
+        ctx.lineTo(b.x, b.y + b.height - 4);
+        ctx.closePath();
+        ctx.fill();
+        // sirip ekor
+        ctx.fillStyle = '#7f8c8d';
+        ctx.beginPath();
+        ctx.moveTo(b.x, b.y - 6);
+        ctx.lineTo(b.x + 18, b.y + 2);
+        ctx.lineTo(b.x + 18, b.y + b.height - 2);
+        ctx.lineTo(b.x, b.y + b.height + 6);
+        ctx.closePath();
+        ctx.fill();
+        // badan
+        ctx.fillStyle = '#ecf0f1';
+        ctx.beginPath();
+        ctx.ellipse(b.x + b.width * 0.55, b.y + b.height / 2, b.width * 0.45, b.height / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // garis merah & kuning
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#e74c3c';
+        ctx.fillRect(b.x + b.width * 0.42, b.y + 2, 7, b.height - 4);
+        ctx.fillStyle = '#f1c40f';
+        ctx.fillRect(b.x + b.width * 0.62, b.y + 3, 5, b.height - 6);
+        ctx.restore();
+    });
+
+    // Peluru alien
+    alienBullets.forEach(bl => {
+        ctx.save();
+        ctx.fillStyle = '#ff4d6d';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#ff4d6d';
+        ctx.fillRect(bl.x, bl.y, bl.width, bl.height);
+        ctx.restore();
+    });
+
+    // Alien
     aliens.forEach(a => {
         ctx.fillStyle = '#1f2833';
         ctx.beginPath();
         ctx.ellipse(a.x + a.width/2, a.y + a.height/2, a.width/2, a.height/3, 0, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#66fcf1';
+
+        // Kubah: merah = penembak, cyan = biasa
+        ctx.fillStyle = a.shooter ? '#e74c3c' : '#66fcf1';
         ctx.beginPath();
         ctx.arc(a.x + a.width/2, a.y + a.height/3, a.width/4, Math.PI, 0, false);
         ctx.fill();
+
+        // Cincin emas = menjatuhkan item
+        if (a.dropper) {
+            ctx.save();
+            ctx.strokeStyle = '#f1c40f';
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 10 + Math.sin(Date.now() * 0.008) * 5;
+            ctx.shadowColor = '#f1c40f';
+            ctx.beginPath();
+            ctx.ellipse(a.x + a.width/2, a.y + a.height/2, a.width/2 + 4, a.height/3 + 4, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+        }
 
         let hpPct = Math.max(0, a.hp / a.maxHp);
         ctx.fillStyle = '#78281f';
@@ -1749,6 +2205,28 @@ function draw() {
         ctx.strokeRect(boss.x, boss.y - 14, boss.width, 8);
     }
 
+    // Ledakan nuklir
+    explosions.forEach(e => {
+        let p = 1 - e.life / e.maxLife;
+        let r = Math.max(1, e.maxR * Math.min(1, p * 1.6));
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, e.life / e.maxLife);
+        let g = ctx.createRadialGradient(e.x, e.y, r * 0.1, e.x, e.y, r);
+        g.addColorStop(0, 'rgba(255,255,255,0.95)');
+        g.addColorStop(0.4, 'rgba(255,170,40,0.8)');
+        g.addColorStop(1, 'rgba(200,40,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ffd27f';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+    });
+
     particles.forEach(p => {
         ctx.fillStyle = p.color;
         ctx.beginPath();
@@ -1763,6 +2241,9 @@ function gameLoop() {
     draw();
     requestAnimationFrame(gameLoop);
 }
+
+// Mulai dalam bahasa Inggris
+setLang('en');
 </script>
 
 </body>
