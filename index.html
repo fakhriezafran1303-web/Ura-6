@@ -2244,6 +2244,385 @@ function gameLoop() {
 
 // Mulai dalam bahasa Inggris
 setLang('en');
+
+// ===== MENU MUSIC: ORIGINAL WESTERN DUEL THEME =====
+(function () {
+    const BPM = 88;                       // ubah angka ini buat ganti kecepatan
+    const STEP = 60 / BPM / 4;            // 1 step = nada 1/16
+    const TOTAL = 128;                    // 8 bar x 16 step
+    const MENU_IDS = ['welcomeOverlay','uraOverlay','warningOverlay','configOverlay','guideOverlay','modeOverlay'];
+    const m2f = m => 440 * Math.pow(2, (m - 69) / 12);
+
+    // Melodi gitar: [mulai(1/8), nada MIDI, durasi(1/8)]
+    const LEAD = [
+        [0,64,4],[4,67,2],[6,71,2],
+        [8,69,6],[14,67,2],
+        [16,67,4],[20,64,2],[22,60,2],
+        [24,62,4],[28,66,2],[30,69,2],
+        [32,71,4],[36,74,2],[38,76,2],
+        [40,72,6],[46,71,2],
+        [48,69,2],[50,66,2],[52,63,4],
+        [56,64,8]
+    ];
+    const BASS = [40, 40, 48, 50, 40, 45, 47, 40];   // Em Em C D Em Am B Em
+    const leadAt = {};
+    LEAD.forEach(([s, m, d]) => { leadAt[s * 2] = [m, d * 2]; });
+
+    let muted = false, step = 0, nextTime = 0, wasPlaying = false;
+    let master = null, echoIn = null, noiseBuf = null;
+
+    function build() {
+        if (master || !audioCtx) return;
+        master = audioCtx.createGain();
+        master.gain.value = 0;
+        master.connect(audioCtx.destination);
+        const delay = audioCtx.createDelay(1.0);
+        delay.delayTime.value = 0.34;
+        const fb = audioCtx.createGain(); fb.gain.value = 0.38;
+        const wet = audioCtx.createGain(); wet.gain.value = 0.35;
+        echoIn = audioCtx.createGain();
+        echoIn.connect(delay); delay.connect(fb); fb.connect(delay);
+        delay.connect(wet); wet.connect(master);
+        const len = audioCtx.sampleRate;
+        noiseBuf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+        const d = noiseBuf.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    }
+
+    function twang(t, midi, dur, vel) {
+        const f = m2f(midi);
+        const o = audioCtx.createOscillator(); o.type = 'sawtooth';
+        o.frequency.setValueAtTime(f * 0.94, t);
+        o.frequency.exponentialRampToValueAtTime(f, t + 0.07);
+        const lfo = audioCtx.createOscillator(); lfo.frequency.value = 5.5;
+        const lg = audioCtx.createGain(); lg.gain.value = f * 0.006;
+        lfo.connect(lg); lg.connect(o.frequency);
+        const flt = audioCtx.createBiquadFilter(); flt.type = 'lowpass'; flt.Q.value = 3;
+        flt.frequency.setValueAtTime(3200, t);
+        flt.frequency.exponentialRampToValueAtTime(900, t + Math.max(0.2, dur));
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vel, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.3);
+        o.connect(flt); flt.connect(g); g.connect(master); g.connect(echoIn);
+        o.start(t); lfo.start(t); o.stop(t + dur + 0.35); lfo.stop(t + dur + 0.35);
+    }
+
+    function whistle(t, midi, dur, vel) {
+        const f = m2f(midi);
+        const o = audioCtx.createOscillator(); o.type = 'sine'; o.frequency.value = f;
+        const lfo = audioCtx.createOscillator(); lfo.frequency.value = 6;
+        const lg = audioCtx.createGain(); lg.gain.value = f * 0.012;
+        lfo.connect(lg); lg.connect(o.frequency);
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vel, t + 0.08);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.15);
+        o.connect(g); g.connect(master); g.connect(echoIn);
+        o.start(t); lfo.start(t); o.stop(t + dur + 0.2); lfo.stop(t + dur + 0.2);
+    }
+
+    function pluck(t, midi, dur, vel) {
+        const o = audioCtx.createOscillator(); o.type = 'triangle'; o.frequency.value = m2f(midi);
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vel, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.12);
+        o.connect(g); g.connect(master);
+        o.start(t); o.stop(t + dur + 0.15);
+    }
+
+    function tom(t, vel) {
+        const o = audioCtx.createOscillator(); o.type = 'sine';
+        o.frequency.setValueAtTime(130, t);
+        o.frequency.exponentialRampToValueAtTime(45, t + 0.18);
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(vel, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+        o.connect(g); g.connect(master);
+        o.start(t); o.stop(t + 0.25);
+    }
+
+    function noiseHit(t, type, freq, q, dur, vel) {
+        const s = audioCtx.createBufferSource(); s.buffer = noiseBuf;
+        const f = audioCtx.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(vel, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        s.connect(f); f.connect(g); g.connect(master);
+        s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.02);
+    }
+
+    function playStep(s, t) {
+        const bar = s >> 4, p = s & 15, beatPos = p & 3;
+        const root = BASS[bar];
+        // Ritme kuda gallop: panjang-pendek-pendek
+        if (beatPos === 0) pluck(t, root, STEP * 2, 0.5);
+        if (beatPos === 2 || beatPos === 3) pluck(t, root, STEP, 0.3);
+        if (beatPos === 0 || beatPos === 2 || beatPos === 3) noiseHit(t, 'bandpass', 1200, 6, 0.05, beatPos === 0 ? 0.14 : 0.08);
+        if (p === 0 || p === 8) tom(t, 0.45);
+        if (p === 4 || p === 12) noiseHit(t, 'highpass', 2000, 0.7, 0.12, 0.12);
+        const n = leadAt[s];
+        if (n) {
+            twang(t, n[0], n[1] * STEP, 0.4);
+            if (bar >= 4) whistle(t, n[0] + 12, n[1] * STEP, 0.07);
+        }
+    }
+
+    function tick() {
+        const inMenu = MENU_IDS.some(id => {
+            const e = document.getElementById(id);
+            return e && e.style.display !== 'none';
+        });
+        const btn = document.getElementById('music-btn');
+        if (btn) btn.style.display = inMenu ? 'flex' : 'none';
+        if (!audioCtx) return;
+        build();
+        if (!master) return;
+        const should = inMenu && !muted && audioCtx.state === 'running' && soundVolume > 0;
+        master.gain.setTargetAtTime(should ? 0.55 * soundVolume : 0, audioCtx.currentTime, 0.25);
+        if (!should) { wasPlaying = false; return; }
+        if (!wasPlaying || nextTime < audioCtx.currentTime - 0.5) {
+            wasPlaying = true;
+            nextTime = audioCtx.currentTime + 0.1;
+        }
+        while (nextTime < audioCtx.currentTime + 0.3) {
+            playStep(step, nextTime);
+            nextTime += STEP;
+            step = (step + 1) % TOTAL;
+        }
+    }
+
+    // Tombol mute musik (muncul cuma di menu)
+    const b = document.createElement('button');
+    b.id = 'music-btn';
+    b.textContent = '🎵';
+    b.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:1000;width:40px;height:40px;border-radius:50%;background:rgba(31,40,51,0.85);border:1px solid #66fcf1;font-size:18px;display:none;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;';
+    b.addEventListener('click', () => { muted = !muted; b.textContent = muted ? '🔇' : '🎵'; });
+    document.body.appendChild(b);
+
+    // Browser butuh 1x sentuhan sebelum audio boleh bunyi
+    ['pointerdown', 'touchstart', 'click'].forEach(ev =>
+        document.addEventListener(ev, () => initAudio(), { passive: true })
+    );
+
+    setInterval(tick, 60);
+})();
+
+// ===== VICTORY CHOICES + QUOTE OVERLAY =====
+(function () {
+    Object.assign(I18N.en, {
+        vDiff: "🎚️ CHANGE DIFFICULTY",
+        vMenu: "🏠 BACK TO MENU",
+        qNext: "CONTINUE ➤",
+        qSign: "— DEV: ONLY 1",
+        quotes: [
+            "Every star you see began as cold dust in the dark. Be patient with your own beginning.",
+            "Love is free, but the electricity bill is not. In this economy, still smiling is already an achievement.",
+            "In a vast universe, one small ship kept fighting. That ship was you.",
+            "Light from dead stars still reaches us. The good you do never truly disappears.",
+            "Resting isn’t giving up. Even rockets need to refuel.",
+            "You don’t need a thousand believers. One stubborn dreamer is enough to launch a whole galaxy.",
+            "Don’t forget the people on Earth who waited for you while you fought far away.",
+            "A bug is just a feature that hasn’t found its fans yet. Keep shipping."
+        ]
+    });
+    Object.assign(I18N.id, {
+        vDiff: "🎚️ GANTI KESULITAN",
+        vMenu: "🏠 KEMBALI KE MENU",
+        qNext: "LANJUT ➤",
+        qSign: "— DEV: ONLY 1",
+        quotes: [
+            "Setiap bintang yang kamu lihat berawal dari debu dingin di kegelapan. Sabar ya sama awal perjalananmu.",
+            "Cinta itu gratis, tapi tagihan listrik nggak. In this economy, tetap tersenyum itu sudah achievement.",
+            "Di alam semesta yang luas, satu pesawat kecil tetap bertarung. Pesawat itu kamu.",
+            "Cahaya bintang yang sudah mati pun masih sampai ke kita. Kebaikan yang kamu lakukan tak pernah benar-benar hilang.",
+            "Istirahat bukan menyerah. Roket pun perlu isi bahan bakar.",
+            "Kamu nggak butuh seribu orang yang percaya. Satu pemimpi keras kepala cukup untuk meluncurkan satu galaksi.",
+            "Jangan lupa orang-orang di Bumi yang menunggumu pulang saat kamu berjuang jauh di sana.",
+            "Bug itu cuma fitur yang belum nemu penggemarnya. Terus rilis ya."
+        ]
+    });
+
+    const css = document.createElement('style');
+    css.textContent = `
+        #victoryOverlay, #quoteOverlay { z-index: 12; display: none; }
+        .v-btns { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .quote-text { font-family: 'Special Elite', cursive; font-size: 17px; line-height: 1.6; color: #e8f9ff; max-width: 80%; text-shadow: 0 0 12px rgba(102,252,241,0.5); animation: quote-in 1.8s ease both; }
+        .quote-sign { margin-top: 14px; font-size: 12px; color: #66fcf1; letter-spacing: 2px; animation: quote-in 1.8s ease 1.2s both; }
+        .quote-bar { width: 160px; height: 3px; background: rgba(102,252,241,0.2); margin: 18px 0 14px; border-radius: 2px; overflow: hidden; }
+        .quote-bar > div { height: 100%; background: #66fcf1; animation: quote-bar 9s linear forwards; }
+        @keyframes quote-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        @keyframes quote-bar { from { width: 100%; } to { width: 0; } }
+    `;
+    document.head.appendChild(css);
+
+    const box = document.getElementById('game-container');
+    const deco = '<div class="planet-bg"></div><div class="saturn-ring"></div><div class="solar-orbit"></div>';
+
+    const v = document.createElement('div');
+    v.id = 'victoryOverlay';
+    v.className = 'overlay-screen';
+    v.innerHTML = deco +
+        '<h1 class="title-glow" id="vTitle"></h1>' +
+        '<p class="story-text" id="vDesc"></p>' +
+        '<div class="v-btns"><button class="blackhole-btn" id="vDiffBtn"></button>' +
+        '<button class="blackhole-btn" id="vMenuBtn"></button></div>';
+    box.appendChild(v);
+
+    const q = document.createElement('div');
+    q.id = 'quoteOverlay';
+    q.className = 'overlay-screen';
+    box.appendChild(q);
+
+    let quoteTimer = null;
+    let lastQuote = -1;
+
+    function hideMine() {
+        clearTimeout(quoteTimer);
+        v.style.display = 'none';
+        q.style.display = 'none';
+    }
+
+    function showVictoryChoices() {
+        if (!isVictorySequence) return;
+        const t = I18N[currentLang];
+        document.getElementById('vTitle').innerText = t.victoryTitle;
+        document.getElementById('vDesc').innerText = t.victoryDesc(maxLevelSetting, score);
+        document.getElementById('vDiffBtn').innerText = t.vDiff;
+        document.getElementById('vMenuBtn').innerText = t.vMenu;
+        v.style.display = 'flex';
+    }
+
+    // Pilihan 1: ganti difficulty
+    document.getElementById('vDiffBtn').addEventListener('click', () => {
+        hideMine();
+        gameActive = false;
+        isVictorySequence = false;
+        document.getElementById('welcomeOverlay').style.display = 'none';
+        difficultyChosen = false;
+        document.querySelectorAll('#modeOverlay .mode-btn').forEach(b => b.classList.remove('selected'));
+        document.getElementById('confirmContainer').style.display = 'none';
+        renderDiffHint();
+        document.getElementById('modeOverlay').style.display = 'flex';
+    });
+
+    // Pilihan 2: kembali ke menu (lewat overlay kata-kata dulu)
+    document.getElementById('vMenuBtn').addEventListener('click', () => {
+        v.style.display = 'none';
+        const t = I18N[currentLang];
+        let i;
+        do { i = Math.floor(Math.random() * t.quotes.length); } while (i === lastQuote && t.quotes.length > 1);
+        lastQuote = i;
+        q.innerHTML = deco +
+            '<div class="quote-text">“' + t.quotes[i] + '”</div>' +
+            '<div class="quote-sign">' + t.qSign + '</div>' +
+            '<div class="quote-bar"><div></div></div>' +
+            '<button class="blackhole-btn" id="qNextBtn">' + t.qNext + '</button>';
+        q.style.display = 'flex';
+        document.getElementById('qNextBtn').addEventListener('click', () => restartGame());
+        clearTimeout(quoteTimer);
+        quoteTimer = setTimeout(() => restartGame(), 9000);
+    });
+
+    // Sambungkan ke fungsi yang sudah ada
+    const origVictory = triggerVictorySequence;
+    triggerVictorySequence = function () {
+        const already = isVictorySequence;
+        origVictory();
+        if (!already) setTimeout(showVictoryChoices, 3100);
+    };
+
+    const origRestart = restartGame;
+    restartGame = function () {
+        hideMine();
+        origRestart();
+    };
+})();
+
+// ===== SPEED MENU: 1x / 1.5x / 2x =====
+(function () {
+    let gameSpeed = 1;
+    let acc = 0;
+    const SPEEDS = [1, 1.5, 2];
+
+    Object.assign(I18N.en, { speedTitle: "SPEED" });
+    Object.assign(I18N.id, { speedTitle: "KECEPATAN" });
+
+    const css = document.createElement('style');
+    css.textContent = `
+        #speed-menu { position: absolute; top: 44px; right: 10px; z-index: 20; display: none; flex-direction: column; gap: 6px; align-items: flex-end; }
+        #speed-menu .speed-title { font-size: 10px; letter-spacing: 2px; color: #66fcf1; text-shadow: 1px 1px 2px #000; }
+        #speed-menu .speed-btn { min-width: 54px; padding: 6px 10px; font-size: 14px; font-weight: bold; border-radius: 16px; touch-action: manipulation; }
+        #speed-menu .speed-btn:not(.active):hover { background: rgba(31, 40, 51, 0.8); color: #66fcf1; }
+        #speed-menu .speed-btn.active { background: #66fcf1; color: #05060a; box-shadow: 0 0 12px #66fcf1; }
+    `;
+    document.head.appendChild(css);
+
+    const menu = document.createElement('div');
+    menu.id = 'speed-menu';
+    const title = document.createElement('div');
+    title.className = 'speed-title';
+    title.setAttribute('data-i18n', 'speedTitle');
+    title.innerHTML = I18N[currentLang].speedTitle;
+    menu.appendChild(title);
+
+    const btns = SPEEDS.map(s => {
+        const b = document.createElement('button');
+        b.className = 'opt-btn speed-btn';
+        b.textContent = s + '×';
+        b.addEventListener('click', () => setSpeed(s));
+        menu.appendChild(b);
+        return b;
+    });
+    document.getElementById('game-container').appendChild(menu);
+
+    function setSpeed(s) {
+        gameSpeed = s;
+        acc = 0;
+        btns.forEach((b, i) => b.classList.toggle('active', SPEEDS[i] === s));
+    }
+    setSpeed(1);
+
+    // Game loop: jalankan update() lebih sering = SEMUA ikut cepat
+    // (pesawat, alien, rudal, bom, peluru alien, spawn, dll)
+    gameLoop = function () {
+        if (!gameActive) return;
+        acc += gameSpeed;
+        let n = 0;
+        while (acc >= 1 && n < 4 && gameActive) {
+            update();
+            acc -= 1;
+            n++;
+        }
+        draw();
+        requestAnimationFrame(gameLoop);
+    };
+
+    // Jeda tembak ikut makin cepat
+    const origShoot = shootLaser;
+    shootLaser = function () {
+        if (gameSpeed === 1) return origShoot();
+        const real = player.lastShoot;
+        const now = Date.now();
+        player.lastShoot = now - (now - real) * gameSpeed;
+        const before = lasers.length;
+        origShoot();
+        if (lasers.length === before) player.lastShoot = real;
+    };
+
+    // Tiap game baru mulai dari 1×
+    const origStart = startGame;
+    startGame = function () {
+        setSpeed(1);
+        origStart();
+    };
+
+    // Menu cuma muncul pas lagi main
+    setInterval(() => {
+        menu.style.display = (gameActive && !isVictorySequence) ? 'flex' : 'none';
+    }, 150);
+})();
 </script>
 
 </body>
