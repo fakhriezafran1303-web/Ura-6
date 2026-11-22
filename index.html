@@ -549,6 +549,16 @@
             color: #0b0c10;
         }
         .mode-btn:active { transform: scale(0.94); }
+        .mode-btn.beginner {
+            grid-column: 1 / -1;
+            border-color: #7dff9b;
+            color: #7dff9b;
+            background: rgba(46, 204, 113, 0.14);
+        }
+        .mode-btn.beginner:hover {
+            background: #2ecc71;
+            color: #05060a;
+        }
         .mode-btn.crazy {
             border-color: #c0392b;
             color: #e74c3c;
@@ -778,6 +788,7 @@
         <h1 class="title-glow" data-i18n="diffTitle">DIFFICULTY</h1>
         <p class="story-text" id="diffHintText"></p>
         <div class="mode-btn-container">
+            <button class="mode-btn beginner" onclick="selectDifficulty(5, this)"><span data-i18n="beginner">BEGINNER MODE</span><br><span style="font-size:11px; color:#7dff9b;"><span data-i18n="maxLevel">Max Level</span> 5 · <span data-i18n="veryEasy">Very easy</span></span></button>
             <button class="mode-btn" onclick="selectDifficulty(10, this)"><span data-i18n="easy">EASY</span><br><span style="font-size:11px; color:#2ecc71;"><span data-i18n="maxLevel">Max Level</span> 10</span></button>
             <button class="mode-btn" onclick="selectDifficulty(25, this)"><span data-i18n="medium">MEDIUM</span><br><span style="font-size:11px; color:#66fcf1;"><span data-i18n="maxLevel">Max Level</span> 25</span></button>
             <button class="mode-btn" onclick="selectDifficulty(100, this)"><span data-i18n="hard">HARD</span><br><span style="font-size:11px; color:#f39c12;"><span data-i18n="maxLevel">Max Level</span> 100</span></button>
@@ -801,7 +812,7 @@ const I18N = {
         score: "SCORE:", level: "LEVEL:", wave: "WAVE:", dmg: "DMG:", hp: "HP:",
         bombLabel: "BIG BOMBA", shieldLabel: "SHIELD",
         welcomeTitle: "WELCOME",
-        welcomeDesc: "Space sector locked. Destroy the aliens! Every 20 kills your ship launches a giant nuke, and every 15 kills raise your Shield.<br><br><strong>INFO:</strong> Space agency names drift in the background, get sucked into the top-left black hole, then re-emerge from the bottom-center!",
+        welcomeDesc: "Space sector locked. Destroy the aliens! Every 25 kills your ship launches a giant nuke, and every 15 kills raise your Shield.<br><br><strong>INFO:</strong> Space agency names drift in the background, get sucked into the top-left black hole, then re-emerge from the bottom-center!",
         welcomeHint: "Controls: Extra-large D-Pad buttons on screen<br><i>Tip: enable Fullscreen in Settings for the best landscape view!</i>",
         start: "▶ START",
         uraDesc: "Update Archive: <strong>1 NOV 2026</strong><br><br>Welcome to the classic flight protocol. Continue to review warnings and system settings.",
@@ -815,16 +826,17 @@ const I18N = {
         flash: "Flash Effect:", flashOn: "ON (Enabled)", flashOff: "OFF (Disabled)",
         volume: "Sound Volume:",
         guideTitle: "HOW TO PLAY",
-        guideText: "🚀 <strong>CONTROLS:</strong> Use the D-Pad (▲ ▼) at the bottom-left to move your ship up/down.<br>🎯 <strong>FIRE:</strong> Press FIRE (or Space). Your ship launches mini missiles. In Auto mode it fires by itself!<br>☢️ <strong>BIG BOMBA:</strong> Every 20 kills the ship launches ONE giant nuke. It detonates far from your ship or on contact with an alien!<br>🛡️ <strong>SHIELD:</strong> Every 15 kills = 9.5 seconds of invincibility.<br>👾 <strong>ENEMIES:</strong> Some aliens (red dome) shoot lasers: -15 HP.<br>🎁 <strong>DROPS:</strong> Gold-ringed aliens drop items: ×5 BOOST (damage &amp; HP for 6 s), HEALTH, or a DEBUFF (-25% for 6 s).<br>🛸 <strong>BOSS:</strong> Defeat the boss on every level that is a multiple of 10.",
+        guideText: "🚀 <strong>CONTROLS:</strong> Use the D-Pad (▲ ▼) at the bottom-left to move your ship up/down.<br>🎯 <strong>FIRE:</strong> Press FIRE (or Space). Your ship launches mini missiles. In Auto mode it fires by itself!<br>☢️ <strong>BIG BOMBA:</strong> Every 25 kills the ship launches ONE giant nuke. It detonates far from your ship or on contact with an alien, wiping out almost everything on screen!<br>🛡️ <strong>SHIELD:</strong> Every 15 kills = 9.5 seconds of invincibility.<br>👾 <strong>ENEMIES:</strong> Some aliens (red dome) shoot lasers: -15 HP.<br>🎁 <strong>DROPS:</strong> Gold-ringed aliens drop items: ×5 BOOST (damage &amp; HP for 6 s), HEALTH, or a DEBUFF (-25% for 6 s).<br>🛸 <strong>BOSS:</strong> Defeat the boss on every level that is a multiple of 10.<br>⚡ <strong>SPEED:</strong> Change the game speed (1× / 1.5× / 2×) next to the Big Bomba panel.",
         diffTitle: "DIFFICULTY",
         diffHint: "Choose your challenge. Tap once to select, then press the confirm button.",
         diffChosen: (n) => `Mode selected (Max Level: ${n}). Press <strong>"SURE?"</strong> below to start the game!`,
+        beginner: "BEGINNER MODE", veryEasy: "Very easy",
         easy: "EASY", medium: "MEDIUM", hard: "HARD", crazy: "CRAZY", maxLevel: "Max Level",
         confirm: "SURE? ✔",
         gameOverTitle: "GAME OVER",
         gameOverDesc: (l, w, s) => `Ship destroyed at Level ${l} (Wave ${w}). Score: ${s}`,
         victoryTitle: "MISSION SUCCESS\nVICTORY",
-        victoryDesc: (m, s) => `Incredible! Final Boss defeated at Level ${m}! Score: ${s}`,
+        victoryDesc: (m, s) => `Incredible! Sector cleared at Level ${m}! Score: ${s}`,
         buffUp: "BOOST ×5", buffDown: "DEBUFF -25%"
     },
     id: {
@@ -833,7 +845,7 @@ const I18N = {
         score: "SKOR:", level: "LEVEL:", wave: "WAVE:", dmg: "DMG:", hp: "HP:",
         bombLabel: "BIG BOMBA", shieldLabel: "SHIELD",
         welcomeTitle: "WELCOME",
-        welcomeDesc: "Sektor antariksa terkunci. Hancurkan alien! Setiap 20 kill pesawat menembak 1 bom nuklir raksasa, dan setiap 15 kill mengaktifkan Shield.<br><br><strong>INFO:</strong> Nama-nama badan antariksa melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!",
+        welcomeDesc: "Sektor antariksa terkunci. Hancurkan alien! Setiap 25 kill pesawat menembak 1 bom nuklir raksasa, dan setiap 15 kill mengaktifkan Shield.<br><br><strong>INFO:</strong> Nama-nama badan antariksa melayang di latar belakang, tersedot ke Blackhole kiri atas, lalu muncul kembali dari sisi bawah tengah!",
         welcomeHint: "Kontrol: Tombol D-Pad Ekstra Besar di Layar<br><i>Saran: Aktifkan Fullscreen di Pengaturan agar tampilan berbaring maksimal!</i>",
         start: "▶ MULAI",
         uraDesc: "Arsip Pembaruan: <strong>1 NOV 2026</strong><br><br>Selamat datang di protokol penerbangan klasik. Lanjutkan untuk meninjau peringatan dan pengaturan sistem.",
@@ -847,10 +859,11 @@ const I18N = {
         flash: "Efek Kilatan:", flashOn: "ON (Aktif)", flashOff: "OFF (Mati)",
         volume: "Volume Suara:",
         guideTitle: "PANDUAN BERMAIN",
-        guideText: "🚀 <strong>KONTROL:</strong> Gunakan D-Pad (▲ ▼) di kiri bawah layar untuk menggerakkan pesawat naik/turun.<br>🎯 <strong>TEMBAKAN:</strong> Tekan tombol FIRE (atau Spasi). Pesawat menembakkan rudal mini. Di Mode Auto, tembakan keluar otomatis!<br>☢️ <strong>BIG BOMBA:</strong> Setiap 20 kill pesawat menembak SATU bom nuklir raksasa. Meledak saat sudah jauh dari pesawat atau saat kena alien!<br>🛡️ <strong>SHIELD:</strong> Setiap 15 kill = kebal selama 9,5 detik.<br>👾 <strong>MUSUH:</strong> Beberapa alien (kubah merah) menembak laser: -15 HP.<br>🎁 <strong>DROP:</strong> Alien dengan cincin emas menjatuhkan item: BOOST ×5 (damage &amp; HP selama 6 detik), HEALTH, atau DEBUFF (-25% selama 6 detik).<br>🛸 <strong>BOS:</strong> Kalahkan Bos di setiap level kelipatan 10.",
+        guideText: "🚀 <strong>KONTROL:</strong> Gunakan D-Pad (▲ ▼) di kiri bawah layar untuk menggerakkan pesawat naik/turun.<br>🎯 <strong>TEMBAKAN:</strong> Tekan tombol FIRE (atau Spasi). Pesawat menembakkan rudal mini. Di Mode Auto, tembakan keluar otomatis!<br>☢️ <strong>BIG BOMBA:</strong> Setiap 25 kill pesawat menembak SATU bom nuklir raksasa. Meledak saat sudah jauh dari pesawat atau saat kena alien, dampaknya menyapu hampir seluruh layar!<br>🛡️ <strong>SHIELD:</strong> Setiap 15 kill = kebal selama 9,5 detik.<br>👾 <strong>MUSUH:</strong> Beberapa alien (kubah merah) menembak laser: -15 HP.<br>🎁 <strong>DROP:</strong> Alien dengan cincin emas menjatuhkan item: BOOST ×5 (damage &amp; HP selama 6 detik), HEALTH, atau DEBUFF (-25% selama 6 detik).<br>🛸 <strong>BOS:</strong> Kalahkan Bos di setiap level kelipatan 10.<br>⚡ <strong>KECEPATAN:</strong> Ganti kecepatan game (1× / 1,5× / 2×) di samping panel Big Bomba.",
         diffTitle: "TINGKAT KESULITAN",
         diffHint: "Pilih tingkat tantangan. Klik sekali untuk memilih, lalu tekan tombol konfirmasi.",
         diffChosen: (n) => `Mode terpilih (Max Level: ${n}). Tekan tombol <strong>"YAKIN?"</strong> di bawah untuk memulai permainan!`,
+        beginner: "MODE PEMULA", veryEasy: "Sangat mudah",
         easy: "MUDAH", medium: "SEDANG", hard: "SULIT", crazy: "GILA", maxLevel: "Max Level",
         confirm: "YAKIN? ✔",
         gameOverTitle: "GAME OVER",
@@ -930,14 +943,31 @@ let maxLevelSetting = 100;
 let fullscreenEnabled = false;
 let selectedLevelMaxTemp = 100;
 
-const BOMB_W = 75;           // ukuran bom nuklir (1,5x panjang pesawat). Ubah di sini kalau mau
+const BOMB_W = 75;              // ukuran bom nuklir (1,5x panjang pesawat)
 const BOMB_H = 22;
-const BOMB_RANGE = 420;      // jarak terbang sebelum meledak otomatis
-const BOMB_BLAST_RADIUS = 280;
-const BOMB_KILLS = 20;       // kill yang dibutuhkan untuk 1 bom
+const BOMB_RANGE = 420;         // jarak terbang sebelum meledak otomatis
+const BOMB_BLAST_RADIUS = 460;  // radius ledakan (makin besar = makin luas). Dulu 280
+const BOMB_KILLS = 25;          // kill yang dibutuhkan untuk 1 bom
 const SHIELD_KILLS = 15;
 const SHIELD_DURATION = 9500;
 const BUFF_DURATION = 6000;
+
+// Jumlah alien per wave (wave 1, 2, 3) sesuai difficulty (key = Max Level)
+// growEvery = tiap berapa level jumlah alien nambah 1, cap = maksimal tambahan
+const DIFF_WAVES = {
+    5:   { base: [3, 4, 5],    growEvery: 99, cap: 0 },    // Beginner
+    10:  { base: [5, 7, 9],    growEvery: 5,  cap: 2 },    // Easy
+    25:  { base: [7, 10, 13],  growEvery: 4,  cap: 6 },    // Medium
+    100: { base: [10, 14, 18], growEvery: 6,  cap: 12 },   // Hard
+    200: { base: [14, 20, 26], growEvery: 8,  cap: 16 }    // Crazy
+};
+
+function waveAlienCount(wave) {
+    const c = DIFF_WAVES[maxLevelSetting] || DIFF_WAVES[100];
+    return c.base[wave - 1] + Math.min(c.cap, Math.floor((level - 1) / c.growEvery));
+}
+
+function isBeginner() { return maxLevelSetting === 5; }
 
 let spaceAgencies = [
     { name: "NASA (USA)", x: 250, y: 150, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2, color: "rgba(102, 252, 241, 0.5)" },
@@ -995,11 +1025,11 @@ function playSound(type) {
         } else if (type === 'nuke') {
             osc.type = 'sawtooth';
             osc.frequency.setValueAtTime(100, now);
-            osc.frequency.exponentialRampToValueAtTime(18, now + 1.6);
+            osc.frequency.exponentialRampToValueAtTime(18, now + 1.8);
             gain.gain.setValueAtTime(0.6 * soundVolume, now);
-            gain.gain.linearRampToValueAtTime(0.01, now + 1.6);
+            gain.gain.linearRampToValueAtTime(0.01, now + 1.8);
             osc.start(now);
-            osc.stop(now + 1.6);
+            osc.stop(now + 1.8);
         } else if (type === 'click') {
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(500, now);
@@ -1184,7 +1214,7 @@ let baseLaserDamage = 10;
 let currentLaserDamage = 10;
 let baseAlienHealth = 25;
 
-let alienKillCount = 0;      // progres menuju Big Bomba (0-20)
+let alienKillCount = 0;      // progres menuju Big Bomba (0-25)
 
 let shieldKillCount = 0;
 let shieldActive = false;
@@ -1267,14 +1297,16 @@ fireBtn.addEventListener('touchend', triggerFireEnd);
 fireBtn.addEventListener('touchcancel', triggerFireEnd);
 
 function initPlayer() {
+    // Beginner Mode: darah pemain 2x lipat
+    const hp = isBeginner() ? 400 : 200;
     player = {
         x: 60,
         y: canvas.height / 2 - 18,
         width: 50,
         height: 32,
         speed: 6.5,
-        hp: 200,
-        maxHp: 200,
+        hp: hp,
+        maxHp: hp,
         lastShoot: 0
     };
 }
@@ -1309,7 +1341,7 @@ function startGame() {
     boss = null;
     particles = [];
     aliensSpawnedInWave = 0;
-    aliensToSpawnInWave = 5;
+    aliensToSpawnInWave = waveAlienCount(1);
     initPlayer();
     
     updateUI();
@@ -1434,7 +1466,7 @@ function checkLevelProgression() {
         level++;
         currentWave = 1;
         aliensSpawnedInWave = 0;
-        aliensToSpawnInWave = 10;
+        aliensToSpawnInWave = waveAlienCount(1);
         applyLevelScaling();
         return;
     }
@@ -1443,14 +1475,13 @@ function checkLevelProgression() {
         if (currentWave < 3) {
             currentWave++;
             aliensSpawnedInWave = 0;
-            if (currentWave === 2) aliensToSpawnInWave = 18;
-            if (currentWave === 3) aliensToSpawnInWave = 26;
+            aliensToSpawnInWave = waveAlienCount(currentWave);
         } else {
             if (level >= maxLevelSetting) { triggerVictorySequence(); return; }
             level++;
             currentWave = 1;
             aliensSpawnedInWave = 0;
-            aliensToSpawnInWave = (level >= 10) ? 10 : 5;
+            aliensToSpawnInWave = waveAlienCount(1);
             applyLevelScaling();
         }
     }
@@ -1468,17 +1499,24 @@ function spawnAlien() {
     
     let crazyMultiplier = (maxLevelSetting === 200) ? (1 + (level / 40)) : 1.03;
     let alienHp = baseAlienHealth * Math.pow(crazyMultiplier, level - 1);
+    let speed = (2 + Math.random() * 1.5 + (level * 0.05)) * ((maxLevelSetting === 200) ? 1.3 : 1.0);
+
+    // Beginner Mode: alien lebih lemah, lebih lambat, tidak menembak
+    if (isBeginner()) {
+        alienHp *= 0.6;
+        speed *= 0.65;
+    }
     
     aliens.push({
         x: canvas.width + 40,
         y: Math.random() * (canvas.height - 70) + 20,
         width: 42,
         height: 28,
-        speed: (2 + Math.random() * 1.5 + (level * 0.05)) * ((maxLevelSetting === 200) ? 1.3 : 1.0),
+        speed: speed,
         hp: alienHp,
         maxHp: alienHp,
-        shooter: Math.random() < 0.25,   // 25% alien bisa menembak (kubah merah)
-        dropper: Math.random() < 0.15,   // 15% alien menjatuhkan item (cincin emas)
+        shooter: isBeginner() ? false : Math.random() < 0.25,           // kubah merah = menembak
+        dropper: Math.random() < (isBeginner() ? 0.25 : 0.15),          // cincin emas = menjatuhkan item
         shootTimer: 60 + Math.random() * 120
     });
     aliensSpawnedInWave++;
@@ -1550,11 +1588,11 @@ function explodeBomb(b) {
     const cy = b.y + b.height / 2;
     const R = BOMB_BLAST_RADIUS;
 
-    explosions.push({ x: cx, y: cy, maxR: R, life: 45, maxLife: 45 });
+    explosions.push({ x: cx, y: cy, maxR: R, life: 60, maxLife: 60 });
     playSound('nuke');
-    triggerFlash(350);
-    createParticles(cx, cy, '#ff9f1a', 40);
-    createParticles(cx, cy, '#ffffff', 20);
+    triggerFlash(450);
+    createParticles(cx, cy, '#ff9f1a', 70);
+    createParticles(cx, cy, '#ffffff', 35);
 
     // Semua alien dalam radius ledakan hancur
     for (let i = aliens.length - 1; i >= 0; i--) {
@@ -1576,7 +1614,7 @@ function explodeBomb(b) {
     updateUI();
 }
 
-// Kill counter: 20 kill = 1 bom, 15 kill = shield
+// Kill counter: 25 kill = 1 bom, 15 kill = shield
 function addKillEnergy(fromBomb) {
     if (!fromBomb) {
         alienKillCount++;
@@ -1605,10 +1643,12 @@ function handleAlienDeath(a, pts, fromBomb) {
 }
 
 // ================== DROP ITEM ==================
-// 55% upgrade (60% boost x5, 40% health), 45% debuff
+// Normal: 55% upgrade (60% boost x5, 40% health), 45% debuff
+// Beginner: 80% upgrade, 20% debuff
 function spawnDrop(x, y) {
     let type;
-    if (Math.random() < 0.55) {
+    let goodChance = isBeginner() ? 0.80 : 0.55;
+    if (Math.random() < goodChance) {
         type = Math.random() < 0.6 ? 'boost' : 'health';
     } else {
         type = 'debuff';
@@ -1663,7 +1703,8 @@ function update() {
     if (!isVictorySequence) {
         if (!boss && level % 10 !== 0) {
             spawnTimer++;
-            if (spawnTimer > Math.max(25, 70 - (level * 0.5))) {
+            const spawnDelay = isBeginner() ? 95 : Math.max(25, 70 - (level * 0.5));
+            if (spawnTimer > spawnDelay) {
                 spawnAlien();
                 spawnTimer = 0;
             }
@@ -1731,10 +1772,10 @@ function update() {
                 }
             }
 
-            // Tabrakan dengan pemain
+            // Tabrakan dengan pemain (Beginner: damage lebih kecil)
             if (player.x < a.x + a.width && player.x + player.width > a.x &&
                 player.y < a.y + a.height && player.y + player.height > a.y) {
-                damagePlayer(20);
+                damagePlayer(isBeginner() ? 10 : 20);
                 createParticles(a.x, a.y, '#e74c3c', 12);
                 playSound('explode-small');
                 aliens.splice(i, 1);
@@ -1925,6 +1966,113 @@ function drawDrop(d) {
     ctx.restore();
 }
 
+// ===== PESAWAT PEMAIN (jet tempur dengan sayap, kokpit & mesin kembar) =====
+function drawPlayerShip() {
+    const t = Date.now();
+    ctx.save();
+    ctx.translate(player.x, player.y);   // badan 50 x 32, garis tengah di y = 16
+
+    // Api mesin kembar
+    const flick = 10 + Math.random() * 9;
+    [10, 22].forEach(fy => {
+        const g = ctx.createLinearGradient(4, fy, -flick, fy);
+        g.addColorStop(0, 'rgba(255,255,255,0.95)');
+        g.addColorStop(0.35, 'rgba(255,190,60,0.9)');
+        g.addColorStop(1, 'rgba(255,80,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(4, fy - 3);
+        ctx.lineTo(-flick, fy);
+        ctx.lineTo(4, fy + 3);
+        ctx.closePath();
+        ctx.fill();
+    });
+
+    // Sayap atas & bawah (menyapu ke belakang)
+    const wingG = ctx.createLinearGradient(6, 0, 34, 0);
+    wingG.addColorStop(0, '#1b2a41');
+    wingG.addColorStop(1, '#4a6fa5');
+    ctx.fillStyle = wingG;
+    ctx.strokeStyle = '#66fcf1';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(34, 12); ctx.lineTo(16, -4); ctx.lineTo(7, -4); ctx.lineTo(15, 12);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(34, 20); ctx.lineTo(16, 36); ctx.lineTo(7, 36); ctx.lineTo(15, 20);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+
+    // Garis aksen di sayap
+    ctx.strokeStyle = '#f39c12';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(26, 11); ctx.lineTo(14, -1); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(26, 21); ctx.lineTo(14, 33); ctx.stroke();
+
+    // Nozzle mesin
+    ctx.fillStyle = '#2b2f36';
+    ctx.fillRect(1, 8, 6, 5);
+    ctx.fillRect(1, 19, 6, 5);
+
+    // Badan utama (fuselage) + glow
+    const bodyG = ctx.createLinearGradient(4, 0, 50, 0);
+    bodyG.addColorStop(0, '#16606a');
+    bodyG.addColorStop(0.5, '#45a29e');
+    bodyG.addColorStop(1, '#d6fffc');
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#66fcf1';
+    ctx.fillStyle = bodyG;
+    ctx.strokeStyle = '#baffff';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(50, 16);
+    ctx.quadraticCurveTo(40, 9, 22, 9);
+    ctx.lineTo(6, 11);
+    ctx.lineTo(4, 13);
+    ctx.lineTo(4, 19);
+    ctx.lineTo(6, 21);
+    ctx.lineTo(22, 23);
+    ctx.quadraticCurveTo(40, 23, 50, 16);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Garis tengah badan
+    ctx.strokeStyle = 'rgba(11,12,16,0.45)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(8, 16); ctx.lineTo(22, 16); ctx.stroke();
+
+    // Kokpit kaca
+    const cockG = ctx.createLinearGradient(0, 12, 0, 20);
+    cockG.addColorStop(0, '#d9fcff');
+    cockG.addColorStop(1, '#0a3d5a');
+    ctx.fillStyle = cockG;
+    ctx.beginPath();
+    ctx.ellipse(31, 16, 8, 3.6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#0b0c10';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.beginPath();
+    ctx.ellipse(33, 14.8, 3.5, 1, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Lampu ujung sayap berkedip (merah / hijau)
+    if (Math.floor(t / 300) % 2 === 0) {
+        ctx.fillStyle = '#ff4d4d';
+        ctx.shadowColor = '#ff4d4d';
+        ctx.shadowBlur = 8;
+        ctx.beginPath(); ctx.arc(9, -3, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#4dff88';
+        ctx.shadowColor = '#4dff88';
+        ctx.beginPath(); ctx.arc(9, 35, 2, 0, Math.PI * 2); ctx.fill();
+    }
+
+    ctx.restore();
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -2021,31 +2169,7 @@ function draw() {
     drops.forEach(drawDrop);
 
     // Pesawat pemain
-    ctx.save();
-    ctx.fillStyle = '#66fcf1';
-    ctx.beginPath();
-    ctx.moveTo(player.x, player.y + player.height / 2);
-    ctx.lineTo(player.x + player.width - 10, player.y + 2);
-    ctx.lineTo(player.x + player.width, player.y + player.height / 2);
-    ctx.lineTo(player.x + player.width - 10, player.y + player.height - 2);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = '#45a29e';
-    ctx.fillRect(player.x + 8, player.y - 4, 12, player.height + 8);
-    ctx.fillStyle = '#0b0c10';
-    ctx.beginPath();
-    ctx.arc(player.x + player.width - 16, player.y + player.height / 2, 4, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#f39c12';
-    ctx.beginPath();
-    ctx.moveTo(player.x, player.y + 8);
-    ctx.lineTo(player.x - 12 - Math.random() * 5, player.y + player.height / 2);
-    ctx.lineTo(player.x, player.y + player.height - 8);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
+    drawPlayerShip();
 
     // Aura buff / debuff
     if (buffType) {
@@ -2071,7 +2195,7 @@ function draw() {
         ctx.shadowColor = '#5dade2';
         ctx.globalAlpha = left < 2000 ? (Math.floor(Date.now() / 150) % 2 ? 0.3 : 0.9) : 0.9;
         ctx.beginPath();
-        ctx.arc(player.x + player.width / 2, player.y + player.height / 2, 36, 0, Math.PI * 2);
+        ctx.arc(player.x + player.width / 2, player.y + player.height / 2, 38, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
     }
@@ -2205,7 +2329,7 @@ function draw() {
         ctx.strokeRect(boss.x, boss.y - 14, boss.width, 8);
     }
 
-    // Ledakan nuklir
+    // Ledakan nuklir (luas + 2 cincin gelombang kejut)
     explosions.forEach(e => {
         let p = 1 - e.life / e.maxLife;
         let r = Math.max(1, e.maxR * Math.min(1, p * 1.6));
@@ -2220,9 +2344,14 @@ function draw() {
         ctx.arc(e.x, e.y, r, 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = '#ffd27f';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.arc(e.x, e.y, r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, r * 0.65, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
     });
@@ -2518,112 +2647,4 @@ setLang('en');
             '<div class="quote-text">“' + t.quotes[i] + '”</div>' +
             '<div class="quote-sign">' + t.qSign + '</div>' +
             '<div class="quote-bar"><div></div></div>' +
-            '<button class="blackhole-btn" id="qNextBtn">' + t.qNext + '</button>';
-        q.style.display = 'flex';
-        document.getElementById('qNextBtn').addEventListener('click', () => restartGame());
-        clearTimeout(quoteTimer);
-        quoteTimer = setTimeout(() => restartGame(), 9000);
-    });
-
-    // Sambungkan ke fungsi yang sudah ada
-    const origVictory = triggerVictorySequence;
-    triggerVictorySequence = function () {
-        const already = isVictorySequence;
-        origVictory();
-        if (!already) setTimeout(showVictoryChoices, 3100);
-    };
-
-    const origRestart = restartGame;
-    restartGame = function () {
-        hideMine();
-        origRestart();
-    };
-})();
-
-// ===== SPEED MENU: 1x / 1.5x / 2x =====
-(function () {
-    let gameSpeed = 1;
-    let acc = 0;
-    const SPEEDS = [1, 1.5, 2];
-
-    Object.assign(I18N.en, { speedTitle: "SPEED" });
-    Object.assign(I18N.id, { speedTitle: "KECEPATAN" });
-
-    const css = document.createElement('style');
-    css.textContent = `
-        #speed-menu { position: absolute; top: 44px; right: 10px; z-index: 20; display: none; flex-direction: column; gap: 6px; align-items: flex-end; }
-        #speed-menu .speed-title { font-size: 10px; letter-spacing: 2px; color: #66fcf1; text-shadow: 1px 1px 2px #000; }
-        #speed-menu .speed-btn { min-width: 54px; padding: 6px 10px; font-size: 14px; font-weight: bold; border-radius: 16px; touch-action: manipulation; }
-        #speed-menu .speed-btn:not(.active):hover { background: rgba(31, 40, 51, 0.8); color: #66fcf1; }
-        #speed-menu .speed-btn.active { background: #66fcf1; color: #05060a; box-shadow: 0 0 12px #66fcf1; }
-    `;
-    document.head.appendChild(css);
-
-    const menu = document.createElement('div');
-    menu.id = 'speed-menu';
-    const title = document.createElement('div');
-    title.className = 'speed-title';
-    title.setAttribute('data-i18n', 'speedTitle');
-    title.innerHTML = I18N[currentLang].speedTitle;
-    menu.appendChild(title);
-
-    const btns = SPEEDS.map(s => {
-        const b = document.createElement('button');
-        b.className = 'opt-btn speed-btn';
-        b.textContent = s + '×';
-        b.addEventListener('click', () => setSpeed(s));
-        menu.appendChild(b);
-        return b;
-    });
-    document.getElementById('game-container').appendChild(menu);
-
-    function setSpeed(s) {
-        gameSpeed = s;
-        acc = 0;
-        btns.forEach((b, i) => b.classList.toggle('active', SPEEDS[i] === s));
-    }
-    setSpeed(1);
-
-    // Game loop: jalankan update() lebih sering = SEMUA ikut cepat
-    // (pesawat, alien, rudal, bom, peluru alien, spawn, dll)
-    gameLoop = function () {
-        if (!gameActive) return;
-        acc += gameSpeed;
-        let n = 0;
-        while (acc >= 1 && n < 4 && gameActive) {
-            update();
-            acc -= 1;
-            n++;
-        }
-        draw();
-        requestAnimationFrame(gameLoop);
-    };
-
-    // Jeda tembak ikut makin cepat
-    const origShoot = shootLaser;
-    shootLaser = function () {
-        if (gameSpeed === 1) return origShoot();
-        const real = player.lastShoot;
-        const now = Date.now();
-        player.lastShoot = now - (now - real) * gameSpeed;
-        const before = lasers.length;
-        origShoot();
-        if (lasers.length === before) player.lastShoot = real;
-    };
-
-    // Tiap game baru mulai dari 1×
-    const origStart = startGame;
-    startGame = function () {
-        setSpeed(1);
-        origStart();
-    };
-
-    // Menu cuma muncul pas lagi main
-    setInterval(() => {
-        menu.style.display = (gameActive && !isVictorySequence) ? 'flex' : 'none';
-    }, 150);
-})();
-</script>
-
-</body>
-    </html>
+            '<button class="blackhole-btn" id="qNextBtn">' + t.qNext + '</
